@@ -63,3 +63,43 @@ document.querySelectorAll('a[href^="#"]').forEach((link) => {
     }
   });
 });
+
+(function () {
+  const form = document.getElementById("contact-form");
+  if (!form) return;
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const company = document.getElementById("company").value.trim();
+    const role = document.getElementById("role").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const vertical = document.getElementById("vertical").value;
+    const message = document.getElementById("message").value.trim();
+
+    const to = "contato@mooose.com.br"; // seu e-mail de contato
+    const subject = `Novo contato pelo site - ${name || "Interessado(a)"}`;
+
+    const bodyLines = [
+      `Nome: ${name}`,
+      `Empresa: ${company}`,
+      `Cargo: ${role}`,
+      `E-mail: ${email}`,
+      `Interesse: ${vertical || "Não informado"}`,
+      "",
+      "Mensagem:",
+      message || "(sem mensagem)"
+    ];
+
+    const body = bodyLines.join("\n");
+
+    const mailtoLink =
+      `mailto:${encodeURIComponent(to)}` +
+      `?subject=${encodeURIComponent(subject)}` +
+      `&body=${encodeURIComponent(body)}`;
+
+    window.location.href = mailtoLink;
+  });
+})();
+
