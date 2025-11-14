@@ -13,57 +13,51 @@
   }
 
   function updateIcon() {
-    const theme = root.getAttribute("data-theme");
-    toggleBtn.textContent = theme === "dark" ? "☀️" : "🌙";
+    const current = root.getAttribute("data-theme");
+    if (!toggleBtn) return;
+    toggleBtn.setAttribute("aria-label", current === "dark" ? "Ativar tema claro" : "Ativar tema escuro");
   }
 
   updateIcon();
 
-  toggleBtn.addEventListener("click", () => {
-    const current = root.getAttribute("data-theme");
-    const next = current === "dark" ? "light" : "dark";
-    root.setAttribute("data-theme", next);
-    localStorage.setItem("mooose-theme", next);
-    updateIcon();
-  });
+  if (toggleBtn) {
+    toggleBtn.addEventListener("click", () => {
+      const current = root.getAttribute("data-theme");
+      const next = current === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      localStorage.setItem("mooose-theme", next);
+      updateIcon();
+    });
+  }
 })();
 
-// Menu mobile
+// Atualizar ano no rodapé
 (function () {
-  const menuToggle = document.querySelector(".menu-toggle");
-  const navLinks = document.querySelector(".nav-links");
+  const yearSpan = document.getElementById("year");
+  if (yearSpan) {
+    yearSpan.textContent = new Date().getFullYear();
+  }
+})();
 
-  if (!menuToggle || !navLinks) return;
-
-  menuToggle.addEventListener("click", () => {
-    navLinks.classList.toggle("open");
-  });
-
-  navLinks.addEventListener("click", (e) => {
-    if (e.target.tagName.toLowerCase() === "a") {
-      navLinks.classList.remove("open");
-    }
+// Scroll suave para âncoras internas
+(function () {
+  const links = document.querySelectorAll('a[href^="#"]');
+  links.forEach((link) => {
+    link.addEventListener("click", function (e) {
+      const targetId = this.getAttribute("href").substring(1);
+      const target = document.getElementById(targetId);
+      if (target) {
+        e.preventDefault();
+        window.scrollTo({
+          top: target.offsetTop - 70,
+          behavior: "smooth",
+        });
+      }
+    });
   });
 })();
 
-// Ano atual no rodapé
-document.getElementById("year").textContent = new Date().getFullYear();
-
-// Scroll suave para links âncora
-document.querySelectorAll('a[href^="#"]').forEach((link) => {
-  link.addEventListener("click", function (e) {
-    const targetId = this.getAttribute("href").slice(1);
-    const target = document.getElementById(targetId);
-    if (target) {
-      e.preventDefault();
-      window.scrollTo({
-        top: target.offsetTop - 70,
-        behavior: "smooth",
-      });
-    }
-  });
-});
-
+// Envio do formulário via mailto
 (function () {
   const form = document.getElementById("contact-form");
   if (!form) return;
@@ -86,9 +80,9 @@ document.querySelectorAll('a[href^="#"]').forEach((link) => {
       `Empresa: ${company}`,
       `Cargo: ${role}`,
       `E-mail: ${email}`,
-      `Interesse: ${vertical || "Não informado"}`,
+      `Interesse: ${vertical || "não informado"}`,
       "",
-      "Mensagem:",
+      "Detalhes:",
       message || "(sem mensagem)"
     ];
 
@@ -102,4 +96,3 @@ document.querySelectorAll('a[href^="#"]').forEach((link) => {
     window.location.href = mailtoLink;
   });
 })();
-

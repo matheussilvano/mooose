@@ -8,108 +8,109 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png" />
 
-  <!-- Fonte opcional (pode remover se quiser usar padrão do sistema) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="styles.css" />
+  <!-- Fontes -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="top-nav">
-    <div class="nav-left">
-      <a href="#hero" class="brand">
-        <img src="logo.png" alt="Logo Mooose" class="brand-logo">
-        <span class="brand-name">
+  <!-- HEADER / NAVBAR -->
+  <header class="site-header" id="hero">
+    <nav class="nav">
+      <div class="nav-left">
+        <a href="#hero" class="brand">
+          <img src="logo.png" alt="Logo Mooose" class="brand-logo" />
+          <span class="brand-name">
             M<span class="brand-o">O</span><span class="brand-o">O</span><span class="brand-o">O</span>SE
-        </span>
-      </a>
-    </div>
+          </span>
+        </a>
+      </div>
 
-    <button class="menu-toggle" aria-label="Abrir menu">
-      ☰
-    </button>
-
-    <nav class="nav-links">
-      <a href="#solutions">Soluções</a>
-      <a href="#mooose-health">Mooose Health</a>
-      <a href="#mooose-edu">Mooose Edu</a>
-      <a href="#contact">Contato</a>
+      <div class="nav-right">
+        <button id="theme-toggle" class="theme-toggle" aria-label="Alternar tema">
+          <span class="theme-icon theme-icon-sun">☀️</span>
+          <span class="theme-icon theme-icon-moon">🌙</span>
+        </button>
+        <div class="nav-links">
+          <a href="#solutions">Soluções</a>
+          <a href="#mooose-health">Health</a>
+          <a href="#mooose-edu">Edu</a>
+          <a href="#contact" class="nav-cta">Falar com o time</a>
+        </div>
+      </div>
     </nav>
-
-    <div class="nav-right">
-      <button id="theme-toggle" class="icon-button" aria-label="Alternar tema">
-        🌙
-      </button>
-    </div>
   </header>
 
   <main>
     <!-- HERO -->
-    <section id="hero" class="hero">
-      <div class="hero-content">
-        <span class="pill">Soluções de IA para empresas modernas</span>
-        <h1>
-          Mooose: Inteligência Artificial
-          <span class="gradient-text">que gera resultados reais</span>
-        </h1>
-        <p class="hero-subtitle">
-          Automatize processos, potencialize equipes e crie experiências inteligentes com
-          soluções de IA sob medida para saúde e educação.
-        </p>
+    <section class="hero-section">
+      <div class="hero">
+        <div class="hero-content">
+          <div class="pill">
+            <span class="pill-dot"></span>
+            <span>Soluções de IA sob medida</span>
+          </div>
+          <h1>
+            Inteligência Artificial
+            <span class="hero-gradient">para saúde e educação</span>
+          </h1>
+          <p class="hero-subtitle">
+            Automatize processos, potencialize equipes e crie experiências inteligentes com
+            soluções de IA sob medida para saúde e educação.
+          </p>
 
-        <div class="hero-actions">
-          <a href="#contact" class="btn btn-primary">Falar com o time</a>
-          <a href="#solutions" class="btn btn-secondary">Ver soluções</a>
-        </div>
-
-        <div class="hero-tags">
-          <span>Chatbots inteligentes</span>
-          <span>Automação de fluxos</span>
-          <span>Insights em tempo real</span>
-        </div>
-      </div>
-
-      <div class="hero-panel">
-        <div class="hero-card">
-          <h3>Verticais Mooose</h3>
-
-          <div class="module-card mini" id="mini-health">
-            <div class="module-header">
-              <img src="mooose-health-logo.png" alt="Logo Mooose Health" class="module-logo">
-              <div>
-                <h4>Mooose Health</h4>
-                <p>Fluxos de atendimento mais humanos, sem sobrecarregar equipes.</p>
-              </div>
-            </div>
-            <ul>
-              <li>Agendamento automatizado</li>
-              <li>Pré-triagem inteligente</li>
-              <li>Integração com sistemas clínicos</li>
-            </ul>
+          <div class="hero-actions">
+            <a href="#contact" class="btn btn-primary">Falar com o time</a>
+            <a href="#solutions" class="btn btn-secondary">Ver soluções</a>
           </div>
 
-          <div class="module-card mini" id="mini-edu">
-            <div class="module-header">
-              <img src="mooose-edu-logo.png" alt="Logo Mooose Edu" class="module-logo">
-              <div>
-                <h4>Mooose Edu</h4>
-                <p>Experiências de aprendizagem guiadas por IA.</p>
-              </div>
-            </div>
-            <ul>
-              <li>Assistentes para alunos</li>
-              <li>Suporte a professores</li>
-              <li>Analytics de engajamento</li>
-            </ul>
+          <div class="hero-tags">
+            <span>Chatbots inteligentes</span>
+            <span>Automação de fluxos</span>
+            <span>Insights em tempo real</span>
           </div>
+        </div>
 
-          <div class="hero-highlight">
-            <span class="dot"></span>
-            Pronto para o seu primeiro MVP em poucas semanas.
+        <div class="hero-panel">
+          <div class="hero-card">
+            <h3>Verticais Mooose</h3>
+
+            <div class="module-card mini" id="mini-health">
+              <div class="module-header">
+                <img src="mooose-health-logo.png" alt="Logo Mooose Health" class="module-logo">
+                <div>
+                  <h4>Mooose Health</h4>
+                  <p>Fluxos de atendimento mais humanos, sem sobrecarregar equipes.</p>
+                </div>
+              </div>
+              <ul>
+                <li>Agendamento automatizado</li>
+                <li>Pré-triagem inteligente</li>
+                <li>Integração com sistemas clínicos</li>
+              </ul>
+            </div>
+
+            <div class="module-card mini" id="mini-edu">
+              <div class="module-header">
+                <img src="mooose-edu-logo.png" alt="Logo Mooose Edu" class="module-logo">
+                <div>
+                  <h4>Mooose Edu</h4>
+                  <p>Experiências de aprendizagem guiadas por IA.</p>
+                </div>
+              </div>
+              <ul>
+                <li>Assistentes para alunos</li>
+                <li>Suporte a professores</li>
+                <li>Analytics de engajamento</li>
+              </ul>
+            </div>
+
+            <div class="hero-highlight">
+              <span class="dot"></span>
+              Pronto para o seu primeiro MVP em poucas semanas.
+            </div>
           </div>
         </div>
       </div>
@@ -133,9 +134,22 @@
             realmente gera valor — sem buzzword.
           </p>
           <ul class="card-list">
-            <li>Workshops com times de negócio</li>
-            <li>Mapeamento de fluxos críticos</li>
-            <li>Roadmap de automação</li>
+            <li>Entrevistas com stakeholders</li>
+            <li>Mapeamento de jornadas</li>
+            <li>Radar de oportunidades de IA</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Prototipação rápida</h3>
+          <p>
+            Teste hipóteses com usuários reais em semanas, não meses, com
+            protótipos funcionais de IA.
+          </p>
+          <ul class="card-list">
+            <li>Provas de conceito focadas em valor</li>
+            <li>Testes controlados com usuários</li>
+            <li>Roadmap para evolução do produto</li>
           </ul>
         </article>
 
@@ -149,19 +163,6 @@
             <li>Chatbots e agentes autônomos</li>
             <li>Integração com APIs e ERPs</li>
             <li>Monitoramento e melhoria contínua</li>
-          </ul>
-        </article>
-
-        <article class="card">
-          <h3>Suporte & evolução</h3>
-          <p>
-            Acompanhamos seus indicadores, otimizando modelos e fluxos
-            conforme o negócio cresce.
-          </p>
-          <ul class="card-list">
-            <li>SLA de atendimento</li>
-            <li>Revisão de prompts e flows</li>
-            <li>Novos casos de uso recorrentes</li>
           </ul>
         </article>
       </div>
@@ -191,7 +192,7 @@
             <li><strong>Agendamento & remarcação via chat</strong> integrado ao seu sistema atual.</li>
             <li><strong>Pré-triagem inteligente</strong> para direcionar o paciente ao canal correto.</li>
             <li><strong>Lembretes automáticos</strong> que reduzem faltas e melhoram ocupação.</li>
-            <li><strong>Relatórios de atendimento</strong> com insights acionáveis em poucos cliques.</li>
+            <li><strong>Relatórios de atendimento</strong> com visão gerencial em tempo real.</li>
           </ul>
 
           <a href="#contact" class="btn btn-primary">
@@ -201,21 +202,21 @@
 
         <div class="module-side-card">
           <div class="kpi-card">
-            <p class="kpi-label">Potencial de impacto</p>
-            <p class="kpi-number">-30%</p>
-            <p class="kpi-desc">redução média em no-show com lembretes automatizados.</p>
+            <p class="kpi-label">Redução de faltas</p>
+            <p class="kpi-number">-25%</p>
+            <p class="kpi-desc">em clínicas que adotaram lembretes automatizados.</p>
           </div>
 
           <div class="kpi-card secondary">
-            <p class="kpi-label">Experiência do paciente</p>
-            <p class="kpi-number">24/7</p>
-            <p class="kpi-desc">atendimento disponível quando o paciente precisa.</p>
+            <p class="kpi-label">Tempo de resposta</p>
+            <p class="kpi-number">&lt; 1min</p>
+            <p class="kpi-desc">para dúvidas comuns de pacientes e acompanhantes.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- MOOOSE EDU -->
+    <!-- MOOOSE EDU + CASE CORRETOOOR -->
     <section id="mooose-edu" class="section section-module">
       <div class="module-layout reverse">
         <div class="module-text">
@@ -241,6 +242,26 @@
             <li><strong>Analytics de engajamento</strong> com visão por turma, disciplina e período.</li>
             <li><strong>Integração com AVAs</strong> e ferramentas já usadas pela instituição.</li>
           </ul>
+
+          <!-- Case Corretooor dentro do Mooose Edu -->
+          <div class="corretooor-case">
+            <div class="corretooor-header">
+              <span class="corretooor-label">Case Mooose Edu</span>
+              <div class="corretooor-badge">
+                CORRET<span class="brand-o">O</span><span class="brand-o">O</span><span class="brand-o">R</span>
+              </div>
+            </div>
+            <h3 class="corretooor-title">
+              Corretooor: Inteligência Artificial que corrige redações como um time de corretores
+            </h3>
+            <p class="corretooor-text">
+              Automatize a correção de redações do ENEM, ofereça feedback estruturado nas 5 competências
+              e acompanhe a evolução dos alunos em tempo real — tudo dentro do ecossistema Mooose Edu.
+            </p>
+            <a href="https://corretooor.mooose.com.br/" target="_blank" rel="noopener" class="btn btn-light corretooor-cta">
+              Quero saber mais sobre o Corretooor
+            </a>
+          </div>
 
           <a href="#contact" class="btn btn-primary">
             Falar sobre Mooose Edu
@@ -299,49 +320,47 @@
                 <option value="">Selecione</option>
                 <option value="health">Mooose Health</option>
                 <option value="edu">Mooose Edu</option>
-                <option value="other">Outras soluções de IA</option>
+                <option value="geral">Outros projetos de IA</option>
               </select>
             </div>
           </div>
 
           <div class="field">
-            <label for="message">Mensagem</label>
-            <textarea id="message" rows="4" placeholder="Conte um pouco do desafio que você quer resolver"></textarea>
+            <label for="message">Conte um pouco sobre o que você busca</label>
+            <textarea id="message" rows="4" placeholder="Descreva o contexto, objetivos ou dores atuais..."></textarea>
           </div>
 
-          <button type="submit" class="btn btn-primary full-width">
+          <button type="submit" class="btn btn-primary btn full-width">
             Enviar mensagem
           </button>
-
-          <p class="form-note">
-            Ao enviar, você concorda em ser contactado pela equipe Mooose sobre esta iniciativa.
-          </p>
         </form>
 
         <div class="contact-side">
           <div class="contact-card">
-            <h3>Preferência por e-mail direto?</h3>
-            <p>Você também pode falar com a gente em:</p>
-            <p class="contact-email">contato@mooose.com.br</p>
+            <h3>Como podemos ajudar</h3>
+            <p>
+              Conte sobre o cenário atual, quais canais você usa hoje e onde acredita que a IA pode gerar mais impacto.
+            </p>
+            <p>
+              Respondemos em até <strong>2 dias úteis</strong> com próximos passos claros.
+            </p>
           </div>
 
           <div class="contact-card alt">
-            <h3>Quer ver um demo?</h3>
+            <h3>Preferência por e-mail</h3>
             <p>
-              Podemos montar um protótipo rápido focado no seu contexto
-              de saúde ou educação.
+              Se preferir, fale direto com a gente pelo e-mail:
             </p>
-            <ul class="card-list">
-              <li>Alimentamos com dados fictícios ou anonimizados</li>
-              <li>Mostramos fluxos reais de uso</li>
-              <li>Ajustamos junto com seu time</li>
-            </ul>
+            <p class="contact-email">
+              <a href="mailto:contato@mooose.com.br">contato@mooose.com.br</a>
+            </p>
           </div>
         </div>
       </div>
     </section>
   </main>
 
+  <!-- FOOTER -->
   <footer class="site-footer">
     <div class="footer-left">
       <img src="logo.png" alt="Logo Mooose" class="footer-logo">
