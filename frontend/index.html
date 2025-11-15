@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cooorrige by Mooose</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png" />
+
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="logo-area">
+      <div class="logo-row">
+        <img src="logo.png" alt="Mooose" class="mooose-logo" />
+        <span class="logo-word">
+          <span class="logo-m">M</span>
+          <span class="logo-o logo-o-1">O</span>
+          <span class="logo-o logo-o-2">O</span>
+          <span class="logo-o logo-o-3">O</span>
+          <span class="logo-rest">SE</span>
+        </span>
+      </div>
+      <span class="logo-subtitle">
+        <span class="logo-cooorrige">Cooorrige</span> · módulo
+        <span class="badge-edu">Mooose Edu</span>
+      </span>
+    </div>
+
+    <nav class="nav-links">
+      <!-- Estado deslogado -->
+      <div id="nav-auth">
+        <button id="btn-nav-login" class="ghost-btn">Entrar</button>
+        <button id="btn-nav-register" class="primary-btn small">
+          Criar conta
+        </button>
+      </div>
+
+      <!-- Estado logado -->
+      <div id="nav-logged" class="nav-logged hidden">
+        <div class="topbar-user">
+          <span id="topbar-user-name" class="topbar-user-name"></span>
+          <span id="topbar-user-email" class="topbar-user-email"></span>
+        </div>
+        <button id="btn-logout-topbar" class="ghost-btn ghost-btn-border">
+          Sair
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- LANDING -->
+    <section id="section-landing" class="section visible">
+      <div class="hero">
+        <div class="hero-text">
+          <div class="hero-pill-row">
+            <span class="pill pill-brand">Soluções de IA para ENEM</span>
+            <span class="pill pill-outline">by Mooose Edu</span>
+          </div>
+
+          <h1>
+            Cooorrige: inteligência artificial que
+            <span class="grad-text">corrige redações do ENEM</span>
+            como um time de corretores.
+          </h1>
+
+          <p class="hero-sub">
+            Envie sua redação por texto, foto ou PDF e receba nota por
+            competência, comentários didáticos e análise de adequação ao tema —
+            tudo em poucos minutos.
+          </p>
+
+          <div class="hero-actions">
+            <button id="btn-cta-start" class="primary-btn hero-cta">
+              Começar agora gratuitamente
+            </button>
+            <span class="hero-note">
+              Cadastre-se e ganhe créditos iniciais para testar. Sem cartão no MVP.
+            </span>
+          </div>
+
+          <div class="hero-metadata">
+            <div class="meta-item">
+              <span class="meta-label">Para quem</span>
+              <span class="meta-value">Alunos, cursinhos e escolas</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Formato</span>
+              <span class="meta-value">Texto, foto ou PDF da folha</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Verticais</span>
+              <span class="meta-value">Mooose Edu · Mooose Health</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <div class="hero-card-header">
+            <span class="hero-card-title">Preview do painel do aluno</span>
+            <span class="hero-card-chip">Simulação</span>
+          </div>
+          <div class="hero-card-body">
+            <div class="hero-card-row">
+              <span>Saldo de créditos</span>
+              <span class="hero-credit-badge">3 correções</span>
+            </div>
+            <div class="hero-card-row hero-card-row-muted">
+              <span>Última redação corrigida</span>
+              <span>“Desafios para a valorização dos professores...”</span>
+            </div>
+            <ul class="hero-card-list">
+              <li>✅ Nota final + nota por competência (1 a 5)</li>
+              <li>✅ Feedback por competência em linguagem simples</li>
+              <li>✅ Verificação de fuga ao tema (Competência 2)</li>
+              <li>🖼️ Envio por texto, foto ou PDF</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AUTENTICAÇÃO -->
+    <section id="section-auth" class="section">
+      <div class="section-title">
+        <h2>Acesse sua conta Cooorrige</h2>
+        <p>Gerencie créditos e acompanhe a evolução das suas redações.</p>
+      </div>
+
+      <div class="auth-container">
+        <div class="auth-card">
+          <h3>Criar conta</h3>
+          <p class="card-sub">
+            Comece com créditos gratuitos para testar a correção automática.
+          </p>
+          <form id="form-register">
+            <label>
+              Nome completo
+              <input type="text" name="full_name" required />
+            </label>
+            <label>
+              E-mail
+              <input type="email" name="email" required />
+            </label>
+            <label>
+              Senha
+              <input type="password" name="password" required minlength="4" />
+            </label>
+            <button type="submit" class="primary-btn full">
+              Criar conta
+            </button>
+            <p class="auth-switch">
+              Já tem conta?
+              <button type="button" id="btn-go-login" class="link-btn">
+                Fazer login
+              </button>
+            </p>
+            <p class="form-message" id="msg-register"></p>
+          </form>
+        </div>
+
+        <div class="auth-card">
+          <h3>Entrar</h3>
+          <p class="card-sub">Acesse seus créditos e histórico de correções.</p>
+          <form id="form-login">
+            <label>
+              E-mail
+              <input type="email" name="email" required />
+            </label>
+            <label>
+              Senha
+              <input type="password" name="password" required />
+            </label>
+            <button type="submit" class="secondary-btn full">Entrar</button>
+            <p class="form-message" id="msg-login"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="section-dashboard" class="section">
+      <div class="dashboard-header">
+        <div>
+          <h2>Área do aluno · Cooorrige</h2>
+          <p id="user-email"></p>
+        </div>
+        <div class="credits-pill">
+          Créditos disponíveis: <span id="credits-count">–</span>
+        </div>
+        <button id="btn-logout" class="ghost-btn ghost-btn-border">
+          Sair
+        </button>
+      </div>
+
+      <div class="dashboard-grid">
+        <!-- COLUNA 1: PLANOS / ASSINATURA -->
+        <div class="dashboard-col">
+          <div class="dashboard-card">
+            <h3>Planos e créditos</h3>
+            <p class="card-sub">
+              Em produção, aqui entra o checkout real. No MVP você pode
+              <strong>simular a assinatura</strong> de um plano para ganhar créditos.
+            </p>
+
+            <div class="plans-grid">
+              <div class="plan-card">
+                <span class="plan-name">Plano Enem Solo</span>
+                <span class="plan-tag">Para alunos individuais</span>
+                <span class="plan-price">4 correções / mês</span>
+                <ul class="plan-list">
+                  <li>Até 4 redações do ENEM por mês</li>
+                  <li>Feedback por competência (1 a 5)</li>
+                  <li>Painel com histórico de correções</li>
+                </ul>
+              </div>
+
+              <div class="plan-card plan-card-highlight">
+                <span class="plan-name">Plano Intensivo</span>
+                <span class="plan-tag highlight">Mais popular</span>
+                <span class="plan-price">10 correções / mês</span>
+                <ul class="plan-list">
+                  <li>Escreva até 10 redações por mês</li>
+                  <li>Acompanhamento da evolução do aluno</li>
+                  <li>Ideal para preparação intensiva</li>
+                </ul>
+              </div>
+
+              <div class="plan-card">
+                <span class="plan-name">Plano Unlimited</span>
+                <span class="plan-tag">Para quem quer escrever sem limite</span>
+                <span class="plan-price">Correções ilimitadas / mês</span>
+                <ul class="plan-list">
+                  <li>Sem limite de redações no mês</li>
+                  <li>Foco total na prática contínua</li>
+                  <li>Ideal para alunos <b>hardcores</b></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="fake-buy-box">
+              <p class="promo-title">
+                SUPER promoção de lançamento 🚀
+              </p>
+              <p>
+                Apenas para os primeiros alunos, planos com preços especiais de
+                lançamento:
+              </p>
+              <ul class="promo-list">
+                <li><strong>Solo:</strong> R$ 9,90/mês · 4 correções / mês</li>
+                <li><strong>Intensivo:</strong> R$ 19,90/mês · 10 correções / mês</li>
+                <li><strong>Unlimited:</strong> R$ 29,90/mês · correções ilimitadas / mês</li>
+              </ul>
+              <p>
+                Escolha um plano abaixo para
+                <strong>simular a assinatura</strong> e receber créditos
+                instantaneamente (MVP – sem cobrança real):
+              </p>
+              <div class="fake-buy-actions">
+                <button
+                  type="button"
+                  id="btn-simular-solo"
+                  class="primary-btn full"
+                >
+                  Simular Plano Enem Solo (+4 créditos)
+                </button>
+                <button
+                  type="button"
+                  id="btn-simular-intensivo"
+                  class="secondary-btn full"
+                >
+                  Simular Plano Intensivo (+10 créditos)
+                </button>
+                <button
+                  type="button"
+                  id="btn-simular-unlimited"
+                  class="ghost-btn full"
+                >
+                  Simular Plano Unlimited (correções ilimitadas)
+                </button>
+              </div>
+              <p class="form-message" id="msg-buy"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUNA 2: CORREÇÃO -->
+        <div class="dashboard-col">
+          <div class="dashboard-card correcao-card">
+            <h3>Corrigir redação do ENEM</h3>
+            <p class="card-sub">
+              Use 1 crédito para corrigir uma redação por texto ou por foto/PDF.
+            </p>
+
+            <div class="correction-switch">
+              <button
+                type="button"
+                class="switch-tab active"
+                data-target="arquivo"
+              >
+                Enviar foto/PDF (recomendado)
+              </button>
+              <button
+                type="button"
+                class="switch-tab"
+                data-target="texto"
+              >
+                Digitar texto
+              </button>
+            </div>
+
+            <!-- PAINEL: FOTO/PDF -->
+            <div id="panel-arquivo" class="correction-panel active">
+              <h4>Enviar foto/PDF da redação</h4>
+              <form id="form-corrigir-arquivo" enctype="multipart/form-data">
+                <label>
+                  Tema da redação
+                  <input
+                    type="text"
+                    name="tema_arquivo"
+                    required
+                    placeholder="Ex: Caminhos para combater a intolerância religiosa no Brasil"
+                  />
+                </label>
+                <label>
+                  Arquivo da redação
+                  <input
+                    type="file"
+                    name="arquivo"
+                    accept="image/*,application/pdf"
+                    required
+                  />
+                </label>
+                <button type="submit" class="primary-btn full">
+                  Corrigir a partir de foto/PDF (1 crédito)
+                </button>
+                <p class="form-message" id="msg-corrigir-arquivo"></p>
+              </form>
+            </div>
+
+            <!-- PAINEL: TEXTO -->
+            <div id="panel-texto" class="correction-panel">
+              <h4>Correção por texto</h4>
+              <form id="form-corrigir">
+                <label>
+                  Tema da redação
+                  <input
+                    type="text"
+                    name="tema"
+                    required
+                    placeholder="Ex: Desafios para a valorização dos professores no Brasil"
+                  />
+                </label>
+                <label>
+                  Redação (texto completo)
+                  <textarea
+                    name="texto"
+                    rows="8"
+                    required
+                    placeholder="Cole aqui o texto completo da redação..."
+                  ></textarea>
+                </label>
+                <button type="submit" class="secondary-btn full">
+                  Corrigir redação digitada (1 crédito)
+                </button>
+                <p class="form-message" id="msg-corrigir"></p>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- RESULTADO + EVOLUÇÃO -->
+        <div class="dashboard-card full-width">
+          <h3>Resultado da correção</h3>
+          <p class="card-sub">
+            Veja o detalhamento da última correção e acompanhe como suas notas
+            evoluem ao longo do tempo.
+          </p>
+
+          <div id="resultado-wrapper" class="resultado-wrapper">
+            <p class="placeholder">
+              O detalhamento da correção aparecerá aqui após o envio da redação.
+            </p>
+          </div>
+
+          <div class="evolucao-header">
+            <h4>Sua evolução nas redações</h4>
+            <p class="card-sub small">
+              Resumo das suas notas e histórico de redações corrigidas.
+            </p>
+          </div>
+
+          <div class="evolucao-historico-grid">
+            <div class="evolucao-left">
+              <div class="evolucao-resumo" id="evolucao-resumo">
+                <p class="placeholder">
+                  Nenhuma correção ainda. Assim que você corrigir a primeira
+                  redação, o acompanhamento aparece aqui. 📈
+                </p>
+              </div>
+              <div class="evolucao-chart-card">
+                <canvas id="evolucaoChart"></canvas>
+              </div>
+            </div>
+
+            <div class="historico-wrapper" id="historico-list">
+              <p class="placeholder">
+                Seu histórico de redações corrigidas aparecerá aqui.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>© 2025 Mooose. Todos os direitos reservados.</span>
+  </footer>
+
+  <!-- Chart.js para o gráfico de evolução -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
