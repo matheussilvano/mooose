@@ -1,4 +1,5 @@
-const API_BASE = "http://127.0.0.1:8000";
+// app.js (CORRIGIDO)
+const API_BASE = "https://mooose-backend.onrender.com";
 
 function getToken() {
   return localStorage.getItem("token");
@@ -215,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error(errData.detail || "Falha ao registrar");
       }
 
-      msgRegister.textContent = "Conta criada com sucesso! Faça login.";
+      msgRegister.textContent = "Conta criada com sucesso! Verifique seu e-mail para ativar.";
       msgRegister.classList.add("success");
       formRegister.reset();
     } catch (err) {
@@ -507,11 +508,22 @@ document.addEventListener("DOMContentLoaded", () => {
             )}</pre>`;
           }
 
+          // ================================================================
+          // CORREÇÃO APLICADA AQUI
+          // O backend agora envia a URL completa (Cloudinary/S3).
+          // Não precisamos mais adicionar o "API_BASE".
+          // ================================================================
           if (item.input_type === "arquivo" && item.arquivo_url) {
-            const base = API_BASE.replace(/\/$/, "");
-            const url = `${base}${item.arquivo_url}`;
+            // const base = API_BASE.replace(/\/$/, ""); // <-- LINHA ANTIGA (REMOVIDA)
+            // const url = `${base}${item.arquivo_url}`; // <-- LINHA ANTIGA (REMOVIDA)
+            
+            const url = item.arquivo_url; // <-- LINHA NOVA (CORRETA)
+            
             detalhesHtml += `<a href="${url}" target="_blank" rel="noopener" class="link-download">Ver arquivo enviado</a>`;
           }
+          // ================================================================
+          // FIM DA CORREÇÃO
+          // ================================================================
 
           li.innerHTML = `
             <div class="historico-main">
@@ -698,6 +710,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const formData = new FormData(formCorrigirArquivo);
     const payload = new FormData();
+    // AQUI ESTÁ CORRETO: O backend espera a key "tema"
     payload.append("tema", formData.get("tema_arquivo"));
     const file = formData.get("arquivo");
     if (file) {
@@ -708,6 +721,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch(`${API_BASE}/app/enem/corrigir-arquivo`, {
         method: "POST",
         headers: {
+          // NÃO use Content-Type: application/json para FormData
           Authorization: `Bearer ${token}`,
         },
         body: payload,

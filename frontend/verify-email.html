@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Verificando e-mail... | Cooorrige</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* Estilo simples para a página de verificação */
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+    main {
+      max-width: 500px;
+    }
+    #verification-message {
+      font-size: 1.1rem;
+      margin-top: 1rem;
+      margin-bottom: 1.5rem;
+      color: var(--text-muted);
+    }
+    #verification-message.success {
+      color: var(--success);
+    }
+    #verification-message.error {
+      color: var(--danger);
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="logo-area" style="align-items: center; margin-bottom: 1.5rem;">
+      <div class="logo-row">
+        <img src="logo.png" alt="Mooose" class="mooose-logo" />
+        <span class="logo-word">
+          <span class="logo-m">M</span>
+          <span class="logo-o logo-o-1">O</span>
+          <span class="logo-o logo-o-2">O</span>
+          <span class="logo-o logo-o-3">O</span>
+          <span class="logo-rest">SE</span>
+        </span>
+      </div>
+      <span class="logo-subtitle">
+        <span class="logo-cooorrige">Cooorrige</span> · módulo
+        <span class="badge-edu">Mooose Edu</span>
+      </span>
+    </div>
+
+    <h2>Verificando seu e-mail...</h2>
+    <p id="verification-message">Aguarde um momento.</p>
+    <a href="index.html" class="primary-btn">Ir para o Login</a>
+  </main>
+
+  <script src="app.js"></script>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const msgEl = document.getElementById("verification-message");
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('token');
+
+      if (!token) {
+        msgEl.textContent = "Erro: Token de verificação não encontrado na URL.";
+        msgEl.classList.add("error");
+        return;
+      }
+
+      // API_BASE vem do app.js
+      if (typeof API_BASE === 'undefined') {
+        msgEl.textContent = "Erro: Falha ao carregar configuração da API.";
+        msgEl.classList.add("error");
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/auth/verify-email?token=${encodeURIComponent(token)}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.detail || "Falha ao verificar o token.");
+        }
+
+        msgEl.textContent = data.message || "E-mail verificado com sucesso!";
+        msgEl.classList.add("success");
+
+      } catch (err) {
+        console.error(err);
+        msgEl.textContent = `Erro: ${err.message}`;
+        msgEl.classList.add("error");
+      }
+    });
+  </script>
+</body>
+</html>
