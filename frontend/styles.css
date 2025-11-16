@@ -520,6 +520,85 @@ main {
 }
 
 /* =========================
+   NOSSA MISSÃO
+   ========================= */
+
+.mission-section {
+  margin-top: 1.6rem;
+  padding: 2.4rem 0 0.4rem;
+}
+
+.mission-layout {
+  display: grid;
+  /* antes: 1.05fr 1.6fr e gap: 2.4rem; */
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 1.4rem;
+  align-items: center;
+}
+
+.mission-illustration {
+  position: relative;
+  min-height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mission-blob {
+  position: absolute;
+  width: 210px;
+  height: 210px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 70% 20%, #e0f2fe 0, #93c5fd 35%, #bbf7d0 75%);
+  opacity: 0.95;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.3);
+  border: 3px solid rgba(255, 255, 255, 0.9);
+}
+
+.mission-img {
+  position: relative;
+  width: 230px;
+  max-width: 80%;
+  transform: translateY(-10px);
+  filter: drop-shadow(0 24px 42px rgba(15, 23, 42, 0.4));
+}
+
+.mission-text h2 {
+  font-size: 1.6rem;
+  margin-bottom: 0.7rem;
+}
+
+.mission-lead {
+  font-size: 0.98rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 0.8rem;
+}
+
+.mission-text p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.mission-list {
+  margin-top: 0.9rem;
+  padding-left: 1.1rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.mission-footnote {
+  margin-top: 0.9rem;
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  max-width: 34rem;
+}
+
+/* =========================
    SECTION TITLES
    ========================= */
 
@@ -936,6 +1015,10 @@ form textarea {
     grid-template-columns: minmax(0, 1.15fr);
   }
 
+  .mission-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
@@ -1013,5 +1096,9 @@ form textarea {
   .hero-cta,
   .hero-cta-secondary {
     width: 100%;
+  }
+
+  .mission-section {
+    padding-top: 1.8rem;
   }
 }
