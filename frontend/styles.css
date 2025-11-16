@@ -261,7 +261,7 @@ main {
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 2.4rem;
   margin-top: 1.8rem;
   align-items: center;
@@ -355,7 +355,7 @@ main {
   margin-top: 0.15rem;
 }
 
-/* HERO CARD */
+/* HERO CARD (mantido caso queira reutilizar depois, mas não usado na home) */
 
 .hero-card {
   background: var(--surface);
@@ -416,6 +416,50 @@ main {
 
 .hero-card-list li {
   margin-bottom: 0.45rem;
+}
+
+/* BLOCO PROMOCIONAL DA MOOOSE */
+
+.moose-promo {
+  margin-top: 2.5rem;
+  padding: 1.8rem 1.9rem 2rem;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.14) 0, transparent 55%),
+    radial-gradient(circle at bottom right, rgba(250, 204, 21, 0.16) 0, transparent 55%),
+    rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(191, 219, 254, 0.9);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
+}
+
+.moose-promo .section-title {
+  margin-top: 0;
+  margin-bottom: 1.4rem;
+}
+
+.promo-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.promo-card {
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 18px;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(209, 213, 219, 0.85);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.promo-card h3 {
+  font-size: 1rem;
+  margin-bottom: 0.35rem;
+}
+
+.promo-card p {
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  line-height: 1.6;
 }
 
 /* =========================
