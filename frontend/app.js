@@ -1,4 +1,3 @@
-// app.js (CORRIGIDO)
 const API_BASE = "https://mooose-backend.onrender.com";
 
 function getToken() {
@@ -91,6 +90,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnLogout = document.getElementById("btn-logout");
   const btnLogoutTopbar = document.getElementById("btn-logout-topbar");
 
+  // --- NOVOS SELETORES ---
+  const btnGoForgotPassword = document.getElementById("btn-go-forgot-password");
+  const btnReturnToLogin = document.getElementById("btn-return-to-login");
+  
+  const authContainer = document.getElementById("auth-container");
+  const cardForgotPassword = document.getElementById("card-forgot-password");
+  
+  const formForgotPassword = document.getElementById("form-forgot-password");
+  const msgForgot = document.getElementById("msg-forgot");
+  // --- FIM DOS NOVOS SELETORES ---
+
   const formRegister = document.getElementById("form-register");
   const formLogin = document.getElementById("form-login");
   const formCorrigir = document.getElementById("form-corrigir");
@@ -177,6 +187,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // Navegação simples -> ir para auth
   function goToAuth() {
     showSection("section-auth");
+    // Garante que o container de login/registro esteja visível
+    if (authContainer) authContainer.classList.remove("hidden");
+    if (cardForgotPassword) cardForgotPassword.classList.add("hidden");
+
     sectionAuth?.scrollIntoView({ behavior: "smooth" });
   }
 
@@ -185,8 +199,29 @@ document.addEventListener("DOMContentLoaded", () => {
   btnCtaStart?.addEventListener("click", goToAuth);
 
   btnGoLogin?.addEventListener("click", () => {
+    // Garante que o container de login/registro esteja visível
+    if (authContainer) authContainer.classList.remove("hidden");
+    if (cardForgotPassword) cardForgotPassword.classList.add("hidden");
     showSection("section-auth");
   });
+
+  // --- NOVA NAVEGAÇÃO INTERNA DE AUTH ---
+  
+  // "Esqueci minha senha" -> mostra card de redefinição
+  btnGoForgotPassword?.addEventListener("click", () => {
+    if (authContainer) authContainer.classList.add("hidden");
+    if (cardForgotPassword) cardForgotPassword.classList.remove("hidden");
+    msgForgot.textContent = "";
+    msgForgot.className = "form-message";
+  });
+  
+  // "Voltar para o login" -> mostra cards de login/registro
+  btnReturnToLogin?.addEventListener("click", () => {
+    if (authContainer) authContainer.classList.remove("hidden");
+    if (cardForgotPassword) cardForgotPassword.classList.add("hidden");
+  });
+  
+  // --- FIM DA NOVA NAVEGAÇÃO ---
 
   btnLogout?.addEventListener("click", logoutAndReset);
   btnLogoutTopbar?.addEventListener("click", logoutAndReset);
@@ -262,6 +297,66 @@ document.addEventListener("DOMContentLoaded", () => {
       msgLogin.classList.add("error");
     }
   });
+
+  // --- NOVO SUBMIT: ESQUECI MINHA SENHA ---
+  formForgotPassword?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    msgForgot.textContent = "";
+    msgForgot.className = "form-message";
+    
+    const formData = new FormData(formForgotPassword);
+    const payload = {
+      email: formData.get("email"),
+    };
+    
+    const btn = formForgotPassword.querySelector('button[type="submit"]');
+    const originalLabel = btn ? btn.textContent : "";
+    
+    if (btn) {
+      btn.disabled = true;
+      btn.classList.add("button-loading");
+      btn.textContent = "Enviando...";
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/auth/forgot-password`, {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      
+      if (!res.ok) {
+        // Mesmo em erro, mostramos a msg padrão por segurança, 
+        // exceto se for um erro de servidor (500)
+        if (res.status >= 500) {
+            throw new Error(data.detail || "Erro interno do servidor.");
+        }
+        // Se for 4xx (ex: e-mail mal formatado), podemos mostrar
+        if (res.status !== 404) {
+             throw new Error(data.detail || "Falha ao enviar e-mail.");
+        }
+      }
+      
+      // Mensagem de sucesso (padrão de segurança)
+      msgForgot.textContent = data.message || "Se uma conta existir, um e-mail foi enviado.";
+      msgForgot.classList.add("success");
+      formForgotPassword.reset();
+      
+    } catch (err) {
+      console.error(err);
+      msgForgot.textContent = err.message || "Erro ao solicitar redefinição.";
+      msgForgot.classList.add("error");
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.classList.remove("button-loading");
+            btn.textContent = originalLabel;
+        }
+    }
+  });
+  // --- FIM DO NOVO SUBMIT ---
 
   // Simular checkout de plano
   async function simularPlano(plano) {

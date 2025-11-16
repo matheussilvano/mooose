@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <title>Cooorrige by Mooose</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale-1.0" />
 
-  <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png" />
 
   <link rel="stylesheet" href="styles.css" />
@@ -17,7 +16,6 @@
   />
 </head>
 <body>
-  <!-- TOPBAR -->
   <header class="topbar">
     <div class="logo-area">
       <div class="logo-row">
@@ -37,7 +35,6 @@
     </div>
 
     <nav class="nav-links">
-      <!-- Estado deslogado -->
       <div id="nav-auth">
         <button id="btn-nav-login" class="ghost-btn">Entrar</button>
         <button id="btn-nav-register" class="primary-btn small">
@@ -45,7 +42,6 @@
         </button>
       </div>
 
-      <!-- Estado logado -->
       <div id="nav-logged" class="nav-logged hidden">
         <div class="topbar-user">
           <span id="topbar-user-name" class="topbar-user-name"></span>
@@ -59,7 +55,6 @@
   </header>
 
   <main>
-    <!-- LANDING -->
     <section id="section-landing" class="section visible">
       <div class="hero">
         <div class="hero-text">
@@ -130,15 +125,14 @@
       </div>
     </section>
 
-    <!-- AUTENTICAÇÃO -->
     <section id="section-auth" class="section">
       <div class="section-title">
         <h2>Acesse sua conta Cooorrige</h2>
         <p>Gerencie créditos e acompanhe a evolução das suas redações.</p>
       </div>
 
-      <div class="auth-container">
-        <div class="auth-card">
+      <div class="auth-container" id="auth-container">
+        <div class="auth-card" id="card-register">
           <h3>Criar conta</h3>
           <p class="card-sub">
             Comece com créditos gratuitos para testar a correção automática.
@@ -169,7 +163,7 @@
           </form>
         </div>
 
-        <div class="auth-card">
+        <div class="auth-card" id="card-login">
           <h3>Entrar</h3>
           <p class="card-sub">Acesse seus créditos e histórico de correções.</p>
           <form id="form-login">
@@ -182,13 +176,43 @@
               <input type="password" name="password" required />
             </label>
             <button type="submit" class="secondary-btn full">Entrar</button>
+
+            <p class="auth-switch" style="margin-top: 0.75rem; text-align: center;">
+              <button type="button" id="btn-go-forgot-password" class="link-btn">
+                Esqueci minha senha
+              </button>
+            </p>
+
             <p class="form-message" id="msg-login"></p>
           </form>
         </div>
       </div>
+
+      <div class="auth-card hidden" id="card-forgot-password" style="max-width: 500px; margin: 1rem auto 0 auto;">
+        <h3>Redefinir senha</h3>
+        <p class="card-sub">
+          Insira seu e-mail de cadastro. Enviaremos um link para você criar
+          uma nova senha.
+        </p>
+        <form id="form-forgot-password">
+          <label>
+            E-mail
+            <input type="email" name="email" required />
+          </label>
+          <button type="submit" class="secondary-btn full">
+            Enviar link de redefinição
+          </button>
+          <p class="auth-switch">
+            Lembrou a senha?
+            <button type="button" id="btn-return-to-login" class="link-btn">
+              Voltar para o login
+            </button>
+          </p>
+          <p class="form-message" id="msg-forgot"></p>
+        </form>
+      </div>
     </section>
 
-    <!-- DASHBOARD -->
     <section id="section-dashboard" class="section">
       <div class="dashboard-header">
         <div>
@@ -204,7 +228,6 @@
       </div>
 
       <div class="dashboard-grid">
-        <!-- COLUNA 1: PLANOS / ASSINATURA -->
         <div class="dashboard-col">
           <div class="dashboard-card">
             <h3>Planos e créditos</h3>
@@ -294,7 +317,6 @@
           </div>
         </div>
 
-        <!-- COLUNA 2: CORREÇÃO -->
         <div class="dashboard-col">
           <div class="dashboard-card correcao-card">
             <h3>Corrigir redação do ENEM</h3>
@@ -319,7 +341,6 @@
               </button>
             </div>
 
-            <!-- PAINEL: FOTO/PDF -->
             <div id="panel-arquivo" class="correction-panel active">
               <h4>Enviar foto/PDF da redação</h4>
               <form id="form-corrigir-arquivo" enctype="multipart/form-data">
@@ -348,7 +369,6 @@
               </form>
             </div>
 
-            <!-- PAINEL: TEXTO -->
             <div id="panel-texto" class="correction-panel">
               <h4>Correção por texto</h4>
               <form id="form-corrigir">
@@ -379,7 +399,6 @@
           </div>
         </div>
 
-        <!-- RESULTADO + EVOLUÇÃO -->
         <div class="dashboard-card full-width">
           <h3>Resultado da correção</h3>
           <p class="card-sub">
@@ -428,7 +447,6 @@
     <span>© 2025 Mooose. Todos os direitos reservados.</span>
   </footer>
 
-  <!-- Chart.js para o gráfico de evolução -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="app.js"></script>
 </body>
