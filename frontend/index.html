@@ -15,7 +15,7 @@
     rel="stylesheet"
   />
 
-  <!-- Google AdSense -->
+  <!-- Google AdSense (se precisar na home também) -->
   <script async
     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6241000006441036"
     crossorigin="anonymous">
@@ -35,7 +35,7 @@
         </span>
       </div>
       <span class="logo-subtitle">
-        <span class="logo-cooorrige">Mooose</span> · módulo
+        IA que corrige redações do ENEM ·
         <span class="badge-edu">Mooose Edu</span>
       </span>
     </div>
@@ -43,10 +43,10 @@
     <nav class="nav-links">
       <div id="nav-auth">
         <button id="btn-nav-login" class="ghost-btn ghost-btn-border">
-          Entrar
+          Já tenho conta
         </button>
-        <button id="btn-nav-register" class="primary-btn">
-          Criar conta grátis
+        <button id="btn-nav-register" class="primary-btn nav-primary">
+          Criar conta 100% gratuita
         </button>
       </div>
 
@@ -63,8 +63,20 @@
   </header>
 
   <main>
+    <!-- HERO / TELA INICIAL -->
     <section id="section-landing" class="section visible">
-      <div class="hero">
+      <div class="hero hero-split">
+        <!-- Ilustração tipo Duolingo (Mooose mascote) -->
+        <div class="hero-illustration">
+          <div class="hero-blob"></div>
+          <img
+            src="corrigindo-prova.png"
+            alt="Mooose, o mascote, corrigindo uma redação do ENEM"
+            class="hero-moose"
+          />
+        </div>
+
+        <!-- Texto + CTAs -->
         <div class="hero-text">
           <div class="hero-pill-row">
             <span class="pill pill-brand">IA especializada em redação do ENEM</span>
@@ -72,24 +84,27 @@
           </div>
 
           <h1>
-            Mooose: IA que
-            <span class="grad-text">corrige sua redação do ENEM</span>
-            de graça.
+            O jeito <span class="grad-text">gratuito, didático e inteligente</span>
+            de corrigir sua redação do ENEM.
           </h1>
 
           <p class="hero-sub">
-            Envie sua redação por texto, foto ou PDF e eu devolvo nota nas 5
-            competências, comentários didáticos e análise de adequação ao tema —
-            tudo em poucos minutos, como um time de corretores humanos.
+            Eu sou a <strong>Mooose</strong>, uma IA treinada para corrigir redações
+            do ENEM. Você envia o texto, a foto ou o PDF da folha e eu devolvo
+            nota nas 5 competências, análise de fuga de tema e um feedback
+            explicadinho do que fazer para subir sua nota.
           </p>
 
           <div class="hero-actions">
             <button id="btn-cta-start" class="primary-btn hero-cta">
-              Começar agora gratuitamente
+              Começar agora – é 100% GRÁTIS
+            </button>
+            <button id="btn-cta-login" class="secondary-btn hero-cta-secondary">
+              Já tenho uma conta
             </button>
             <span class="hero-note">
-              Plataforma <strong>100% GRATUITA</strong> para o aluno —
-              mantida por anúncios.
+              Acesso <strong>100% GRATUITO</strong> para o aluno —
+              plataforma mantida por anúncios.
             </span>
           </div>
 
@@ -99,57 +114,68 @@
               <span class="meta-value">Alunos, cursinhos e escolas</span>
             </div>
             <div class="meta-item">
-              <span class="meta-label">Formato</span>
-              <span class="meta-value">Texto, foto ou PDF da folha</span>
+              <span class="meta-label">Você pode enviar</span>
+              <span class="meta-value">Texto digitado, foto da folha ou PDF</span>
             </div>
             <div class="meta-item">
-              <span class="meta-label">Verticais</span>
-              <span class="meta-value">Mooose Edu · Mooose Health</span>
+              <span class="meta-label">Matriz</span>
+              <span class="meta-value">Notas nas 5 competências + intervenção</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Bloco de “propaganda” da Mooose, com bordões estilo Duolingo -->
+      <!-- Seção “propaganda” da Mooose, estilo Duolingo -->
       <div class="moose-promo">
-        <div class="section-title">
-          <h2>Mooose, a IA que estuda redação com você</h2>
-          <p>
-            Grátis, didática e focada no ENEM. Com a Mooose você pratica,
-            corrige e entende exatamente o que fazer para subir sua nota.
-          </p>
-        </div>
-
-        <div class="promo-grid">
-          <article class="promo-card">
-            <h3>Grátis. sem pegadinha.</h3>
-            <p>
-              Corrija suas redações do ENEM de graça, com acesso mantido por
-              anúncios. Sem cartão de crédito, sem taxas escondidas.
+        <div class="promo-layout">
+          <div class="promo-text">
+            <h2 class="promo-heading">
+              gratuita. didática. focada no ENEM.
+            </h2>
+            <p class="promo-sub">
+              Corrigir redação não precisa ser um mistério. A Mooose te mostra,
+              em português claro, <strong>por que</strong> sua nota saiu daquele
+              jeito e <strong>como</strong> você pode melhorar na próxima
+              tentativa.
             </p>
-          </article>
 
-          <article class="promo-card">
-            <h3>Didática. tipo um professor.</h3>
-            <p>
-              Receba feedback em português claro, com explicações por
-              competência, exemplos e dicas práticas do que melhorar em cada
-              parágrafo.
-            </p>
-          </article>
+            <ul class="promo-bullets">
+              <li>
+                <strong>Feedback por competência:</strong> veja onde está
+                perdendo mais pontos (1 a 5).
+              </li>
+              <li>
+                <strong>Fuga e tangenciamento de tema:</strong> a Mooose avisa se
+                você se afastou do assunto.
+              </li>
+              <li>
+                <strong>Proposta de intervenção completa:</strong> agente, ação,
+                meio, detalhamento e finalidade sempre na mira.
+              </li>
+            </ul>
+          </div>
 
-          <article class="promo-card">
-            <h3>Focada no ENEM.</h3>
-            <p>
-              A Mooose segue a matriz do ENEM, avalia fuga ou tangenciamento de
-              tema e ajuda você a construir uma proposta de intervenção completa
-              e bem detalhada.
-            </p>
-          </article>
+          <div class="promo-side">
+            <div class="promo-side-card">
+              <p class="promo-side-title">O que a Mooose faz por você?</p>
+              <ul>
+                <li>Analisa sua redação em segundos</li>
+                <li>Explica os erros como um professor paciente</li>
+                <li>Guarda seu histórico para ver sua evolução</li>
+              </ul>
+              <button
+                class="primary-btn small full"
+                id="btn-promo-start"
+              >
+                Quero testar a Mooose agora
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
+    <!-- ÁREA DE LOGIN/REGISTRO -->
     <section id="section-auth" class="section">
       <div class="section-title">
         <h2>Acesse sua conta Mooose</h2>
@@ -176,7 +202,7 @@
               <input type="password" name="password" required minlength="4" />
             </label>
             <button type="submit" class="primary-btn full">
-              Criar conta
+              Criar conta gratuita
             </button>
             <p class="auth-switch">
               Já tem conta?
@@ -202,8 +228,15 @@
             </label>
             <button type="submit" class="secondary-btn full">Entrar</button>
 
-            <p class="auth-switch" style="margin-top: 0.75rem; text-align: center;">
-              <button type="button" id="btn-go-forgot-password" class="link-btn">
+            <p
+              class="auth-switch"
+              style="margin-top: 0.75rem; text-align: center;"
+            >
+              <button
+                type="button"
+                id="btn-go-forgot-password"
+                class="link-btn"
+              >
                 Esqueci minha senha
               </button>
             </p>
@@ -213,7 +246,11 @@
         </div>
       </div>
 
-      <div class="auth-card hidden" id="card-forgot-password" style="max-width: 500px; margin: 1rem auto 0 auto;">
+      <div
+        class="auth-card hidden"
+        id="card-forgot-password"
+        style="max-width: 500px; margin: 1rem auto 0 auto;"
+      >
         <h3>Redefinir senha</h3>
         <p class="card-sub">
           Insira seu e-mail de cadastro. Enviaremos um link para você criar
@@ -229,7 +266,11 @@
           </button>
           <p class="auth-switch">
             Lembrou a senha?
-            <button type="button" id="btn-return-to-login" class="link-btn">
+            <button
+              type="button"
+              id="btn-return-to-login"
+              class="link-btn"
+            >
               Voltar para o login
             </button>
           </p>
@@ -238,6 +279,7 @@
       </div>
     </section>
 
+    <!-- DASHBOARD / ÁREA DO ALUNO -->
     <section id="section-dashboard" class="section">
       <div class="dashboard-header">
         <div>
@@ -253,99 +295,7 @@
       </div>
 
       <div class="dashboard-grid">
-        <!--
-          BLOCO DE PLANOS E PAGAMENTO REMOVIDO DA INTERFACE
-          (mantido comentado para reaproveitar no futuro se precisar)
-        <div class="dashboard-col">
-          <div class="dashboard-card">
-            <h3>Planos e créditos</h3>
-            <p class="card-sub">
-              Em produção, aqui entra o checkout real. No MVP você pode
-              <strong>simular a assinatura</strong> de um plano para ganhar créditos.
-            </p>
-
-            <div class="plans-grid">
-              <div class="plan-card">
-                <span class="plan-name">Plano Enem Solo</span>
-                <span class="plan-tag">Para alunos individuais</span>
-                <span class="plan-price">4 correções / mês</span>
-                <ul class="plan-list">
-                  <li>Até 4 redações do ENEM por mês</li>
-                  <li>Feedback por competência (1 a 5)</li>
-                  <li>Painel com histórico de correções</li>
-                </ul>
-              </div>
-
-              <div class="plan-card plan-card-highlight">
-                <span class="plan-name">Plano Intensivo</span>
-                <span class="plan-tag highlight">Mais popular</span>
-                <span class="plan-price">10 correções / mês</span>
-                <ul class="plan-list">
-                  <li>Escreva até 10 redações por mês</li>
-                  <li>Acompanhamento da evolução do aluno</li>
-                  <li>Ideal para preparação intensiva</li>
-                </ul>
-              </div>
-
-              <div class="plan-card">
-                <span class="plan-name">Plano Unlimited</span>
-                <span class="plan-tag">Para quem quer escrever sem limite</span>
-                <span class="plan-price">Correções ilimitadas / mês</span>
-                <ul class="plan-list">
-                  <li>Sem limite de redações no mês</li>
-                  <li>Foco total na prática contínua</li>
-                  <li>Ideal para alunos <b>hardcores</b></li>
-                </ul>
-              </div>
-            </div>
-
-            <div class="fake-buy-box">
-              <p class="promo-title">
-                SUPER promoção de lançamento 🚀
-              </p>
-              <p>
-                Apenas para os primeiros alunos, planos com preços especiais de
-                lançamento:
-              </p>
-              <ul class="promo-list">
-                <li><strong>Solo:</strong> R$ 9,90/mês · 4 correções / mês</li>
-                <li><strong>Intensivo:</strong> R$ 19,90/mês · 10 correções / mês</li>
-                <li><strong>Unlimited:</strong> R$ 29,90/mês · correções ilimitadas / mês</li>
-              </ul>
-              <p>
-                Escolha um plano abaixo para
-                <strong>simular a assinatura</strong> e receber créditos
-                instantaneamente (MVP – sem cobrança real):
-              </p>
-              <div class="fake-buy-actions">
-                <button
-                  type="button"
-                  id="btn-simular-solo"
-                  class="primary-btn full"
-                >
-                  Simular Plano Enem Solo (+4 créditos)
-                </button>
-                <button
-                  type="button"
-                  id="btn-simular-intensivo"
-                  class="secondary-btn full"
-                >
-                  Simular Plano Intensivo (+10 créditos)
-                </button>
-                <button
-                  type="button"
-                  id="btn-simular-unlimited"
-                  class="ghost-btn full"
-                >
-                  Simular Plano Unlimited (correções ilimitadas)
-                </button>
-              </div>
-              <p class="form-message" id="msg-buy"></p>
-            </div>
-          </div>
-        </div>
-        -->
-
+        <!-- Coluna de correção (texto/foto) -->
         <div class="dashboard-col">
           <div class="dashboard-card correcao-card">
             <h3>Corrigir redação do ENEM</h3>
@@ -361,11 +311,7 @@
               >
                 Enviar foto/PDF (recomendado)
               </button>
-              <button
-                type="button"
-                class="switch-tab"
-                data-target="texto"
-              >
+              <button type="button" class="switch-tab" data-target="texto">
                 Digitar texto
               </button>
             </div>
@@ -428,6 +374,7 @@
           </div>
         </div>
 
+        <!-- Coluna de resultado + evolução -->
         <div class="dashboard-card full-width">
           <h3>Resultado da correção</h3>
           <p class="card-sub">
