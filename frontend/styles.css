@@ -1,3 +1,11 @@
+/* styles.css
+  Versão completa com as melhorias de responsividade aplicadas.
+  As principais mudanças estão:
+  1. Nas regras de `.auth-container`, `.plans-grid`, e `.evolucao-grid` (para usar 'auto-fit').
+  2. No bloco `@media (max-width: 1024px)` (remoção de regra redundante).
+  3. No bloco `@media (max-width: 720px)` (que foi reescrito para adicionar as correções de topbar, fontes e espaçamentos).
+*/
+
 *,
 *::before,
 *::after {
@@ -432,11 +440,14 @@ main {
    AUTH
    ========================= */
 
+/* --- MODIFICADO --- */
+/* Esta regra foi alterada para usar 'auto-fit' e ser automaticamente responsiva */
 .auth-container {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.4rem;
   margin-top: 0.5rem;
+  /* Cria colunas automáticas. Mínimo de 300px por card */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
 .auth-card {
@@ -591,11 +602,14 @@ form textarea {
 
 /* PLANS */
 
+/* --- MODIFICADO --- */
+/* Esta regra foi alterada para usar 'auto-fit' e ser automaticamente responsiva */
 .plans-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.9rem;
   margin-top: 0.9rem;
+  /* Cria colunas automáticas. Mínimo de 240px por card */
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
 .plan-card {
@@ -701,6 +715,8 @@ form textarea {
    RESPONSIVE
    ========================= */
 
+/* --- MODIFICADO --- */
+/* A regra de .plans-grid foi REMOVIDA daqui, pois agora é automática */
 @media (max-width: 1024px) {
   main {
     padding: 1.4rem;
@@ -725,28 +741,95 @@ form textarea {
   .credits-pill {
     margin-left: 0;
   }
-
-  .plans-grid {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
+/* --- MODIFICADO --- */
+/* Este bloco foi reescrito com todas as correções para mobile */
 @media (max-width: 720px) {
-  .topbar {
-    padding-inline: 1.2rem;
-  }
-
+  /* Regra original mantida */
   .hero-metadata {
     grid-template-columns: 1fr;
   }
 
-  .auth-container {
-    grid-template-columns: 1fr;
+  /* --- ADICIONADO: Correção do Topbar para mobile --- */
+  .topbar {
+    flex-direction: column; /* Empilha o logo e a navegação */
+    align-items: flex-start; /* Alinha tudo à esquerda */
+    gap: 0.75rem;
+    padding: 1rem 1.2rem; /* Ajusta o padding */
   }
 
-  .plans-grid {
+  /* Faz os botões/nav ocuparem 100% da largura */
+  .nav-links {
+    width: 100%;
+  }
+
+  #nav-auth {
+    width: 100%;
+    display: flex;
+    justify-content: space-between; /* Espaça os botões */
+    gap: 0.5rem;
+  }
+
+  /* Faz os botões esticarem */
+  #nav-auth .primary-btn,
+  #nav-auth .ghost-btn {
+    flex: 1; /* Faz os botões dividirem o espaço */
+    text-align: center;
+  }
+
+  #nav-logged {
+    width: 100%;
+    justify-content: space-between; /* Espaça o usuário do botão "Sair" */
+  }
+
+  .topbar-user {
+    align-items: flex-start; /* Alinha nome/email à esquerda */
+  }
+
+  /* --- ADICIONADO: TIPOGRAFIA --- */
+  .hero-text h1 {
+    font-size: 1.8rem; /* Reduz o título principal (era 2.2rem) */
+  }
+
+  .section-title h2,
+  .dashboard-header h2 {
+    font-size: 1.2rem; /* Reduz títulos de seção (era 1.4rem/1.25rem) */
+  }
+
+  .hero-sub {
+    font-size: 0.92rem; /* Texto de apoio um pouco menor */
+    line-height: 1.6;
+  }
+
+  /* --- ADICIONADO: ESPAÇAMENTO (PADDING) --- */
+  main {
+    padding: 1rem; /* Menos padding geral (era 1.4rem) */
+  }
+
+  /* Reduz padding dos cards para dar mais espaço */
+  .auth-card,
+  .dashboard-card,
+  .hero-card {
+    padding: 1.2rem 1.1rem; /* Era ~1.6rem */
+  }
+
+  /* Faz o botão principal da hero ocupar 100% */
+  .hero-actions {
+    align-items: stretch;
+  }
+  .hero-cta {
+    width: 100%;
+  }
+
+  /* --- ADICIONADO: GARANTE O EMPILHAMENTO DA HERO --- */
+  .hero {
     grid-template-columns: 1fr;
   }
+  .hero-card {
+    order: -1; /* Garante que o card venha primeiro */
+  }
+  /* Fim das regras adicionadas */
 }
 
 /* =========================
@@ -898,14 +981,20 @@ form textarea {
   }
 }
 
+/* --- MODIFICADO --- */
+/* Esta regra foi alterada para usar 'auto-fit' e ser automaticamente responsiva */
 .evolucao-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.75rem;
+  /* Cria colunas automáticas. Mínimo de 140px por card */
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
 }
 
 @media (max-width: 600px) {
   .evolucao-grid {
+    /* Esta regra é opcional, mas força 2 colunas em telas muito pequenas
+       se 'auto-fit' decidir que só cabe 1.
+       Pode ser mantida ou removida. Vamos manter por enquanto. */
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
