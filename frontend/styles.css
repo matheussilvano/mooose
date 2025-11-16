@@ -397,7 +397,7 @@ main {
 
 .hero-cta-secondary {
   background: #ffffff;
-  color: #2563eb;
+  color: lab(46.06% 30.97 -73.83);
   border: 1px solid rgba(59, 130, 246, 0.6);
 }
 
@@ -460,7 +460,7 @@ main {
 .promo-heading {
   font-size: 2rem;
   line-height: 1.1;
-  color: #16a34a;
+  color: #1e3eb3;
   text-transform: lowercase;
   margin-bottom: 0.75rem;
 }
