@@ -416,27 +416,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const notaFinal =
       typeof resultado.nota_final === "number" ? resultado.nota_final : null;
-    const analise =
+
+    const analiseMarkdown =
       resultado.analise_geral ||
       resultado.analise ||
       "";
+
     const competencias = Array.isArray(resultado.competencias)
       ? resultado.competencias
       : [];
+
+    // 🔹 converte markdown → HTML
+    const analiseHtml = analiseMarkdown ? marked.parse(analiseMarkdown) : "";
 
     let compsHtml = "";
     if (competencias.length) {
       compsHtml = '<div class="competencias-grid">';
       competencias.forEach((c) => {
         const cid =
-          typeof c.id === "number" || typeof c.id === "string"
-            ? c.id
-            : "?";
+          typeof c.id === "number" || typeof c.id === "string" ? c.id : "?";
         const nota =
-          typeof c.nota === "number" || typeof c.nota === "string"
-            ? c.nota
-            : "-";
-        const feedback = c.feedback || "";
+          typeof c.nota === "number" || typeof c.nota === "string" ? c.nota : "-";
+        const feedbackMarkdown = c.feedback || "";
+
+        // markdown → HTML
+        const feedbackHtml = marked.parse(feedbackMarkdown);
 
         compsHtml += `
           <article class="competencia-card">
@@ -444,7 +448,9 @@ document.addEventListener("DOMContentLoaded", () => {
               <span class="competencia-label">Competência ${cid}</span>
               <span class="competencia-badge">${nota}<span class="competencia-max"> / 200</span></span>
             </header>
-            <p class="competencia-feedback">${feedback}</p>
+            <div class="competencia-feedback">
+              ${feedbackHtml}
+            </div>
           </article>
         `;
       });
@@ -468,8 +474,8 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         </div>
         ${
-          analise
-            ? `<p class="resultado-analise">${analise}</p>`
+          analiseHtml
+            ? `<div class="resultado-analise">${analiseHtml}</div>`
             : ""
         }
         ${compsHtml}
