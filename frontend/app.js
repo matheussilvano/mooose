@@ -898,3 +898,44 @@ document.addEventListener("DOMContentLoaded", () => {
     updateTopbarUser(null);
   }
 });
+
+// Usa o mesmo estilo do resultado principal
+function renderCorrecaoHTML(correcao) {
+  const analiseHtml = marked.parse(correcao.analise_geral || "");
+
+  const competenciasHtml = (correcao.competencias || [])
+    .map((c) => {
+      const feedbackHtml = marked.parse(c.feedback || "");
+      return `
+        <div>
+          <strong>Competência ${c.id} ${c.nota} / 200</strong>
+          <div class="competencia-feedback">
+            ${feedbackHtml}
+          </div>
+        </div>
+      `;
+    })
+    .join("");
+
+  return `
+    <div class="resultado-main">
+      <div class="resultado-top">
+        <div>
+          <span class="resultado-label">Nota final</span>
+          <div class="resultado-score-pill">
+            <span>${correcao.nota_final || 0}</span>
+            <span class="resultado-score-max">/ 1000</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="resultado-analise">
+        ${analiseHtml}
+      </div>
+
+      <div class="competencias-grid">
+        ${competenciasHtml}
+      </div>
+    </div>
+  `;
+}
