@@ -93,10 +93,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- NOVOS SELETORES ---
   const btnGoForgotPassword = document.getElementById("btn-go-forgot-password");
   const btnReturnToLogin = document.getElementById("btn-return-to-login");
-  
+
   const authContainer = document.getElementById("auth-container");
   const cardForgotPassword = document.getElementById("card-forgot-password");
-  
+
   const formForgotPassword = document.getElementById("form-forgot-password");
   const msgForgot = document.getElementById("msg-forgot");
   // --- FIM DOS NOVOS SELETORES ---
@@ -116,7 +116,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const btnSimularSolo = document.getElementById("btn-simular-solo");
   const btnSimularIntensivo = document.getElementById("btn-simular-intensivo");
-  const btnSimularUnlimited = document.getElementById("btn-simular-unlimited");
+  const btnSimularUnlimited =
+    document.getElementById("btn-simular-unlimited");
 
   const creditsEl = document.getElementById("credits-count");
   const resultadoWrapper = document.getElementById("resultado-wrapper");
@@ -206,21 +207,23 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // --- NOVA NAVEGAÇÃO INTERNA DE AUTH ---
-  
+
   // "Esqueci minha senha" -> mostra card de redefinição
   btnGoForgotPassword?.addEventListener("click", () => {
     if (authContainer) authContainer.classList.add("hidden");
     if (cardForgotPassword) cardForgotPassword.classList.remove("hidden");
-    msgForgot.textContent = "";
-    msgForgot.className = "form-message";
+    if (msgForgot) {
+      msgForgot.textContent = "";
+      msgForgot.className = "form-message";
+    }
   });
-  
+
   // "Voltar para o login" -> mostra cards de login/registro
   btnReturnToLogin?.addEventListener("click", () => {
     if (authContainer) authContainer.classList.remove("hidden");
     if (cardForgotPassword) cardForgotPassword.classList.add("hidden");
   });
-  
+
   // --- FIM DA NOVA NAVEGAÇÃO ---
 
   btnLogout?.addEventListener("click", logoutAndReset);
@@ -229,6 +232,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Registro
   formRegister?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (!msgRegister) return;
+
     msgRegister.textContent = "";
     msgRegister.className = "form-message";
 
@@ -251,7 +256,8 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error(errData.detail || "Falha ao registrar");
       }
 
-      msgRegister.textContent = "Conta criada com sucesso! Verifique seu e-mail para ativar.";
+      msgRegister.textContent =
+        "Conta criada com sucesso! Verifique seu e-mail para ativar.";
       msgRegister.classList.add("success");
       formRegister.reset();
     } catch (err) {
@@ -264,6 +270,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Login
   formLogin?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (!msgLogin) return;
+
     msgLogin.textContent = "";
     msgLogin.className = "form-message";
 
@@ -301,17 +309,19 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- NOVO SUBMIT: ESQUECI MINHA SENHA ---
   formForgotPassword?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (!msgForgot) return;
+
     msgForgot.textContent = "";
     msgForgot.className = "form-message";
-    
+
     const formData = new FormData(formForgotPassword);
     const payload = {
       email: formData.get("email"),
     };
-    
+
     const btn = formForgotPassword.querySelector('button[type="submit"]');
     const originalLabel = btn ? btn.textContent : "";
-    
+
     if (btn) {
       btn.disabled = true;
       btn.classList.add("button-loading");
@@ -326,40 +336,42 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       const data = await res.json().catch(() => ({}));
-      
+
       if (!res.ok) {
-        // Mesmo em erro, mostramos a msg padrão por segurança, 
+        // Mesmo em erro, mostramos a msg padrão por segurança,
         // exceto se for um erro de servidor (500)
         if (res.status >= 500) {
-            throw new Error(data.detail || "Erro interno do servidor.");
+          throw new Error(data.detail || "Erro interno do servidor.");
         }
         // Se for 4xx (ex: e-mail mal formatado), podemos mostrar
         if (res.status !== 404) {
-             throw new Error(data.detail || "Falha ao enviar e-mail.");
+          throw new Error(data.detail || "Falha ao enviar e-mail.");
         }
       }
-      
+
       // Mensagem de sucesso (padrão de segurança)
-      msgForgot.textContent = data.message || "Se uma conta existir, um e-mail foi enviado.";
+      msgForgot.textContent =
+        data.message || "Se uma conta existir, um e-mail foi enviado.";
       msgForgot.classList.add("success");
       formForgotPassword.reset();
-      
     } catch (err) {
       console.error(err);
       msgForgot.textContent = err.message || "Erro ao solicitar redefinição.";
       msgForgot.classList.add("error");
     } finally {
-        if (btn) {
-            btn.disabled = false;
-            btn.classList.remove("button-loading");
-            btn.textContent = originalLabel;
-        }
+      if (btn) {
+        btn.disabled = false;
+        btn.classList.remove("button-loading");
+        btn.textContent = originalLabel;
+      }
     }
   });
   // --- FIM DO NOVO SUBMIT ---
 
   // Simular checkout de plano
   async function simularPlano(plano) {
+    if (!msgBuy) return;
+
     msgBuy.textContent = "";
     msgBuy.className = "form-message";
 
@@ -418,15 +430,13 @@ document.addEventListener("DOMContentLoaded", () => {
       typeof resultado.nota_final === "number" ? resultado.nota_final : null;
 
     const analiseMarkdown =
-      resultado.analise_geral ||
-      resultado.analise ||
-      "";
+      resultado.analise_geral || resultado.analise || "";
 
     const competencias = Array.isArray(resultado.competencias)
       ? resultado.competencias
       : [];
 
-    // 🔹 converte markdown → HTML
+    // markdown → HTML
     const analiseHtml = analiseMarkdown ? marked.parse(analiseMarkdown) : "";
 
     let compsHtml = "";
@@ -436,17 +446,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const cid =
           typeof c.id === "number" || typeof c.id === "string" ? c.id : "?";
         const nota =
-          typeof c.nota === "number" || typeof c.nota === "string" ? c.nota : "-";
+          typeof c.nota === "number" || typeof c.nota === "string"
+            ? c.nota
+            : "-";
         const feedbackMarkdown = c.feedback || "";
-
-        // markdown → HTML
         const feedbackHtml = marked.parse(feedbackMarkdown);
 
         compsHtml += `
           <article class="competencia-card">
             <header class="competencia-header">
               <span class="competencia-label">Competência ${cid}</span>
-              <span class="competencia-badge">${nota}<span class="competencia-max"> / 200</span></span>
+              <span class="competencia-badge">
+                ${nota}<span class="competencia-max"> / 200</span>
+              </span>
             </header>
             <div class="competencia-feedback">
               ${feedbackHtml}
@@ -602,29 +614,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
           let detalhesHtml = "";
           if (item.resultado) {
-            detalhesHtml += `<pre>${JSON.stringify(
-              item.resultado,
-              null,
-              2
-            )}</pre>`;
+            const correcaoHtml = renderCorrecaoHTML(item.resultado);
+            detalhesHtml += `
+              <div class="historico-correcao">
+                ${correcaoHtml}
+                <button type="button" class="btn-ver-tela-cheia">
+                  Ver em tela cheia
+                </button>
+              </div>
+            `;
           }
 
-          // ================================================================
-          // CORREÇÃO APLICADA AQUI
-          // O backend agora envia a URL completa (Cloudinary/S3).
-          // Não precisamos mais adicionar o "API_BASE".
-          // ================================================================
+          // backend já envia URL completa
           if (item.input_type === "arquivo" && item.arquivo_url) {
-            // const base = API_BASE.replace(/\/$/, ""); // <-- LINHA ANTIGA (REMOVIDA)
-            // const url = `${base}${item.arquivo_url}`; // <-- LINHA ANTIGA (REMOVIDA)
-            
-            const url = item.arquivo_url; // <-- LINHA NOVA (CORRETA)
-            
+            const url = item.arquivo_url;
             detalhesHtml += `<a href="${url}" target="_blank" rel="noopener" class="link-download">Ver arquivo enviado</a>`;
           }
-          // ================================================================
-          // FIM DA CORREÇÃO
-          // ================================================================
 
           li.innerHTML = `
             <div class="historico-main">
@@ -651,7 +656,24 @@ document.addEventListener("DOMContentLoaded", () => {
               ${detalhesHtml}
             </details>
           `;
+
           ul.appendChild(li);
+
+          // botão "Ver em tela cheia" -> joga pro card principal de resultado
+          const btnFull = li.querySelector(".btn-ver-tela-cheia");
+          if (btnFull && item.resultado) {
+            btnFull.addEventListener("click", () => {
+              renderResultado(item.resultado);
+              const resultadoEl =
+                document.getElementById("resultado-wrapper");
+              if (resultadoEl) {
+                resultadoEl.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                });
+              }
+            });
+          }
         });
 
       historicoList.appendChild(ul);
@@ -719,6 +741,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Correção por texto
   formCorrigir?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (!msgCorrigir) return;
+
     msgCorrigir.textContent = "";
     msgCorrigir.className = "form-message";
 
@@ -789,6 +813,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Correção por arquivo (foto/PDF)
   formCorrigirArquivo?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (!msgCorrigirArquivo) return;
+
     msgCorrigirArquivo.textContent = "";
     msgCorrigirArquivo.className = "form-message";
 
@@ -811,7 +837,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const formData = new FormData(formCorrigirArquivo);
     const payload = new FormData();
-    // AQUI ESTÁ CORRETO: O backend espera a key "tema"
     payload.append("tema", formData.get("tema_arquivo"));
     const file = formData.get("arquivo");
     if (file) {
@@ -822,7 +847,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch(`${API_BASE}/app/enem/corrigir-arquivo`, {
         method: "POST",
         headers: {
-          // NÃO use Content-Type: application/json para FormData
           Authorization: `Bearer ${token}`,
         },
         body: payload,
@@ -899,20 +923,35 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Usa o mesmo estilo do resultado principal
+// Usa o mesmo estilo do resultado principal para renderizar correção dentro do histórico
 function renderCorrecaoHTML(correcao) {
+  const notaFinal =
+    typeof correcao.nota_final === "number" ? correcao.nota_final : null;
+
   const analiseHtml = marked.parse(correcao.analise_geral || "");
 
   const competenciasHtml = (correcao.competencias || [])
     .map((c) => {
       const feedbackHtml = marked.parse(c.feedback || "");
+      const cid =
+        typeof c.id === "number" || typeof c.id === "string" ? c.id : "?";
+      const nota =
+        typeof c.nota === "number" || typeof c.nota === "string"
+          ? c.nota
+          : "-";
+
       return `
-        <div>
-          <strong>Competência ${c.id} ${c.nota} / 200</strong>
+        <article class="competencia-card">
+          <header class="competencia-header">
+            <span class="competencia-label">Competência ${cid}</span>
+            <span class="competencia-badge">
+              ${nota}<span class="competencia-max"> / 200</span>
+            </span>
+          </header>
           <div class="competencia-feedback">
             ${feedbackHtml}
           </div>
-        </div>
+        </article>
       `;
     })
     .join("");
@@ -923,7 +962,7 @@ function renderCorrecaoHTML(correcao) {
         <div>
           <span class="resultado-label">Nota final</span>
           <div class="resultado-score-pill">
-            <span>${correcao.nota_final || 0}</span>
+            ${notaFinal !== null ? notaFinal : "-"}
             <span class="resultado-score-max">/ 1000</span>
           </div>
         </div>

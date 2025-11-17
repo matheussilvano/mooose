@@ -996,6 +996,155 @@ form textarea {
   height: 180px;
 }
 
+/* =========================
+   EVOLUÇÃO RESUMO (MÉDIA / MELHOR / ÚLTIMA)
+   ========================= */
+
+.evolucao-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.evo-card {
+  background: #ffffff;
+  border-radius: 0.9rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(209, 213, 219, 0.85);
+  box-shadow: 0 10px 22px rgba(148, 163, 184, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.evo-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.evo-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--brand);
+}
+
+/* responsivo para telas menores */
+@media (max-width: 640px) {
+  .evolucao-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* =========================
+   HISTÓRICO – DETALHES BONITINHOS
+   ========================= */
+
+.historico-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.historico-tema {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.historico-meta {
+  margin-top: 0.15rem;
+  display: flex;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.historico-score {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.1rem;
+}
+
+.score-badge {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  min-width: 3.2rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: #eff6ff;
+  border: 1px solid rgba(59, 130, 246, 0.7);
+  font-weight: 700;
+  color: var(--brand);
+}
+
+.score-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* Detalhes em accordion */
+
+.historico-details {
+  margin-top: 0.4rem;
+}
+
+.historico-details summary {
+  list-style: none;
+  cursor: pointer;
+  font-size: 0.78rem;
+  color: #1e3a8a;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(59, 130, 246, 0.45);
+  background: #eff6ff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.historico-details summary::marker {
+  content: "";
+}
+
+.historico-details[open] summary {
+  background: linear-gradient(
+    135deg,
+    var(--brand) 0,
+    var(--brand-light) 80%
+  );
+  color: #f9fafb;
+}
+
+/* conteúdo da correção formatada dentro do histórico */
+
+.historico-correcao {
+  margin-top: 0.7rem;
+}
+
+.historico-correcao .resultado-main {
+  box-shadow: none;
+  border-radius: 0.5rem;
+  padding: 0;
+}
+
+.historico-correcao .competencias-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.btn-ver-tela-cheia {
+  margin-top: 0.6rem;
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-size: 0.8rem;
+  color: var(--brand);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 .historico-wrapper {
   background: var(--bg-soft);
   border-radius: 1rem;
