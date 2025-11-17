@@ -1153,11 +1153,40 @@ form textarea {
   color: var(--text);
 }
 
-.competencias-grid {
+/* Cards das competências no resultado da correção */
+.competencias-grid > div {
+  background: #ffffff;
+  border-radius: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(209, 213, 219, 0.9);
+  box-shadow: 0 10px 22px rgba(148, 163, 184, 0.16);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+/* título "Competência X 160 / 200" */
+.competencias-grid > div strong,
+.competencias-grid > div h4 {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+}
+
+/* deixa os negritos internos bem legíveis */
+.competencias-grid b,
+.competencias-grid strong {
+  font-weight: 700;
+}
+
+/* se tiver listas dentro do feedback */
+.competencias-grid ul {
   margin-top: 0.4rem;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.8rem;
+  padding-left: 1.1rem;
+}
+
+.competencias-grid li {
+  margin-bottom: 0.25rem;
 }
 
 @media (max-width: 780px) {
