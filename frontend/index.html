@@ -2,19 +2,19 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <title>Mooose · IA que corrige redações do ENEM</title>
+  <title>Mooose · Correção de Redação Divertida</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <link rel="icon" type="image/png" href="favicon.png" />
-
   <link rel="stylesheet" href="styles.css" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet" />
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-HRHF1XJTSD"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -22,445 +22,270 @@
     gtag('js', new Date());
     gtag('config', 'G-HRHF1XJTSD');
   </script>
-
-  <script async
-    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6241000006441036"
-    crossorigin="anonymous">
-  </script>
-
 </head>
 <body>
-  <header class="topbar">
-    <div class="logo-area">
-      <div class="logo-row">
-        <img src="logo.png" alt="Mooose" class="mooose-logo" />
-        <span class="logo-word">
-          <span class="logo-m">M</span>
-          <span class="logo-o logo-o-1">O</span>
-          <span class="logo-o logo-o-2">O</span>
-          <span class="logo-o logo-o-3">O</span>
-          <span class="logo-rest">SE</span>
-        </span>
-      </div>
-      <span class="logo-subtitle">
-        IA que corrige redações do ENEM ·
-        <span class="badge-edu">Mooose Edu</span>
-      </span>
-    </div>
 
+  <div id="loading-overlay" class="hidden">
+    <img src="logo.png" alt="Carregando Mooose" class="loading-mascot" />
+    <p class="loading-text" id="loading-msg">Carregando...</p>
+  </div>
+
+  <header class="topbar">
+    <div class="logo-row">
+      <img src="logo.png" alt="Mooose" class="mooose-logo" />
+      <span class="logo-word">MOOOSE</span>
+    </div>
     <nav class="nav-links">
       <div id="nav-auth">
-        <button id="btn-nav-login" class="ghost-btn ghost-btn-border">
-          Já tenho conta
-        </button>
-        <button id="btn-nav-register" class="primary-btn nav-primary">
-          Criar conta 100% gratuita
+        <button id="btn-nav-login" class="duo-btn btn-secondary" style="padding: 0.5rem 1rem;">
+          Entrar
         </button>
       </div>
-
-      <div id="nav-logged" class="nav-logged hidden">
-        <div class="topbar-user">
-          <span id="topbar-user-name" class="topbar-user-name"></span>
-          <span id="topbar-user-email" class="topbar-user-email"></span>
-        </div>
-        <button id="btn-logout-topbar" class="ghost-btn ghost-btn-border">
-          Sair
-        </button>
+      <div id="nav-logged" class="hidden" style="align-items: center; display: flex; gap: 1rem;">
+        <span id="topbar-user-name" style="font-weight: 700;"></span>
+        <button id="btn-logout-topbar" class="link-btn">Sair</button>
       </div>
     </nav>
   </header>
 
   <main>
+    <!-- LANDING -->
     <section id="section-landing" class="section visible">
-      <div class="hero hero-split">
-        <div class="hero-illustration">
-          <div class="hero-blob"></div>
-          <img
-            src="corrigindo-prova.png"
-            alt="Mooose, o mascote, corrigindo uma redação do ENEM"
-            class="hero-moose"
-          />
-        </div>
-
+      <div class="hero-split">
         <div class="hero-text">
-          <div class="hero-pill-row">
-            <span class="pill pill-brand">IA especializada em redação do ENEM</span>
-            <span class="pill pill-outline">100% gratuita para estudantes</span>
-          </div>
-
-          <h1>
-            O jeito <span class="grad-text">gratuito, didático e inteligente</span>
-            de corrigir sua redação do ENEM.
-          </h1>
-
+          <h1>A melhor forma <span class="grad-text">grátis</span> de corrigir redação!</h1>
           <p class="hero-sub">
-            Eu sou a <strong>Mooose</strong>, uma IA treinada para corrigir redações
-            do ENEM. Você envia o texto, a foto ou o PDF da folha e eu devolvo
-            nota nas 5 competências, análise de fuga de tema e um feedback
-            explicadinho do que fazer para subir sua nota.
+            A Mooose é a IA que corrige suas redações do ENEM de um jeito simples, didático e divertido.
           </p>
-
           <div class="hero-actions">
-            <button id="btn-cta-start" class="primary-btn hero-cta">
-              Começar agora – é 100% GRÁTIS
-            </button>
-            <button id="btn-cta-login" class="secondary-btn hero-cta-secondary">
-              Já tenho uma conta
-            </button>
-            <span class="hero-note">
-              Acesso <strong>100% GRATUITO</strong> para o aluno —
-              plataforma mantida por anúncios.
-            </span>
+            <button id="btn-cta-start" class="duo-btn btn-primary">COMEÇAR AGORA</button>
+            <button id="btn-cta-login" class="duo-btn btn-secondary">JÁ TENHO CONTA</button>
+            <span class="hero-note">Plataforma 100% gratuita, mantida por anúncios.</span>
           </div>
-
-          <div class="hero-metadata">
-            <div class="meta-item">
-              <span class="meta-label">Para quem</span>
-              <span class="meta-value">Alunos, cursinhos e escolas</span>
-            </div>
-            <div class="meta-item">
-              <span class="meta-label">Você pode enviar</span>
-              <span class="meta-value">Texto digitado, foto da folha ou PDF</span>
-            </div>
-            <div class="meta-item">
-              <span class="meta-label">Matriz</span>
-              <span class="meta-value">Notas nas 5 competências + intervenção</span>
-            </div>
-          </div>
+        </div>
+        <div class="hero-img">
+          <img src="corrigindo-prova.png" alt="Mascote Mooose corrigindo redação" />
         </div>
       </div>
 
+      <!-- Bloco explicando a Mooose -->
       <div class="moose-promo">
         <div class="promo-layout">
           <div class="promo-text">
-            <h2 class="promo-heading">
-              Gratuita, Didática, Focada no ENEM.
-            </h2>
+            <h2 class="promo-heading">Aprenda com cada redação que você envia.</h2>
             <p class="promo-sub">
-              Corrigir redação não precisa ser um mistério. A Mooose te mostra,
-              em português claro, <strong>por que</strong> sua nota saiu daquele
-              jeito e <strong>como</strong> você pode melhorar na próxima
-              tentativa.
+              A Mooose não só te dá uma nota aproximada do ENEM, como também explica passo a passo onde você pode melhorar.
             </p>
-
             <ul class="promo-bullets">
-              <li>
-                <strong>Feedback por competência:</strong> veja onde está
-                perdendo mais pontos (1 a 5).
-              </li>
-              <li>
-                <strong>Fuga e tangenciamento de tema:</strong> a Mooose avisa se
-                você se afastou do assunto.
-              </li>
-              <li>
-                <strong>Proposta de intervenção completa:</strong> agente, ação,
-                meio, detalhamento e finalidade sempre na mira.
-              </li>
+              <li>Correção por competências (1 a 5) com nota de 0 a 200.</li>
+              <li>Devolutiva em linguagem simples, como se fosse um professor particular.</li>
+              <li>Histórico das suas redações para acompanhar sua evolução até a nota 1000.</li>
             </ul>
+            <button id="btn-promo-start" class="duo-btn btn-primary full small">
+              Quero testar a Mooose agora
+            </button>
           </div>
-
-          <div class="promo-side">
-            <div class="promo-side-card">
-              <p class="promo-side-title">O que a Mooose faz por você?</p>
-              <ul>
-                <li>Analisa sua redação em segundos</li>
-                <li>Explica os erros como um professor paciente</li>
-                <li>Guarda seu histórico para ver sua evolução</li>
-              </ul>
-              <button
-                class="primary-btn small full"
-                id="btn-promo-start"
-              >
-                Quero testar a Mooose agora
-              </button>
-            </div>
+          <div class="promo-side-card">
+            <p class="card-sub">
+              Ideal para quem está se preparando para o ENEM, vestibulares e simulados e quer um jeito leve de treinar redação.
+            </p>
+            <p class="card-sub">
+              Você pode enviar o texto digitado ou uma foto/PDF da folha oficial.
+            </p>
           </div>
         </div>
       </div>
 
+      <!-- Missão resumida -->
       <section class="mission-section">
         <div class="mission-layout">
           <div class="mission-text">
-            <h2>Nossa missão</h2>
+            <h2>Nosso objetivo</h2>
             <p class="mission-lead">
-              A Mooose nasceu com um objetivo claro: <strong>democratizar o acesso à educação de qualidade</strong> e aproximar mais estudantes das <strong>universidades públicas brasileiras</strong>.
-            </p>
-            <p>
-              A preparação para o ENEM ainda é desigual. Enquanto alguns têm acesso
-              a corretores, cursinhos e aulas particulares, muita gente estuda
-              sozinha, sem receber um retorno claro sobre o que está acertando ou
-              errando na redação.
+              Ajudar mais estudantes a enxergarem a universidade pública como um caminho possível.
             </p>
             <ul class="mission-list">
-              <li>
-                Levar <strong>feedback gratuito e estruturado</strong> para qualquer aluno
-                com acesso à internet.
-              </li>
-              <li>
-                Usar IA para <strong>traduzir a linguagem técnica do ENEM</strong>
-                em explicações simples, humanas e acolhedoras.
-              </li>
-              <li>
-                Apoiar <strong>escolas públicas, cursinhos comunitários e projetos sociais</strong>
-                que querem escalar a correção de redações sem perder qualidade.
-              </li>
-              <li>
-                Ajudar mais estudantes a enxergarem a
-                <strong>universidade pública como um caminho possível</strong>,
-                e não distante.
-              </li>
+              <li>Oferecer correções gratuitas e acessíveis de qualquer lugar do Brasil.</li>
+              <li>Reduzir a ansiedade com a redação, trazendo explicações claras e amigáveis.</li>
+              <li>Incentivar o hábito de praticar redação com feedback constante.</li>
             </ul>
-            <p class="mission-footnote">
-              Cada redação corrigida pela Mooose é um passo a mais na direção de um
-              Brasil com mais pessoas dentro da universidade — não fora dela.
-            </p>
           </div>
-
           <div class="mission-illustration">
-            <div class="mission-blob"></div>
-            <img
-              src="nossa-missao.png"
-              alt="Ilustração da Mooose celebrando a conquista de estudantes"
-              class="mission-img"
-            />
+            <img src="nossa-missao.png" alt="Mooose comemorando" class="mission-img" />
           </div>
         </div>
       </section>
     </section>
 
+    <!-- AUTH -->
     <section id="section-auth" class="section">
-      <div class="section-title">
-        <h2>Acesse sua conta Mooose</h2>
-        <p>Acompanhe a evolução das suas redações.</p>
-      </div>
-
-      <div class="auth-container" id="auth-container">
-        <div class="auth-card" id="card-register">
-          <h3>Criar conta</h3>
-          <p class="card-sub">
-            Crie sua conta para começar a corrigir suas redações.
-          </p>
-          <form id="form-register">
-            <label>
-              Nome completo
-              <input type="text" name="full_name" required />
-            </label>
-            <label>
-              E-mail
-              <input type="email" name="email" required />
-            </label>
-            <label>
-              Senha
-              <input type="password" name="password" required minlength="4" />
-            </label>
-            <button type="submit" class="primary-btn full">
-              Criar conta gratuita
-            </button>
-            <p class="auth-switch">
-              Já tem conta?
-              <button type="button" id="btn-go-login" class="link-btn">
-                Fazer login
-              </button>
-            </p>
-            <p class="form-message" id="msg-register"></p>
-          </form>
+      <div class="auth-wrapper">
+        <div class="auth-mascot">
+          <img src="nossa-missao.png" alt="Mooose feliz" />
+          <p>Bora tirar 1000?</p>
         </div>
 
-        <div class="auth-card" id="card-login">
-          <h3>Entrar</h3>
-          <p class="card-sub">Acesse seu histórico de correções.</p>
-          <form id="form-login">
-            <label>
-              E-mail
-              <input type="email" name="email" required />
-            </label>
-            <label>
-              Senha
-              <input type="password" name="password" required />
-            </label>
-            <button type="submit" class="secondary-btn full">Entrar</button>
-
-            <p
-              class="auth-switch"
-              style="margin-top: 0.75rem; text-align: center;"
-            >
+        <div class="auth-form-side">
+          <!-- LOGIN -->
+          <div id="card-login">
+            <h3>Login</h3>
+            <p class="card-sub">Entre para corrigir suas redações com a Mooose.</p>
+            <form id="form-login">
+              <div class="input-group">
+                <label>E-mail</label>
+                <input type="email" name="email" placeholder="E-mail cadastrado" required />
+              </div>
+              <div class="input-group">
+                <label>Senha</label>
+                <input type="password" name="password" placeholder="Sua senha" required />
+              </div>
+              <button type="submit" class="duo-btn btn-primary full">ENTRAR</button>
+              <p class="form-message" id="msg-login"></p>
+            </form>
+            <div style="margin-top: 1rem; text-align: center;">
+              <button id="btn-go-register" class="link-btn">Não tem conta? Criar grátis</button>
+              <br /><br />
               <button
-                type="button"
                 id="btn-go-forgot-password"
                 class="link-btn"
+                style="font-size: 0.8rem; color: var(--text-muted);"
               >
-                Esqueci minha senha
+                Esqueci a senha
               </button>
-            </p>
+            </div>
+          </div>
 
-            <p class="form-message" id="msg-login"></p>
-          </form>
+          <!-- REGISTER -->
+          <div id="card-register" class="hidden">
+            <h3>Criar perfil</h3>
+            <p class="card-sub">Crie sua conta para começar a corrigir suas redações.</p>
+            <form id="form-register">
+              <div class="input-group">
+                <label>Nome completo</label>
+                <input type="text" name="full_name" placeholder="Seu nome" required />
+              </div>
+              <div class="input-group">
+                <label>E-mail</label>
+                <input type="email" name="email" placeholder="Seu melhor e-mail" required />
+              </div>
+              <div class="input-group">
+                <label>Senha</label>
+                <input type="password" name="password" placeholder="Senha (mín. 4 caracteres)" minlength="4" required />
+              </div>
+              <button type="submit" class="duo-btn btn-success full">CRIAR CONTA GRÁTIS</button>
+              <p class="form-message" id="msg-register"></p>
+            </form>
+            <div style="margin-top: 1rem; text-align: center;">
+              <button id="btn-return-to-login" class="link-btn">Já tenho conta</button>
+            </div>
+          </div>
+
+          <!-- FORGOT PASSWORD -->
+          <div id="card-forgot-password" class="hidden">
+            <h3>Recuperar senha</h3>
+            <p class="card-sub">Informe o e-mail cadastrado para receber o link de redefinição.</p>
+            <form id="form-forgot-password">
+              <div class="input-group">
+                <label>E-mail cadastrado</label>
+                <input type="email" name="email" placeholder="Seu e-mail na Mooose" required />
+              </div>
+              <button type="submit" class="duo-btn btn-primary full">ENVIAR LINK</button>
+              <p class="form-message" id="msg-forgot"></p>
+            </form>
+            <div style="margin-top: 1rem; text-align: center;">
+              <button id="btn-back-from-forgot" class="link-btn">Voltar para o login</button>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div
-        class="auth-card hidden"
-        id="card-forgot-password"
-        style="max-width: 500px; margin: 1rem auto 0 auto;"
-      >
-        <h3>Redefinir senha</h3>
-        <p class="card-sub">
-          Insira seu e-mail de cadastro. Enviaremos um link para você criar
-          uma nova senha.
-        </p>
-        <form id="form-forgot-password">
-          <label>
-            E-mail
-            <input type="email" name="email" required />
-          </label>
-          <button type="submit" class="secondary-btn full">
-            Enviar link de redefinição
-          </button>
-          <p class="auth-switch">
-            Lembrou a senha?
-            <button
-              type="button"
-              id="btn-return-to-login"
-              class="link-btn"
-            >
-              Voltar para o login
-            </button>
-          </p>
-          <p class="form-message" id="msg-forgot"></p>
-        </form>
       </div>
     </section>
 
+    <!-- DASHBOARD -->
     <section id="section-dashboard" class="section">
       <div class="dashboard-header">
         <div>
-          <h2>Área do aluno · Mooose</h2>
-          <p id="user-email"></p>
+          <h2>Área do Aluno</h2>
+          <p id="user-email" style="color: var(--text-muted);"></p>
         </div>
-        <button id="btn-logout" class="ghost-btn ghost-btn-border">
-          Sair
-        </button>
+        <button id="btn-logout" class="duo-btn btn-secondary" style="width: auto;">SAIR</button>
       </div>
 
-      <div class="dashboard-grid">
-        <div class="dashboard-col">
-          <div class="dashboard-card correcao-card">
-            <h3>Corrigir redação do ENEM</h3>
-            <p class="card-sub">
-              Envie quantas redações quiser. A correção é ilimitada e gratuita.
-            </p>
+      <!-- NOVA CORREÇÃO -->
+      <div class="card">
+        <h3>Nova correção</h3>
+        <p class="card-sub">Envie sua redação para a Mooose corrigir!</p>
 
-            <div class="correction-switch">
-              <button
-                type="button"
-                class="switch-tab active"
-                data-target="arquivo"
-              >
-                Enviar foto/PDF (recomendado)
-              </button>
-              <button type="button" class="switch-tab" data-target="texto">
-                Digitar texto
-              </button>
-            </div>
-
-            <div id="panel-arquivo" class="correction-panel active">
-              <h4>Enviar foto/PDF da redação</h4>
-              <form id="form-corrigir-arquivo" enctype="multipart/form-data">
-                <label>
-                  Tema da redação
-                  <input
-                    type="text"
-                    name="tema_arquivo"
-                    required
-                    placeholder="Ex: Caminhos para combater a intolerância religiosa no Brasil"
-                  />
-                </label>
-                <label>
-                  Arquivo da redação
-                  <input
-                    type="file"
-                    name="arquivo"
-                    accept="image/*,application/pdf"
-                    required
-                  />
-                </label>
-                <button type="submit" class="primary-btn full">
-                  Corrigir a partir de foto/PDF
-                </button>
-                <p class="form-message" id="msg-corrigir-arquivo"></p>
-              </form>
-            </div>
-
-            <div id="panel-texto" class="correction-panel">
-              <h4>Correção por texto</h4>
-              <form id="form-corrigir">
-                <label>
-                  Tema da redação
-                  <input
-                    type="text"
-                    name="tema"
-                    required
-                    placeholder="Ex: Desafios para a valorização dos professores no Brasil"
-                  />
-                </label>
-                <label>
-                  Redação (texto completo)
-                  <textarea
-                    name="texto"
-                    rows="8"
-                    required
-                    placeholder="Cole aqui o texto completo da redação..."
-                  ></textarea>
-                </label>
-                <button type="submit" class="secondary-btn full">
-                  Corrigir redação digitada
-                </button>
-                <p class="form-message" id="msg-corrigir"></p>
-              </form>
-            </div>
-          </div>
+        <div class="correction-switch">
+          <button class="switch-tab active" data-target="arquivo">📸 Foto / PDF</button>
+          <button class="switch-tab" data-target="texto">⌨️ Digitar texto</button>
         </div>
 
-        <div class="dashboard-card full-width">
-          <h3>Resultado da correção</h3>
-          <p class="card-sub">
-            Veja o detalhamento da última correção e acompanhe como suas notas
-            evoluem ao longo do tempo.
+        <div id="panel-arquivo" class="correction-panel active">
+          <form id="form-corrigir-arquivo">
+            <div class="input-group" style="margin-bottom: 1rem;">
+              <label>Tema da redação</label>
+              <input
+                type="text"
+                name="tema_arquivo"
+                placeholder="Ex.: Invisibilidade do trabalho de cuidado"
+                required
+              />
+            </div>
+            <div class="input-group" style="margin-bottom: 1rem;">
+              <label>Foto ou PDF da redação</label>
+              <input type="file" name="arquivo" accept="image/*,application/pdf" required />
+            </div>
+            <button type="submit" class="duo-btn btn-success">ENVIAR PARA CORREÇÃO</button>
+          </form>
+          <p class="form-message" id="msg-corrigir-arquivo"></p>
+        </div>
+
+        <div id="panel-texto" class="correction-panel hidden">
+          <form id="form-corrigir">
+            <div class="input-group" style="margin-bottom: 1rem;">
+              <label>Tema da redação</label>
+              <input type="text" name="tema" placeholder="Tema da redação" required />
+            </div>
+            <div class="input-group" style="margin-bottom: 1rem;">
+              <label>Texto</label>
+              <textarea
+                name="texto"
+                rows="10"
+                placeholder="Escreva sua redação aqui..."
+                class="input-text-area"
+                required
+              ></textarea>
+            </div>
+            <button type="submit" class="duo-btn btn-success">CORRIGIR AGORA</button>
+          </form>
+          <p class="form-message" id="msg-corrigir"></p>
+        </div>
+      </div>
+
+      <!-- RESULTADO -->
+      <div class="card">
+        <h3>Resultado</h3>
+        <p class="card-sub">O resultado detalhado da sua última correção aparece aqui.</p>
+        <div id="resultado-wrapper">
+          <p style="color: #aaa; text-align: center; padding: 2rem;">
+            O resultado da sua correção aparecerá aqui! 🌟
           </p>
-
-          <div id="resultado-wrapper" class="resultado-wrapper">
-            <p class="placeholder">
-              O detalhamento da correção aparecerá aqui após o envio da redação.
-            </p>
-          </div>
-
-          <div class="evolucao-header">
-            <h4>Sua evolução nas redações</h4>
-            <p class="card-sub small">
-              Resumo das suas notas e histórico de redações corrigidas.
-            </p>
-          </div>
-
-          <div class="evolucao-historico-grid">
-            <div class="evolucao-left">
-              <div class="evolucao-resumo" id="evolucao-resumo">
-                <p class="placeholder">
-                  Nenhuma correção ainda. Assim que você corrigir a primeira
-                  redação, o acompanhamento aparece aqui. 📈
-                </p>
-              </div>
-              <div class="evolucao-chart-card">
-                <canvas id="evolucaoChart"></canvas>
-              </div>
-            </div>
-
-            <div class="historico-wrapper" id="historico-list">
-              <p class="placeholder">
-                Seu histórico de redações corrigidas aparecerá aqui.
-              </p>
-            </div>
-          </div>
         </div>
+      </div>
+
+      <!-- EVOLUÇÃO / HISTÓRICO -->
+      <div class="card">
+        <h3>Sua evolução nas redações</h3>
+        <p class="card-sub">Acompanhe suas notas ao longo do tempo e veja seu histórico.</p>
+
+        <div id="evolucao-resumo" style="display: flex; gap: 1rem; margin-bottom: 1.5rem; justify-content: center;">
+        </div>
+
+        <div style="margin-bottom: 2rem; height: 220px;">
+          <canvas id="evolucaoChart"></canvas>
+        </div>
+
+        <div id="historico-list"></div>
       </div>
     </section>
   </main>
@@ -468,55 +293,32 @@
   <footer class="footer">
     <div class="footer-inner">
       <div class="footer-brand">
-        <div class="footer-logo-row">
+        <div class="logo-row" style="margin-bottom: 0.6rem;">
           <img src="logo.png" alt="Mooose" class="mooose-logo" />
-          <span class="logo-word">
-            <span class="logo-m">M</span>
-            <span class="logo-o logo-o-1">O</span>
-            <span class="logo-o logo-o-2">O</span>
-            <span class="logo-o logo-o-3">O</span>
-            <span class="logo-rest">SE</span>
-          </span>
+          <span class="logo-word">MOOOSE</span>
         </div>
         <p class="footer-text">
           IA que corrige redações do ENEM e ajuda estudantes de todo o Brasil a ficarem
           mais perto da universidade pública.
         </p>
       </div>
-
-      <div class="footer-column">
-        <h4 class="footer-title">Contato</h4>
-        <p class="footer-text-small">
-          Tem uma escola, cursinho ou projeto social e quer usar a Mooose?
+      <div>
+        <h4 style="font-weight:700; margin-bottom:0.6rem;">Contato</h4>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.4rem;">
+          Tem uma escola ou projeto social?
         </p>
-        <a
-          href="mailto:contato@mooose.com.br?subject=Contato%20via%20site%20Mooose"
-          class="footer-link"
-        >
-          contato@mooose.com.br
-        </a>
+        <a href="mailto:contato@mooose.com.br" class="footer-link">contato@mooose.com.br</a>
       </div>
-
-      <div class="footer-column">
-        <h4 class="footer-title">Redes sociais</h4>
-        <a
-          href="https://www.instagram.com/mooosebr/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="footer-link"
-        >
-          Instagram
-        </a>
+      <div>
+        <h4 style="font-weight:700; margin-bottom:0.6rem;">Redes sociais</h4>
+        <a href="https://www.instagram.com/mooosebr/" target="_blank" class="footer-link">Instagram</a>
       </div>
     </div>
-
     <div class="footer-bottom">
       <span>© 2025 Mooose. Todos os direitos reservados.</span>
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
