@@ -34,7 +34,7 @@ let updateTopbarUser = () => {};
 let loadHistoricoFn = null;
 let evolucaoChartInstance = null; // instancia do gráfico de evolução
 
-// Atualiza UI com dados do usuário e créditos
+// Atualiza UI com dados do usuário (créditos removidos)
 async function fetchMeAndCredits() {
   const token = getToken();
   if (!token) return;
@@ -47,17 +47,11 @@ async function fetchMeAndCredits() {
     const data = await res.json();
 
     const emailEl = document.getElementById("user-email");
-    const creditsEl = document.getElementById("credits-count");
 
     if (emailEl) {
       const name = data.full_name;
       const email = data.email;
       emailEl.textContent = name ? `${name} · ${email}` : email || "";
-    }
-
-    if (creditsEl) {
-      creditsEl.textContent =
-        typeof data.credits === "number" ? data.credits : "0";
     }
 
     updateTopbarUser(data);
@@ -112,14 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const msgLogin = document.getElementById("msg-login");
   const msgCorrigir = document.getElementById("msg-corrigir");
   const msgCorrigirArquivo = document.getElementById("msg-corrigir-arquivo");
-  const msgBuy = document.getElementById("msg-buy");
 
-  const btnSimularSolo = document.getElementById("btn-simular-solo");
-  const btnSimularIntensivo = document.getElementById("btn-simular-intensivo");
-  const btnSimularUnlimited =
-    document.getElementById("btn-simular-unlimited");
-
-  const creditsEl = document.getElementById("credits-count");
   const resultadoWrapper = document.getElementById("resultado-wrapper");
 
   const historicoList = document.getElementById("historico-list");
@@ -158,7 +145,6 @@ document.addEventListener("DOMContentLoaded", () => {
     updateTopbarUser(null);
 
     const emailEl = document.getElementById("user-email");
-    if (creditsEl) creditsEl.textContent = "–";
     if (emailEl) emailEl.textContent = "";
 
     // limpa resultado/histórico visual
@@ -306,7 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // --- NOVO SUBMIT: ESQUECI MINHA SENHA ---
+  // --- SUBMIT: ESQUECI MINHA SENHA ---
   formForgotPassword?.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (!msgForgot) return;
@@ -338,18 +324,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        // Mesmo em erro, mostramos a msg padrão por segurança,
-        // exceto se for um erro de servidor (500)
         if (res.status >= 500) {
           throw new Error(data.detail || "Erro interno do servidor.");
         }
-        // Se for 4xx (ex: e-mail mal formatado), podemos mostrar
         if (res.status !== 404) {
           throw new Error(data.detail || "Falha ao enviar e-mail.");
         }
       }
 
-      // Mensagem de sucesso (padrão de segurança)
       msgForgot.textContent =
         data.message || "Se uma conta existir, um e-mail foi enviado.";
       msgForgot.classList.add("success");
@@ -366,55 +348,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   });
-  // --- FIM DO NOVO SUBMIT ---
-
-  // Simular checkout de plano
-  async function simularPlano(plano) {
-    if (!msgBuy) return;
-
-    msgBuy.textContent = "";
-    msgBuy.className = "form-message";
-
-    const token = getToken();
-    if (!token) {
-      msgBuy.textContent = "Faça login para simular a assinatura de um plano.";
-      msgBuy.classList.add("error");
-      return;
-    }
-
-    try {
-      const res = await fetch(`${API_BASE}/app/checkout/simular`, {
-        method: "POST",
-        headers: getAuthHeaders(),
-        body: JSON.stringify({ plano }),
-      });
-
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.detail || "Falha ao simular checkout");
-      }
-
-      const data = await res.json();
-      if (creditsEl && typeof data.credits === "number") {
-        creditsEl.textContent = data.credits;
-      }
-
-      msgBuy.textContent = data.message || "Créditos adicionados.";
-      msgBuy.classList.add("success");
-    } catch (err) {
-      console.error(err);
-      msgBuy.textContent = err.message || "Erro ao simular plano.";
-      msgBuy.classList.add("error");
-    }
-  }
-
-  btnSimularSolo?.addEventListener("click", () => simularPlano("solo"));
-  btnSimularIntensivo?.addEventListener("click", () =>
-    simularPlano("intensivo")
-  );
-  btnSimularUnlimited?.addEventListener("click", () =>
-    simularPlano("unlimited")
-  );
 
   // ===== Resultado formatado =====
   function renderResultado(resultado) {
@@ -436,7 +369,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ? resultado.competencias
       : [];
 
-    // markdown → HTML
     const analiseHtml = analiseMarkdown ? marked.parse(analiseMarkdown) : "";
 
     let compsHtml = "";
@@ -584,7 +516,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const ul = document.createElement("ul");
       ul.className = "historico-list";
 
-      // mais recente primeiro
       items
         .slice()
         .sort(
@@ -625,7 +556,6 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
           }
 
-          // backend já envia URL completa
           if (item.input_type === "arquivo" && item.arquivo_url) {
             const url = item.arquivo_url;
             detalhesHtml += `<a href="${url}" target="_blank" rel="noopener" class="link-download">Ver arquivo enviado</a>`;
@@ -659,7 +589,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
           ul.appendChild(li);
 
-          // botão "Ver em tela cheia" -> joga pro card principal de resultado
           const btnFull = li.querySelector(".btn-ver-tela-cheia");
           if (btnFull && item.resultado) {
             btnFull.addEventListener("click", () => {
@@ -714,7 +643,6 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
     }
 
-    // atualiza gráfico
     updateEvolucaoChart(items);
   }
 
@@ -782,9 +710,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await res.json();
 
-      if (creditsEl && typeof data.credits === "number") {
-        creditsEl.textContent = data.credits;
-      }
+      // Créditos removidos
 
       if (data.resultado) {
         renderResultado(data.resultado);
@@ -793,7 +719,6 @@ document.addEventListener("DOMContentLoaded", () => {
       msgCorrigir.textContent = "Redação corrigida com sucesso.";
       msgCorrigir.classList.add("success");
 
-      // atualizar histórico / evolução
       if (typeof loadHistoricoFn === "function") {
         loadHistoricoFn();
       }
@@ -861,9 +786,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await res.json();
 
-      if (creditsEl && typeof data.credits === "number") {
-        creditsEl.textContent = data.credits;
-      }
+      // Créditos removidos
 
       if (data.resultado) {
         renderResultado(data.resultado);
@@ -872,7 +795,6 @@ document.addEventListener("DOMContentLoaded", () => {
       msgCorrigirArquivo.textContent = "Redação corrigida com sucesso.";
       msgCorrigirArquivo.classList.add("success");
 
-      // atualizar histórico / evolução
       if (typeof loadHistoricoFn === "function") {
         loadHistoricoFn();
       }
@@ -914,7 +836,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Se já tiver token salvo, tenta logar direto no dashboard
   if (getToken()) {
     fetchMeAndCredits();
   } else {
@@ -923,7 +844,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Usa o mesmo estilo do resultado principal para renderizar correção dentro do histórico
 function renderCorrecaoHTML(correcao) {
   const notaFinal =
     typeof correcao.nota_final === "number" ? correcao.nota_final : null;

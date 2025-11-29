@@ -716,17 +716,6 @@ form textarea {
   color: var(--text-muted);
 }
 
-.credits-pill {
-  margin-left: auto;
-  background: rgba(34, 197, 94, 0.1);
-  color: #166534;
-  padding: 0.45rem 0.95rem;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  border: 1px solid rgba(34, 197, 94, 0.6);
-}
-
 /* GRID DO DASHBOARD */
 
 .dashboard-grid {
@@ -1480,10 +1469,6 @@ form textarea {
 
   .dashboard-grid {
     grid-template-columns: 1fr;
-  }
-
-  .credits-pill {
-    margin-left: 0;
   }
 }
 

@@ -15,7 +15,6 @@
     rel="stylesheet"
   />
 
-  <!-- Google AdSense (se precisar na home também) -->
   <script async
     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6241000006441036"
     crossorigin="anonymous">
@@ -64,10 +63,8 @@
   </header>
 
   <main>
-    <!-- HERO / TELA INICIAL -->
     <section id="section-landing" class="section visible">
       <div class="hero hero-split">
-        <!-- Ilustração tipo Duolingo (Mooose mascote) -->
         <div class="hero-illustration">
           <div class="hero-blob"></div>
           <img
@@ -77,7 +74,6 @@
           />
         </div>
 
-        <!-- Texto + CTAs -->
         <div class="hero-text">
           <div class="hero-pill-row">
             <span class="pill pill-brand">IA especializada em redação do ENEM</span>
@@ -126,7 +122,6 @@
         </div>
       </div>
 
-      <!-- Seção “propaganda” da Mooose, estilo Duolingo -->
       <div class="moose-promo">
         <div class="promo-layout">
           <div class="promo-text">
@@ -175,10 +170,8 @@
         </div>
       </div>
 
-      <!-- NOSSA MISSÃO (texto à esquerda, balão à direita) -->
       <section class="mission-section">
         <div class="mission-layout">
-          <!-- TEXTO PRIMEIRO (ESQUERDA) -->
           <div class="mission-text">
             <h2>Nossa missão</h2>
             <p class="mission-lead">
@@ -215,7 +208,6 @@
             </p>
           </div>
 
-          <!-- ILUSTRAÇÃO AGORA À DIREITA -->
           <div class="mission-illustration">
             <div class="mission-blob"></div>
             <img
@@ -228,18 +220,17 @@
       </section>
     </section>
 
-    <!-- ÁREA DE LOGIN/REGISTRO -->
     <section id="section-auth" class="section">
       <div class="section-title">
         <h2>Acesse sua conta Mooose</h2>
-        <p>Gerencie créditos e acompanhe a evolução das suas redações.</p>
+        <p>Acompanhe a evolução das suas redações.</p>
       </div>
 
       <div class="auth-container" id="auth-container">
         <div class="auth-card" id="card-register">
           <h3>Criar conta</h3>
           <p class="card-sub">
-            Comece com créditos gratuitos para testar a correção automática.
+            Crie sua conta para começar a corrigir suas redações.
           </p>
           <form id="form-register">
             <label>
@@ -269,7 +260,7 @@
 
         <div class="auth-card" id="card-login">
           <h3>Entrar</h3>
-          <p class="card-sub">Acesse seus créditos e histórico de correções.</p>
+          <p class="card-sub">Acesse seu histórico de correções.</p>
           <form id="form-login">
             <label>
               E-mail
@@ -332,15 +323,11 @@
       </div>
     </section>
 
-    <!-- DASHBOARD / ÁREA DO ALUNO -->
     <section id="section-dashboard" class="section">
       <div class="dashboard-header">
         <div>
           <h2>Área do aluno · Mooose</h2>
           <p id="user-email"></p>
-        </div>
-        <div class="credits-pill">
-          Créditos disponíveis: <span id="credits-count">–</span>
         </div>
         <button id="btn-logout" class="ghost-btn ghost-btn-border">
           Sair
@@ -348,12 +335,11 @@
       </div>
 
       <div class="dashboard-grid">
-        <!-- Coluna de correção (texto/foto) -->
         <div class="dashboard-col">
           <div class="dashboard-card correcao-card">
             <h3>Corrigir redação do ENEM</h3>
             <p class="card-sub">
-              Use 1 crédito para corrigir uma redação por texto ou por foto/PDF.
+              Envie quantas redações quiser. A correção é ilimitada e gratuita.
             </p>
 
             <div class="correction-switch">
@@ -391,7 +377,7 @@
                   />
                 </label>
                 <button type="submit" class="primary-btn full">
-                  Corrigir a partir de foto/PDF (1 crédito)
+                  Corrigir a partir de foto/PDF
                 </button>
                 <p class="form-message" id="msg-corrigir-arquivo"></p>
               </form>
@@ -419,7 +405,7 @@
                   ></textarea>
                 </label>
                 <button type="submit" class="secondary-btn full">
-                  Corrigir redação digitada (1 crédito)
+                  Corrigir redação digitada
                 </button>
                 <p class="form-message" id="msg-corrigir"></p>
               </form>
@@ -427,7 +413,6 @@
           </div>
         </div>
 
-        <!-- Coluna de resultado + evolução -->
         <div class="dashboard-card full-width">
           <h3>Resultado da correção</h3>
           <p class="card-sub">
@@ -521,8 +506,6 @@
       <span>© 2025 Mooose. Todos os direitos reservados.</span>
     </div>
   </footer>
-
-
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
