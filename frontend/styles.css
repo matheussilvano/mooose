@@ -335,3 +335,127 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   .auth-wrapper { padding: 1.5rem; }
   .hero-actions { margin: 0 auto; width: 100%; }
 }
+
+/* =========================
+   BLOG – Artigo e CTA
+   ========================= */
+
+.blog-article {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem 2rem;
+  max-width: 860px;
+  margin: 2rem auto 3rem;
+  box-shadow: var(--shadow-cartoon);
+}
+
+.blog-article-meta {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.blog-article h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.blog-article h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--brand-dark);
+  margin-top: 2rem;
+  margin-bottom: 0.8rem;
+}
+
+.blog-article p {
+  font-size: 0.98rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.blog-article ul {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.blog-article li {
+  font-size: 0.98rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 0.4rem;
+}
+
+.blog-article .hero-sub {
+  margin-top: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Linha divisória fofinha */
+
+.divider {
+  border: 0;
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(to right, transparent, #bfdbfe, transparent);
+  margin: 2rem 0;
+}
+
+/* Card de CTA dentro do artigo */
+
+.promo-card {
+  margin-top: 2.5rem;
+  padding: 1.8rem 1.6rem;
+  border-radius: var(--radius-lg);
+  border: 2px dashed #bfdbfe;
+  background: linear-gradient(135deg, #eff6ff, #e0f2fe);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.promo-card h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: var(--brand-dark);
+}
+
+.promo-card p {
+  margin: 0;
+}
+
+.promo-card .duo-btn,
+.promo-card .btn-success {
+  align-self: flex-start;
+  margin-top: 0.5rem;
+}
+
+/* Ajustes mobile */
+
+@media (max-width: 640px) {
+  .blog-article {
+    padding: 1.8rem 1.4rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .blog-article h1 {
+    font-size: 1.6rem;
+  }
+
+  .blog-article h2 {
+    font-size: 1.25rem;
+  }
+}
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
