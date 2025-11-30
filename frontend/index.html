@@ -9,17 +9,68 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Nunito:wght@400;600;800&display=swap"
+    rel="stylesheet"
+  />
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-HRHF1XJTSD"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-HRHF1XJTSD');
+  </script>
+
+  <!-- SEO básico -->
+  <meta name="description" content="A Mooose é uma IA que corrige redações do ENEM de forma gratuita, rápida e didática. Envie sua redação digitada ou foto da folha oficial e receba nota por competência e feedback detalhado.">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Mooose · Correção de Redação Grátis para o ENEM">
+  <meta property="og:description" content="Treine redação para o ENEM com correção automática gratuita, notas aproximadas e explicações por competência.">
+  <meta property="og:url" content="https://www.mooose.com.br/">
+  <meta property="og:image" content="https://www.mooose.com.br/logo.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Mooose · Correção de Redação Grátis para o ENEM">
+  <meta name="twitter:description" content="IA que corrige redações do ENEM e ajuda estudantes de todo o Brasil a ficarem mais perto da universidade pública.">
+
+  <!-- FAQ em JSON-LD para rich snippet -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "A Mooose é realmente gratuita?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim. A correção de redação é 100% gratuita para estudantes. O projeto é mantido através de anúncios exibidos na plataforma e planos opcionais no futuro."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Quem corrige as redações?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Utilizamos Inteligência Artificial treinada com redações nota 1000 e critérios oficiais do ENEM para fornecer um feedback rápido, aproximado e didático."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Posso enviar foto da redação escrita à mão?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim. Basta tirar uma foto legível da sua folha de redação do ENEM que a Mooose utiliza OCR para transcrever o texto e corrigi-lo como se estivesse digitado."
+        }
+      }
+    ]
+  }
   </script>
 </head>
 <body>

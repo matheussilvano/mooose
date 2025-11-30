@@ -129,6 +129,34 @@ body {
 
 .btn-success { background-color: var(--success); border-color: var(--success-dark); color: white; }
 
+.primary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.9rem;
+  padding: 0.8rem 1.6rem;
+  border-radius: 16px;
+  border: 2px solid var(--brand-dark);
+  border-bottom-width: 5px;
+  background-color: var(--brand);
+  color: #ffffff;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.primary-btn.full {
+  width: 100%;
+}
+
+.primary-btn:active {
+  transform: translateY(4px);
+  border-bottom-width: 0;
+  margin-bottom: 5px;
+}
+
 .btn-ghost { background: transparent; border: 1px solid transparent; color: var(--text-muted); padding: 0.5rem 1rem; border-radius: 12px; }
 .btn-ghost:hover { background: #e2e8f0; }
 
