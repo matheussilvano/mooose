@@ -14,7 +14,6 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-  <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-HRHF1XJTSD"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -31,11 +30,13 @@
   </div>
 
   <header class="topbar">
-    <div class="logo-row">
+    <a href="index.html" class="logo-row" style="text-decoration: none;">
       <img src="logo.png" alt="Mooose" class="mooose-logo" />
       <span class="logo-word">MOOOSE</span>
-    </div>
+    </a>
     <nav class="nav-links">
+      <a href="blog.html" class="nav-item" style="margin-right: 1rem; text-decoration: none; color: #64748b; font-weight: 600; font-size: 0.9rem;">Dicas & Blog</a>
+      
       <div id="nav-auth">
         <button id="btn-nav-login" class="duo-btn btn-secondary" style="padding: 0.5rem 1rem;">
           Entrar
@@ -49,7 +50,6 @@
   </header>
 
   <main>
-    <!-- LANDING -->
     <section id="section-landing" class="section visible">
       <div class="hero-split">
         <div class="hero-text">
@@ -68,7 +68,6 @@
         </div>
       </div>
 
-      <!-- Bloco explicando a Mooose -->
       <div class="moose-promo">
         <div class="promo-layout">
           <div class="promo-text">
@@ -96,7 +95,6 @@
         </div>
       </div>
 
-      <!-- Missão resumida -->
       <section class="mission-section">
         <div class="mission-layout">
           <div class="mission-text">
@@ -115,9 +113,42 @@
           </div>
         </div>
       </section>
+
+      <div class="faq-section" style="margin-bottom: 4rem; text-align: center;">
+        <h2 style="font-size: 2rem; margin-bottom: 2rem; color: #0f172a;">Perguntas Frequentes</h2>
+        <div class="faq-container" style="display: grid; gap: 1rem; max-width: 800px; margin: 0 auto; text-align: left;">
+          
+          <div class="faq-item" style="background: white; border: 2px solid #e2e8f0; border-radius: 16px; padding: 1.5rem;">
+            <div class="faq-question" style="font-weight: 700; font-size: 1.1rem; color: #2563eb; margin-bottom: 0.5rem;">
+              ❓ A Mooose é realmente gratuita?
+            </div>
+            <div class="faq-answer" style="color: #64748b; line-height: 1.6;">
+              Sim! A correção de redação é 100% gratuita para estudantes. O projeto é mantido através de anúncios exibidos na plataforma.
+            </div>
+          </div>
+
+          <div class="faq-item" style="background: white; border: 2px solid #e2e8f0; border-radius: 16px; padding: 1.5rem;">
+            <div class="faq-question" style="font-weight: 700; font-size: 1.1rem; color: #2563eb; margin-bottom: 0.5rem;">
+              🤖 Quem corrige as redações?
+            </div>
+            <div class="faq-answer" style="color: #64748b; line-height: 1.6;">
+              Utilizamos Inteligência Artificial avançada, treinada com milhares de redações nota 1000 e critérios oficiais do INEP, para fornecer um feedback rápido e educativo.
+            </div>
+          </div>
+
+          <div class="faq-item" style="background: white; border: 2px solid #e2e8f0; border-radius: 16px; padding: 1.5rem;">
+            <div class="faq-question" style="font-weight: 700; font-size: 1.1rem; color: #2563eb; margin-bottom: 0.5rem;">
+              📄 Posso enviar foto da redação escrita à mão?
+            </div>
+            <div class="faq-answer" style="color: #64748b; line-height: 1.6;">
+              Com certeza! Nossa tecnologia OCR lê sua letra (desde que legível) e faz a correção como se você tivesse digitado no computador.
+            </div>
+          </div>
+
+        </div>
+      </div>
     </section>
 
-    <!-- AUTH -->
     <section id="section-auth" class="section">
       <div class="auth-wrapper">
         <div class="auth-mascot">
@@ -126,7 +157,6 @@
         </div>
 
         <div class="auth-form-side">
-          <!-- LOGIN -->
           <div id="card-login">
             <h3>Login</h3>
             <p class="card-sub">Entre para corrigir suas redações com a Mooose.</p>
@@ -155,7 +185,6 @@
             </div>
           </div>
 
-          <!-- REGISTER -->
           <div id="card-register" class="hidden">
             <h3>Criar perfil</h3>
             <p class="card-sub">Crie sua conta para começar a corrigir suas redações.</p>
@@ -180,7 +209,6 @@
             </div>
           </div>
 
-          <!-- FORGOT PASSWORD -->
           <div id="card-forgot-password" class="hidden">
             <h3>Recuperar senha</h3>
             <p class="card-sub">Informe o e-mail cadastrado para receber o link de redefinição.</p>
@@ -200,7 +228,6 @@
       </div>
     </section>
 
-    <!-- DASHBOARD -->
     <section id="section-dashboard" class="section">
       <div class="dashboard-header">
         <div>
@@ -210,7 +237,6 @@
         <button id="btn-logout" class="duo-btn btn-secondary" style="width: auto;">SAIR</button>
       </div>
 
-      <!-- NOVA CORREÇÃO -->
       <div class="card">
         <h3>Nova correção</h3>
         <p class="card-sub">Envie sua redação para a Mooose corrigir!</p>
@@ -262,7 +288,6 @@
         </div>
       </div>
 
-      <!-- RESULTADO -->
       <div class="card">
         <h3>Resultado</h3>
         <p class="card-sub">O resultado detalhado da sua última correção aparece aqui.</p>
@@ -273,7 +298,6 @@
         </div>
       </div>
 
-      <!-- EVOLUÇÃO / HISTÓRICO -->
       <div class="card">
         <h3>Sua evolução nas redações</h3>
         <p class="card-sub">Acompanhe suas notas ao longo do tempo e veja seu histórico.</p>
@@ -302,16 +326,19 @@
           mais perto da universidade pública.
         </p>
       </div>
+      
+      <div>
+        <h4 style="font-weight:700; margin-bottom:0.6rem;">Legal</h4>
+        <a href="privacidade.html" class="footer-link">Política de Privacidade</a>
+        <a href="termos.html" class="footer-link">Termos de Uso</a>
+      </div>
+
       <div>
         <h4 style="font-weight:700; margin-bottom:0.6rem;">Contato</h4>
         <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.4rem;">
           Tem uma escola ou projeto social?
         </p>
         <a href="mailto:contato@mooose.com.br" class="footer-link">contato@mooose.com.br</a>
-      </div>
-      <div>
-        <h4 style="font-weight:700; margin-bottom:0.6rem;">Redes sociais</h4>
-        <a href="https://www.instagram.com/mooosebr/" target="_blank" class="footer-link">Instagram</a>
       </div>
     </div>
     <div class="footer-bottom">
