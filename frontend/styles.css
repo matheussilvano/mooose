@@ -459,3 +459,67 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   padding: 2rem 1.5rem;
 }
 
+/* =========================
+   BLOG – Cards da listagem
+   ========================= */
+
+/* Badge "Novo" / "Em breve" no topo do card */
+.blog-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+
+  color: #4f46e5;
+  background: #e0e7ff;
+
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+
+  align-self: flex-start;
+  margin: 1rem 1.5rem 0;
+}
+
+/* CTA "Ler artigo" / "Em breve" no rodapé do card */
+.blog-cta {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--brand);
+  margin-top: auto;
+}
+
+/* Deixa o link do card inteiro sem sublinhado */
+.blog-card {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* =========================
+   NAV E FOOTER ESPECÍFICOS DO BLOG
+   ========================= */
+
+.nav-item {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav-item:hover {
+  color: var(--brand);
+  text-decoration: underline;
+}
+
+.footer-legal-links a {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  margin-bottom: 0.25rem;
+}
+
+.footer-legal-links a:hover {
+  color: var(--brand);
+  text-decoration: underline;
+}
+
