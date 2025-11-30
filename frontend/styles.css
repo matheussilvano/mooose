@@ -92,21 +92,51 @@ body {
 /* =========================
    LOGO ORIGINAL
    ========================= */
-.logo-row { display: flex; align-items: center; gap: 0.6rem; }
-.mooose-logo { height: 38px; }
-.logo-word {
-  display: inline-flex; align-items: baseline; gap: 1px;
-  font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; font-size: 1.25rem;
+.logo-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--brand-dark); /* cor base da logo/link */
 }
-.logo-m, .logo-rest { color: #0f172a; }
-.logo-o { color: var(--brand); }
-.logo-o-1 { filter: brightness(1.1); }
+
+/* Garante que nunca fique roxinho de link visitado */
+a.logo-row:link,
+a.logo-row:visited,
+a.logo-row:hover,
+a.logo-row:active {
+  text-decoration: none;
+  color: inherit;
+}
+
+.mooose-logo {
+  height: 38px;
+}
+
+.logo-word {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 1.25rem;
+}
+
+/* M e SE azul mais escuro */
+.logo-m,
+.logo-rest {
+  color: var(--brand-dark); /* azul escuro da paleta */
+}
+
+/* 3 Os em azul principal, com leve variação de brilho */
+.logo-o {
+  color: var(--brand); /* azul principal */
+}
+
+.logo-o-1 { filter: brightness(1.12); }
 .logo-o-2 { filter: brightness(1.0); }
 .logo-o-3 { filter: brightness(0.9); }
-.badge-edu {
-  padding: 0.1rem 0.5rem; border-radius: 99px; border: 1px solid #cbd5e1;
-  background: #f8fafc; font-size: 0.7rem; color: var(--text-muted); margin-left: 0.5rem; vertical-align: middle;
-}
 
 /* =========================
    BOTÕES 3D (Design Novo)
