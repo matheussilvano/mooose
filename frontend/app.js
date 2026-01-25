@@ -590,6 +590,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  document.querySelectorAll("[data-weekly-toggle]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const card = btn.closest(".weekly-theme-card");
+      if (!card) return;
+      const extra = card.querySelector(".weekly-extra");
+      if (!extra) return;
+      extra.classList.toggle("hidden");
+      btn.textContent = extra.classList.contains("hidden") ? "Ver textos de apoio" : "Fechar textos de apoio";
+    });
+  });
+
+  const btnGoCorrection = document.getElementById("btn-go-correction");
+  if (btnGoCorrection) {
+    btnGoCorrection.addEventListener("click", () => {
+      const target = document.getElementById("card-nova-correcao");
+      if (target) target.scrollIntoView({ behavior: "smooth" });
+    });
+  }
+
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") hideCreditsModal();
   });

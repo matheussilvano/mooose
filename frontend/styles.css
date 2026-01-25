@@ -515,6 +515,23 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
    DASHBOARD
    ========================= */
 .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+.dashboard-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+.dashboard-actions .duo-btn {
+  width: auto;
+}
+.weekly-toggle {
+  margin-top: 1rem;
+  width: auto;
+  align-self: flex-start;
+}
+.weekly-extra {
+  margin-top: 1.5rem;
+}
 
 .card {
   background: white; border: 2px solid var(--border); border-radius: var(--radius-lg);
@@ -947,6 +964,9 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   .auth-form-side { text-align: left; }
 
   .dashboard-header { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
+  .dashboard-actions { width: 100%; }
+  .dashboard-actions .duo-btn { width: 100%; }
+  .weekly-toggle { width: 100%; }
   .card { padding: 1.4rem; }
   .credit-card-header { flex-direction: column; align-items: flex-start; }
   .credit-balance { width: 100%; min-width: 0; }

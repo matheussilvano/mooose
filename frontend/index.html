@@ -384,7 +384,10 @@
           <h2>Área do Aluno</h2>
           <p id="user-email" style="color: var(--text-muted);"></p>
         </div>
-        <button id="btn-logout" class="duo-btn btn-secondary" style="width: auto;">SAIR</button>
+        <div class="dashboard-actions">
+          <button id="btn-go-correction" class="duo-btn btn-primary">CORRIGIR REDAÇÃO</button>
+          <button id="btn-logout" class="duo-btn btn-secondary" style="width: auto;">SAIR</button>
+        </div>
       </div>
 
       <div class="card weekly-theme-card">
@@ -401,46 +404,52 @@
           </div>
         </div>
 
-        <div class="weekly-support">
-          <h3>Textos de apoio</h3>
-          <div class="weekly-cards">
-            <div class="weekly-card">
-              <span class="weekly-tag">Texto I</span>
-              <p>
-                A presença contínua nas redes sociais altera a rotina dos jovens, ampliando a exposição a padrões de
-                comportamento e beleza que nem sempre correspondem à vida real. A busca por aprovação, visibilidade
-                e validação cria um ciclo de comparação permanente, no qual o “sucesso” é medido por curtidas,
-                seguidores e comentários.
-              </p>
-              <p class="weekly-source">Fonte: Elaboração Mooose (texto de apoio em padrão ENEM).</p>
-            </div>
-            <div class="weekly-card">
-              <span class="weekly-tag">Texto II</span>
-              <p>
-                A hiperconexão facilita o contato com discursos de ódio e cyberbullying, aumentando a pressão
-                emocional. Sem limites claros, o medo de exclusão e a exposição constante podem desencadear ansiedade
-                e prejudicar relações presenciais.
-              </p>
-              <p class="weekly-source">Fonte: Elaboração Mooose (texto de apoio em padrão ENEM).</p>
+        <button type="button" class="duo-btn btn-secondary weekly-toggle" data-weekly-toggle>
+          Ver textos de apoio
+        </button>
+
+        <div class="weekly-extra hidden">
+          <div class="weekly-support">
+            <h3>Textos de apoio</h3>
+            <div class="weekly-cards">
+              <div class="weekly-card">
+                <span class="weekly-tag">Texto I</span>
+                <p>
+                  A presença contínua nas redes sociais altera a rotina dos jovens, ampliando a exposição a padrões de
+                  comportamento e beleza que nem sempre correspondem à vida real. A busca por aprovação, visibilidade
+                  e validação cria um ciclo de comparação permanente, no qual o “sucesso” é medido por curtidas,
+                  seguidores e comentários.
+                </p>
+                <p class="weekly-source">Fonte: Elaboração Mooose (texto de apoio em padrão ENEM).</p>
+              </div>
+              <div class="weekly-card">
+                <span class="weekly-tag">Texto II</span>
+                <p>
+                  A hiperconexão facilita o contato com discursos de ódio e cyberbullying, aumentando a pressão
+                  emocional. Sem limites claros, o medo de exclusão e a exposição constante podem desencadear ansiedade
+                  e prejudicar relações presenciais.
+                </p>
+                <p class="weekly-source">Fonte: Elaboração Mooose (texto de apoio em padrão ENEM).</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="weekly-guidance">
-          <h3>Possíveis caminhos de abordagem</h3>
-          <ul>
-            <li>Consequências psicológicas: ansiedade, comparação social, baixa autoestima e dependência digital.</li>
-            <li>Aspectos sociais: isolamento, cyberbullying e pressão por validação.</li>
-            <li>Responsabilização: escolas, famílias, políticas públicas e plataformas digitais.</li>
-            <li>Proposta de intervenção: educação midiática, campanhas e apoio psicológico acessível.</li>
-          </ul>
-        </div>
+          <div class="weekly-guidance">
+            <h3>Possíveis caminhos de abordagem</h3>
+            <ul>
+              <li>Consequências psicológicas: ansiedade, comparação social, baixa autoestima e dependência digital.</li>
+              <li>Aspectos sociais: isolamento, cyberbullying e pressão por validação.</li>
+              <li>Responsabilização: escolas, famílias, políticas públicas e plataformas digitais.</li>
+              <li>Proposta de intervenção: educação midiática, campanhas e apoio psicológico acessível.</li>
+            </ul>
+          </div>
 
-        <div class="tema-week-box">
-          <span class="tema-week-badge">Tema da semana</span>
-          <button type="button" class="tema-week-btn" data-theme-target="tema">
-            Os impactos do uso excessivo das redes sociais na saúde mental dos jovens no Brasil
-          </button>
+          <div class="tema-week-box">
+            <span class="tema-week-badge">Tema da semana</span>
+            <button type="button" class="tema-week-btn" data-theme-target="tema">
+              Os impactos do uso excessivo das redes sociais na saúde mental dos jovens no Brasil
+            </button>
+          </div>
         </div>
       </div>
 
@@ -462,7 +471,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" id="card-nova-correcao">
         <h3>Nova correção</h3>
         <p class="card-sub">Envie sua redação para a Mooose corrigir!</p>
 
