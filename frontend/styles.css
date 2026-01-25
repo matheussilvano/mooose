@@ -946,11 +946,74 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   color: #64748b;
   display: block;
   margin-bottom: 0.4rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
 }
 .admin-metric-value {
   font-size: 1.6rem;
   font-weight: 900;
   color: var(--brand);
+}
+.admin-metric-desc {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 0.35rem;
+  line-height: 1.4;
+}
+.metric-info {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #e0f2fe;
+  color: #0369a1;
+  font-size: 0.7rem;
+  font-weight: 800;
+  cursor: help;
+  position: relative;
+}
+.metric-info::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0f172a;
+  color: #fff;
+  padding: 0.5rem 0.7rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  width: 220px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.metric-info::before {
+  content: "";
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: #0f172a transparent transparent transparent;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.metric-info:hover::after,
+.metric-info:hover::before {
+  opacity: 1;
+}
+.admin-card-sub {
+  margin-top: 0.4rem;
+  margin-bottom: 0;
 }
 .admin-grid-2 {
   display: grid;
@@ -961,6 +1024,16 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
 .admin-chart {
   height: 260px;
   margin-top: 1rem;
+  position: relative;
+}
+.admin-chart canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+.admin-chart-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 .admin-table {
   display: grid;

@@ -20,8 +20,107 @@ function setStatus(message, type = "") {
   el.className = type ? `form-message ${type}` : "form-message";
 }
 
+const METRIC_INFO = {
+  users_created: {
+    label: "Usuários criados",
+    desc: "Novas contas criadas no período."
+  },
+  corrections: {
+    label: "Correções realizadas",
+    desc: "Total de correções feitas no período."
+  },
+  sales_approved: {
+    label: "Vendas aprovadas",
+    desc: "Pagamentos aprovados no período."
+  },
+  sales_credited: {
+    label: "Vendas creditadas",
+    desc: "Pagamentos que já geraram créditos."
+  },
+  credits_sold_credited: {
+    label: "Créditos vendidos",
+    desc: "Quantidade de créditos creditados (vendas)."
+  },
+  estimated_revenue: {
+    label: "Receita estimada",
+    desc: "Estimativa de receita no período (vendas aprovadas).",
+    format: "currency"
+  },
+  active_users: {
+    label: "Usuários ativos",
+    desc: "Usuários que fizeram pelo menos 1 correção no período."
+  }
+};
+
 function pad(value) {
   return String(value).padStart(2, "0");
+}
+
+function formatShortDate(date, withYear = false) {
+  const formatter = new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "short",
+    ...(withYear ? { year: "numeric" } : {})
+  });
+  return formatter.format(date).replace(".", "");
+}
+
+function parseDateLabel(label) {
+  if (!label) return null;
+  if (typeof label === "number") return new Date(label);
+  if (typeof label !== "string") return null;
+
+  const isoDateMatch = label.match(/\d{4}-\d{2}-\d{2}/);
+  if (isoDateMatch) {
+    const date = new Date(`${isoDateMatch[0]}T00:00:00`);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  const monthMatch = label.match(/^(\d{4})-(\d{2})$/);
+  if (monthMatch) {
+    const year = Number(monthMatch[1]);
+    const month = Number(monthMatch[2]);
+    const date = new Date(year, month - 1, 1);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+  return null;
+}
+
+function formatChartLabels(labels, group) {
+  if (!Array.isArray(labels)) return [];
+  return labels.map((label) => {
+    if (group === "week") {
+      const weekMatch = String(label).match(/(\d{4})-W(\d{2})/);
+      if (weekMatch) {
+        return `sem ${weekMatch[2]}`;
+      }
+      if (String(label).includes("/")) {
+        const parts = String(label).split("/");
+        if (parts.length >= 2) {
+          const startDate = parseDateLabel(parts[0]);
+          const endDate = parseDateLabel(parts[1]);
+          if (startDate && endDate) {
+            return `${formatShortDate(startDate)} – ${formatShortDate(endDate)}`;
+          }
+        }
+      }
+      const date = parseDateLabel(label);
+      return date ? formatShortDate(date) : String(label);
+    }
+
+    if (group === "month") {
+      const date = parseDateLabel(label);
+      if (date) {
+        return new Intl.DateTimeFormat("pt-BR", { month: "short", year: "numeric" })
+          .format(date)
+          .replace(".", "");
+      }
+      return String(label);
+    }
+
+    const date = parseDateLabel(label);
+    return date ? formatShortDate(date) : String(label);
+  });
 }
 
 function formatLocalISO(date) {
@@ -37,6 +136,19 @@ function formatLocalISO(date) {
   const offsetHour = pad(Math.floor(abs / 60));
   const offsetMin = pad(abs % 60);
   return `${year}-${month}-${day}T${hour}:${minute}:${second}${sign}${offsetHour}:${offsetMin}`;
+}
+
+function formatDateTimePt(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  }).format(date).replace(".", "");
 }
 
 function parseInputToISO(value) {
@@ -91,7 +203,7 @@ function normalizeSeries(data) {
       const label = item.date || item.period || item.label || item.bucket || item.day || item.week || item.month || item.x;
       const value = item.count ?? item.total ?? item.value ?? item.amount ?? item.y ?? item.sum ?? 0;
       if (label !== undefined) labels.push(String(label));
-      values.push(Number(value) || 0);
+      values.push(parseNumber(value));
     });
     return { labels, values };
   }
@@ -100,6 +212,24 @@ function normalizeSeries(data) {
   }
   if (Array.isArray(data.labels) && Array.isArray(data.values)) {
     return { labels: data.labels, values: data.values };
+  }
+  if (data.data && typeof data.data === "object") {
+    const entries = Object.entries(data.data);
+    if (entries.length) {
+      return {
+        labels: entries.map(([label]) => String(label)),
+        values: entries.map(([, value]) => parseNumber(value))
+      };
+    }
+  }
+  if (typeof data === "object") {
+    const entries = Object.entries(data).filter(([key, value]) => typeof value !== "object");
+    if (entries.length) {
+      return {
+        labels: entries.map(([label]) => String(label)),
+        values: entries.map(([, value]) => parseNumber(value))
+      };
+    }
   }
   return { labels: [], values: [] };
 }
@@ -112,6 +242,28 @@ function normalizeList(data) {
   return [];
 }
 
+function parseNumber(value) {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string") {
+    let cleaned = value.replace(/[^0-9,.-]/g, "");
+    if (cleaned.includes(",") && cleaned.includes(".")) {
+      cleaned = cleaned.replace(/\./g, "").replace(",", ".");
+    } else {
+      cleaned = cleaned.replace(",", ".");
+    }
+    const parsed = Number(cleaned);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+  return 0;
+}
+
+function formatValue(key, value) {
+  if (METRIC_INFO[key]?.format === "currency") {
+    return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(parseNumber(value));
+  }
+  return new Intl.NumberFormat("pt-BR").format(parseNumber(value));
+}
+
 function renderOverview(data, start, end) {
   const container = document.getElementById("overview-cards");
   if (!container) return;
@@ -121,18 +273,25 @@ function renderOverview(data, start, end) {
     return;
   }
   container.innerHTML = entries.map(([key, value]) => {
-    const label = key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+    const info = METRIC_INFO[key] || {};
+    const label = info.label || key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+    const desc = info.desc || "Métrica agregada do período.";
+    const formatted = formatValue(key, value);
     return `
       <div class="card admin-card admin-metric">
-        <span class="admin-metric-label">${label}</span>
-        <span class="admin-metric-value">${value}</span>
+        <span class="admin-metric-label">
+          ${label}
+          <span class="metric-info" data-tooltip="${desc}">ⓘ</span>
+        </span>
+        <span class="admin-metric-value">${formatted}</span>
+        <span class="admin-metric-desc">${desc}</span>
       </div>
     `;
   }).join("");
 
   const rangeLabel = document.getElementById("admin-range-label");
   if (rangeLabel && start && end) {
-    rangeLabel.textContent = `Período: ${start} → ${end}`;
+    rangeLabel.textContent = `Período: ${formatDateTimePt(start)} → ${formatDateTimePt(end)}`;
   }
 }
 
@@ -144,7 +303,11 @@ function renderTable(data) {
     const count = item.count ?? item.total ?? item.corrections ?? item.total_corrections ?? item.value ?? 0;
     return { name, count };
   });
-  if (!rows.length) {
+  const ordered = rows
+    .map(row => ({ ...row, count: parseNumber(row.count) }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10);
+  if (!ordered.length) {
     container.innerHTML = "<p class='card-sub'>Sem dados no período.</p>";
     return;
   }
@@ -153,17 +316,20 @@ function renderTable(data) {
       <span>Usuário</span>
       <span>Correções</span>
     </div>
-    ${rows.map(row => `
+    ${ordered.map(row => `
       <div class="admin-table-row">
         <span>${row.name}</span>
-        <span>${row.count}</span>
+        <span>${new Intl.NumberFormat("pt-BR").format(row.count)}</span>
       </div>
     `).join("")}
   `;
 }
 
-function buildChart(ctx, label, labels, values, color) {
+function buildChart(ctx, label, labels, values, color, format = "number") {
   if (!ctx) return null;
+  const formatter = format === "currency"
+    ? new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" })
+    : new Intl.NumberFormat("pt-BR");
   return new Chart(ctx, {
     type: "line",
     data: {
@@ -181,8 +347,23 @@ function buildChart(ctx, label, labels, values, color) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true } }
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: (items) => items?.[0]?.label || "",
+            label: (item) => `${label}: ${formatter.format(item.parsed.y ?? 0)}`
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: (val) => formatter.format(val)
+          }
+        }
+      }
     }
   });
 }
@@ -236,13 +417,21 @@ document.addEventListener("DOMContentLoaded", () => {
       const correctionsSeries = normalizeSeries(corrections);
       const salesSeries = normalizeSeries(sales);
 
+      usersSeries.labels = formatChartLabels(usersSeries.labels, group);
+      correctionsSeries.labels = formatChartLabels(correctionsSeries.labels, group);
+      salesSeries.labels = formatChartLabels(salesSeries.labels, group);
+
       if (usersChart) usersChart.destroy();
       if (correctionsChart) correctionsChart.destroy();
       if (salesChart) salesChart.destroy();
 
-      usersChart = buildChart(document.getElementById("usersChart"), "Usuários", usersSeries.labels, usersSeries.values, "#2563eb");
-      correctionsChart = buildChart(document.getElementById("correctionsChart"), "Correções", correctionsSeries.labels, correctionsSeries.values, "#16a34a");
-      salesChart = buildChart(document.getElementById("salesChart"), "Vendas", salesSeries.labels, salesSeries.values, "#f59e0b");
+      if (typeof Chart === "undefined") {
+        setStatus("Charts indisponíveis: erro ao carregar a biblioteca.", "error");
+      } else {
+        usersChart = buildChart(document.getElementById("usersChart"), "Usuários criados", usersSeries.labels, usersSeries.values, "#2563eb");
+        correctionsChart = buildChart(document.getElementById("correctionsChart"), "Correções", correctionsSeries.labels, correctionsSeries.values, "#16a34a");
+        salesChart = buildChart(document.getElementById("salesChart"), "Vendas (R$)", salesSeries.labels, salesSeries.values, "#f59e0b", "currency");
+      }
 
       setStatus("Métricas atualizadas!", "success");
     } catch (err) {
