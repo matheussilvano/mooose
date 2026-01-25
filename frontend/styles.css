@@ -257,6 +257,69 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
 }
 
 /* =========================
+   CRÉDITOS / PREÇOS
+   ========================= */
+.pricing-section {
+  padding: 1.5rem 1.5rem 3rem;
+}
+.pricing-header {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 2rem;
+}
+.pricing-header h2 {
+  font-size: 1.9rem;
+  color: var(--text);
+  margin-bottom: 0.6rem;
+}
+.pricing-header p {
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  max-width: 980px;
+  margin: 0 auto;
+}
+.pricing-card {
+  background: #ffffff;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.6rem;
+  box-shadow: var(--shadow-cartoon);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+.pricing-card.highlight {
+  border-color: #facc15;
+  background: linear-gradient(135deg, #fff7ed, #fef3c7);
+}
+.pricing-badge {
+  align-self: flex-start;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #92400e;
+  background: #fef3c7;
+  border-radius: 999px;
+  padding: 0.25rem 0.6rem;
+}
+.pricing-price {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--brand-dark);
+}
+.pricing-foot,
+.pricing-note {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* =========================
    MISSÃO (Texto Original)
    ========================= */
 .mission-section { padding: 2rem 0; margin-bottom: 3rem; }
@@ -323,6 +386,138 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
 }
 .card h3 { font-size: 1.25rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text); }
 .card-sub { color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.5; font-size: 0.95rem; }
+.credit-card-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: space-between;
+}
+.credit-balance {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 16px;
+  padding: 0.8rem 1.2rem;
+  text-align: center;
+  min-width: 170px;
+}
+.credit-label {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+  margin-bottom: 0.2rem;
+}
+.credit-value {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--brand);
+}
+.credit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+.credit-note {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.credit-inline-note {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* =========================
+   AVALIAÇÕES
+   ========================= */
+.historico-item {
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+.historico-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.review-widget {
+  margin-top: 0.8rem;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0.9rem;
+}
+.review-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  justify-content: space-between;
+}
+.review-summary-stars {
+  font-weight: 700;
+  color: #334155;
+}
+.review-badge {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.review-toggle {
+  font-size: 0.8rem;
+}
+.review-body {
+  display: none;
+  margin-top: 0.8rem;
+}
+.review-widget.open .review-body {
+  display: block;
+}
+.review-header {
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 0.4rem;
+}
+.review-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: space-between;
+}
+.review-stars {
+  display: flex;
+  gap: 0.2rem;
+}
+.star-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #cbd5e1;
+  padding: 0;
+}
+.star-btn.active {
+  color: var(--accent-dark);
+}
+.review-input {
+  width: 100%;
+  margin-top: 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.6rem 0.8rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  background: #ffffff;
+}
 
 /* Switch Tabs */
 .correction-switch { display: flex; background: #f1f5f9; padding: 0.4rem; border-radius: 16px; gap: 0.5rem; margin-bottom: 1.5rem; }
@@ -552,4 +747,3 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   color: var(--brand);
   text-decoration: underline;
 }
-

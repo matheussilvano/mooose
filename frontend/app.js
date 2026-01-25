@@ -52,6 +52,241 @@ function getAuthHeaders(extra={}) {
 let updateTopbarUser = () => {};
 let loadHistoricoFn = null;
 let chartInstance = null;
+let currentCredits = null;
+let lastEssayId = null;
+let lastReview = null;
+
+function normalizeCredits(value) {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string" && value.trim() !== "" && !Number.isNaN(Number(value))) return Number(value);
+  return null;
+}
+
+function extractCredits(data) {
+  if (!data) return null;
+  const sources = [data, data.user, data.account, data.profile];
+  const keys = [
+    "credits",
+    "creditos",
+    "creditos_disponiveis",
+    "credits_available",
+    "correcoes_disponiveis",
+    "corrections_left",
+    "saldo_creditos",
+    "credit_balance"
+  ];
+  for (const src of sources) {
+    if (!src) continue;
+    for (const key of keys) {
+      const value = normalizeCredits(src[key]);
+      if (value !== null) return value;
+    }
+  }
+  return null;
+}
+
+function setCreditsUI(value) {
+  currentCredits = value;
+  document.querySelectorAll("[data-credit-balance]").forEach(el => {
+    el.textContent = value === null ? "—" : value;
+  });
+}
+
+function encodeAttr(value) {
+  return encodeURIComponent(value ?? "");
+}
+
+function decodeAttr(value) {
+  try { return value ? decodeURIComponent(value) : ""; } catch { return value || ""; }
+}
+
+function formatReviewDate(review) {
+  const raw = review?.updated_at || review?.created_at || "";
+  if (!raw) return "";
+  const date = new Date(raw);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleDateString(undefined, { day: "2-digit", month: "2-digit", year: "numeric" });
+}
+
+function starText(value) {
+  const filled = Math.min(5, Math.max(0, Number(value) || 0));
+  return "★".repeat(filled) + "☆".repeat(5 - filled);
+}
+
+function renderStars(container, starsValue = 0) {
+  if (!container) return;
+  const value = Math.min(5, Math.max(0, Number(starsValue) || 0));
+  container.dataset.value = value;
+  container.innerHTML = Array.from({ length: 5 }, (_, idx) => {
+    const star = idx + 1;
+    const active = star <= value ? "active" : "";
+    return `<button type="button" class="star-btn ${active}" data-star="${star}" aria-label="${star} estrela${star > 1 ? "s" : ""}">★</button>`;
+  }).join("");
+}
+
+function initReviewWidget(widget) {
+  if (!widget) return;
+  widget.classList.remove("open");
+  const stars = Number(widget.dataset.initialStars || 0);
+  const comment = decodeAttr(widget.dataset.initialComment || "");
+  const createdAt = decodeAttr(widget.dataset.initialCreatedAt || "");
+  const updatedAt = decodeAttr(widget.dataset.initialUpdatedAt || "");
+  renderStars(widget.querySelector("[data-review-stars]"), stars);
+  const commentEl = widget.querySelector("[data-review-comment]");
+  if (commentEl) commentEl.value = comment;
+  updateReviewSummary(widget, {
+    stars,
+    comment,
+    created_at: createdAt || null,
+    updated_at: updatedAt || null
+  });
+  setReviewToggleLabel(widget, widget.classList.contains("open"));
+}
+
+function hydrateReviewWidgets(root = document) {
+  root.querySelectorAll("[data-review-widget]").forEach(initReviewWidget);
+}
+
+function setReviewToggleLabel(widget, isOpen) {
+  const toggle = widget?.querySelector("[data-review-toggle]");
+  if (!toggle) return;
+  if (isOpen) {
+    toggle.textContent = "Fechar";
+    return;
+  }
+  const hasReview = Number(widget.dataset.initialStars || 0) > 0;
+  toggle.textContent = hasReview ? "Editar avaliação" : "Avaliar";
+}
+
+function updateReviewSummary(widget, review) {
+  if (!widget) return;
+  const summaryStars = widget.querySelector("[data-review-summary-stars]");
+  const badge = widget.querySelector("[data-review-badge]");
+  const hasReview = Number(review?.stars || 0) > 0;
+  if (summaryStars) {
+    summaryStars.textContent = hasReview ? `${starText(review.stars)} (${review.stars}/5)` : "Sem avaliação";
+  }
+  if (badge) {
+    const dateLabel = formatReviewDate(review);
+    if (dateLabel) {
+      badge.textContent = `Avaliado em ${dateLabel}`;
+      badge.classList.remove("hidden");
+    } else {
+      badge.textContent = "";
+      badge.classList.add("hidden");
+    }
+  }
+}
+
+function updateResultadoReview(essayId, review) {
+  const widget = document.getElementById("resultado-review");
+  if (!widget) return;
+  if (!essayId) {
+    widget.classList.add("hidden");
+    return;
+  }
+  widget.classList.remove("hidden");
+  widget.dataset.essayId = essayId;
+  widget.dataset.initialStars = review?.stars || 0;
+  widget.dataset.initialComment = encodeAttr(review?.comment || "");
+  widget.dataset.initialCreatedAt = encodeAttr(review?.created_at || "");
+  widget.dataset.initialUpdatedAt = encodeAttr(review?.updated_at || "");
+  initReviewWidget(widget);
+}
+
+async function submitReview(widget) {
+  if (!widget) return;
+  const msgEl = widget.querySelector("[data-review-msg]");
+  if (msgEl) {
+    msgEl.textContent = "";
+    msgEl.className = "form-message";
+  }
+  const essayId = Number(widget.dataset.essayId || widget.closest("[data-essay-id]")?.dataset.essayId);
+  const stars = Number(widget.querySelector("[data-review-stars]")?.dataset.value || 0);
+  const comment = widget.querySelector("[data-review-comment]")?.value?.trim() || "";
+
+  if (!essayId) {
+    if (msgEl) {
+      msgEl.textContent = "Não foi possível identificar a redação.";
+      msgEl.className = "form-message error";
+    }
+    return;
+  }
+  if (!stars || stars < 1 || stars > 5) {
+    if (msgEl) {
+      msgEl.textContent = "Selecione de 1 a 5 estrelas.";
+      msgEl.className = "form-message error";
+    }
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/app/enem/avaliar`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ essay_id: essayId, stars, comment: comment || undefined })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const serverMsg = data?.detail || data?.message || "Falha ao salvar avaliação.";
+      throw new Error(serverMsg);
+    }
+    widget.dataset.initialStars = data.stars || stars;
+    widget.dataset.initialComment = encodeAttr(data.comment || comment || "");
+    if (data?.created_at || data?.updated_at) {
+      widget.dataset.initialCreatedAt = encodeAttr(data.created_at || "");
+      widget.dataset.initialUpdatedAt = encodeAttr(data.updated_at || "");
+    }
+    updateReviewSummary(widget, {
+      stars: Number(widget.dataset.initialStars || stars),
+      comment: decodeAttr(widget.dataset.initialComment || ""),
+      created_at: decodeAttr(widget.dataset.initialCreatedAt || ""),
+      updated_at: decodeAttr(widget.dataset.initialUpdatedAt || "")
+    });
+    widget.classList.remove("open");
+    setReviewToggleLabel(widget, false);
+    if (msgEl) {
+      msgEl.textContent = "Avaliação salva!";
+      msgEl.className = "form-message success";
+    }
+  } catch (err) {
+    if (msgEl) {
+      msgEl.textContent = err.message;
+      msgEl.className = "form-message error";
+    }
+  }
+}
+
+async function startCheckout() {
+  if (!getToken()) {
+    if (typeof window.goToAuth === "function") {
+      window.goToAuth("login");
+    } else {
+      showSection("section-auth");
+    }
+    return;
+  }
+  showLoading("Abrindo checkout...");
+  try {
+    const res = await fetch(`${API_BASE}/payments/create`, {
+      method: "POST",
+      headers: getAuthHeaders()
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const msg = data?.detail || data?.message || "Falha ao iniciar o pagamento.";
+      throw new Error(msg);
+    }
+    if (!data?.checkout_url) {
+      throw new Error("Checkout indisponível. Tente novamente.");
+    }
+    window.location.href = data.checkout_url;
+  } catch (err) {
+    alert(err.message || "Erro ao iniciar pagamento.");
+  } finally {
+    hideLoading();
+  }
+}
 
 async function fetchMe() {
   const t = getToken();
@@ -65,6 +300,8 @@ async function fetchMe() {
     if(emailEl) emailEl.textContent = `${data.full_name || "Usuário"} (${data.email})`;
     
     updateTopbarUser(data);
+    const credits = extractCredits(data);
+    setCreditsUI(credits);
     showSection("section-dashboard");
     if (loadHistoricoFn) loadHistoricoFn();
   } catch(e) {
@@ -131,6 +368,39 @@ document.addEventListener("DOMContentLoaded", () => {
       cardRegister.classList.remove("hidden");
     }
   }
+  window.goToAuth = goToAuth;
+
+  document.querySelectorAll("[data-buy-credits]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      startCheckout();
+    });
+  });
+
+  document.addEventListener("click", (e) => {
+    const starBtn = e.target.closest(".star-btn");
+    if (starBtn && starBtn.closest("[data-review-stars]")) {
+      const starsContainer = starBtn.closest("[data-review-stars]");
+      const value = Number(starBtn.dataset.star || 0);
+      renderStars(starsContainer, value);
+      return;
+    }
+
+    const toggleBtn = e.target.closest("[data-review-toggle]");
+    if (toggleBtn) {
+      const widget = toggleBtn.closest("[data-review-widget]");
+      if (!widget) return;
+      const isOpen = widget.classList.toggle("open");
+      setReviewToggleLabel(widget, isOpen);
+      return;
+    }
+
+    const saveBtn = e.target.closest("[data-review-save]");
+    if (saveBtn) {
+      const widget = saveBtn.closest("[data-review-widget]");
+      submitReview(widget);
+    }
+  });
 
   // Listeners Nav
   if(btnNavLogin) btnNavLogin.addEventListener("click", () => goToAuth('login'));
@@ -222,9 +492,19 @@ document.addEventListener("DOMContentLoaded", () => {
       const token = getToken();
       const headers = isFile ? { Authorization: `Bearer ${token}` } : getAuthHeaders();
       const res = await fetch(`${API_BASE}${url}`, { method: "POST", headers, body });
-      if(!res.ok) throw new Error("Falha na correção.");
-      const d = await res.json();
-      renderResultado(d.resultado);
+      let d = null;
+      try { d = await res.json(); } catch (err) { d = null; }
+      if(!res.ok) {
+        const serverMsg = d?.detail || d?.message || d?.error || "Falha na correção.";
+        throw new Error(serverMsg);
+      }
+      lastEssayId = d?.essay_id || d?.id || d?.resultado?.essay_id || d?.resultado?.id || null;
+      lastReview = d?.review || d?.resultado?.review || null;
+      const resultado = d?.resultado || d;
+      renderResultado(resultado);
+      updateResultadoReview(lastEssayId, lastReview);
+      const credits = extractCredits(d);
+      if (credits !== null) setCreditsUI(credits);
       loadHistoricoFn();
       msgEl.textContent = "Corrigido com sucesso!";
       msgEl.className = "form-message success";
@@ -298,15 +578,37 @@ document.addEventListener("DOMContentLoaded", () => {
       if(list) {
         if(!items.length) list.innerHTML = "<p style='color:#94a3b8; text-align:center; padding:1rem;'>Nenhuma redação ainda.</p>";
         else {
-          list.innerHTML = items.map(i => `
-            <div style="padding:0.8rem 0; border-bottom:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center;">
-              <div>
-                <strong style="display:block; font-size:0.9rem; color:#334155;">${i.tema || "Sem tema"}</strong>
-                <small style="color:#94a3b8;">${new Date(i.created_at).toLocaleDateString()}</small>
+          list.innerHTML = items.map(i => {
+            const review = i.review || null;
+            return `
+              <div class="historico-item" data-essay-id="${i.id}">
+                <div class="historico-main">
+                  <div>
+                    <strong style="display:block; font-size:0.9rem; color:#334155;">${i.tema || "Sem tema"}</strong>
+                    <small style="color:#94a3b8;">${new Date(i.created_at).toLocaleDateString()}</small>
+                  </div>
+                  <span style="font-weight:800; color:var(--brand); font-size:1rem;">${i.nota_final||"-"}</span>
+                </div>
+                <div class="review-widget" data-review-widget data-essay-id="${i.id}" data-initial-stars="${review?.stars || 0}" data-initial-comment="${encodeAttr(review?.comment || "")}" data-initial-created-at="${encodeAttr(review?.created_at || "")}" data-initial-updated-at="${encodeAttr(review?.updated_at || "")}">
+                  <div class="review-summary" data-review-summary>
+                    <span class="review-summary-stars" data-review-summary-stars>Sem avaliação</span>
+                    <span class="review-badge hidden" data-review-badge></span>
+                    <button type="button" class="link-btn review-toggle" data-review-toggle>Avaliar</button>
+                  </div>
+                  <div class="review-body">
+                    <div class="review-header">Avalie esta correção</div>
+                    <div class="review-row">
+                      <div class="review-stars" data-review-stars></div>
+                      <button type="button" class="duo-btn btn-secondary small" data-review-save>Salvar avaliação</button>
+                    </div>
+                    <textarea class="review-input" rows="2" placeholder="Comentário (opcional)" data-review-comment></textarea>
+                    <p class="form-message" data-review-msg></p>
+                  </div>
+                </div>
               </div>
-              <span style="font-weight:800; color:var(--brand); font-size:1rem;">${i.nota_final||"-"}</span>
-            </div>
-          `).join("");
+            `;
+          }).join("");
+          hydrateReviewWidgets(list);
         }
       }
       
