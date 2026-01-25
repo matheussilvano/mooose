@@ -193,37 +193,106 @@ async function fetchAdmin(path) {
   return res.json();
 }
 
-function normalizeSeries(data) {
-  if (!data) return { labels: [], values: [] };
-  if (Array.isArray(data)) return normalizeSeries({ data });
-  if (Array.isArray(data.data)) {
+function parseSeriesArray(arr) {
+  if (!Array.isArray(arr)) return null;
+  if (!arr.length) return { labels: [], values: [] };
+
+  if (Array.isArray(arr[0])) {
+    return {
+      labels: arr.map(item => String(item[0])),
+      values: arr.map(item => parseNumber(item[1]))
+    };
+  }
+
+  if (typeof arr[0] === "number") {
+    return {
+      labels: arr.map((_, idx) => String(idx + 1)),
+      values: arr.map(item => parseNumber(item))
+    };
+  }
+
+  if (typeof arr[0] === "object" && arr[0] !== null) {
     const labels = [];
     const values = [];
-    data.data.forEach(item => {
-      const label = item.date || item.period || item.label || item.bucket || item.day || item.week || item.month || item.x;
-      const value = item.count ?? item.total ?? item.value ?? item.amount ?? item.y ?? item.sum ?? 0;
+    arr.forEach(item => {
+      const label =
+        item.date ||
+        item.period ||
+        item.label ||
+        item.bucket ||
+        item.day ||
+        item.week ||
+        item.month ||
+        item.x ||
+        item.created_at ||
+        item.start ||
+        item.start_date ||
+        item.bucket_start ||
+        item.period_start;
+      const value =
+        item.count ??
+        item.total ??
+        item.value ??
+        item.amount ??
+        item.y ??
+        item.sum ??
+        item.corrections ??
+        item.users ??
+        item.sales ??
+        item.revenue ??
+        item.approved ??
+        item.credits ??
+        item.total_count ??
+        item.total_users ??
+        item.total_corrections ??
+        0;
       if (label !== undefined) labels.push(String(label));
       values.push(parseNumber(value));
     });
     return { labels, values };
   }
-  if (Array.isArray(data.series)) {
-    return normalizeSeries({ data: data.series });
+  return null;
+}
+
+function normalizeSeries(data, depth = 0) {
+  if (!data) return { labels: [], values: [] };
+  if (depth > 3) return { labels: [], values: [] };
+
+  if (Array.isArray(data)) {
+    return parseSeriesArray(data) || { labels: [], values: [] };
   }
-  if (Array.isArray(data.labels) && Array.isArray(data.values)) {
-    return { labels: data.labels, values: data.values };
+
+  if (Array.isArray(data.labels) && (Array.isArray(data.values) || Array.isArray(data.data) || Array.isArray(data.series))) {
+    const values = Array.isArray(data.values)
+      ? data.values
+      : Array.isArray(data.series)
+        ? data.series
+        : data.data;
+    return { labels: data.labels, values: values.map(parseNumber) };
   }
-  if (data.data && typeof data.data === "object") {
-    const entries = Object.entries(data.data);
-    if (entries.length) {
-      return {
-        labels: entries.map(([label]) => String(label)),
-        values: entries.map(([, value]) => parseNumber(value))
-      };
+
+  const nestedKeys = ["data", "series", "points", "items", "results", "buckets", "rows"];
+  for (const key of nestedKeys) {
+    if (data[key] !== undefined) {
+      const normalized = normalizeSeries(data[key], depth + 1);
+      if (normalized.labels.length || normalized.values.length) return normalized;
     }
   }
+
+  const values = Object.values(data);
+  for (const value of values) {
+    if (Array.isArray(value)) {
+      const normalized = normalizeSeries(value, depth + 1);
+      if (normalized.labels.length || normalized.values.length) return normalized;
+    }
+    if (value && typeof value === "object") {
+      const normalized = normalizeSeries(value, depth + 1);
+      if (normalized.labels.length || normalized.values.length) return normalized;
+    }
+  }
+
   if (typeof data === "object") {
-    const entries = Object.entries(data).filter(([key, value]) => typeof value !== "object");
+    const entries = Object.entries(data).filter(([, value]) => typeof value !== "object");
     if (entries.length) {
       return {
         labels: entries.map(([label]) => String(label)),
@@ -231,6 +300,7 @@ function normalizeSeries(data) {
       };
     }
   }
+
   return { labels: [], values: [] };
 }
 
@@ -330,6 +400,7 @@ function buildChart(ctx, label, labels, values, color, format = "number") {
   const formatter = format === "currency"
     ? new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" })
     : new Intl.NumberFormat("pt-BR");
+  if (!labels.length || !values.length) return null;
   return new Chart(ctx, {
     type: "line",
     data: {
@@ -366,6 +437,31 @@ function buildChart(ctx, label, labels, values, color, format = "number") {
       }
     }
   });
+}
+
+function showChartEmpty(canvasId, message) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const wrapper = canvas.closest(".admin-chart");
+  if (!wrapper) return;
+  wrapper.dataset.empty = "true";
+  let emptyEl = wrapper.querySelector(".admin-chart-empty");
+  if (!emptyEl) {
+    emptyEl = document.createElement("div");
+    emptyEl.className = "admin-chart-empty";
+    wrapper.appendChild(emptyEl);
+  }
+  emptyEl.textContent = message;
+}
+
+function clearChartEmpty(canvasId) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const wrapper = canvas.closest(".admin-chart");
+  if (!wrapper) return;
+  wrapper.dataset.empty = "false";
+  const emptyEl = wrapper.querySelector(".admin-chart-empty");
+  if (emptyEl) emptyEl.remove();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -417,6 +513,16 @@ document.addEventListener("DOMContentLoaded", () => {
       const correctionsSeries = normalizeSeries(corrections);
       const salesSeries = normalizeSeries(sales);
 
+      if (!usersSeries.labels.length && usersSeries.values.length) {
+        usersSeries.labels = usersSeries.values.map((_, idx) => String(idx + 1));
+      }
+      if (!correctionsSeries.labels.length && correctionsSeries.values.length) {
+        correctionsSeries.labels = correctionsSeries.values.map((_, idx) => String(idx + 1));
+      }
+      if (!salesSeries.labels.length && salesSeries.values.length) {
+        salesSeries.labels = salesSeries.values.map((_, idx) => String(idx + 1));
+      }
+
       usersSeries.labels = formatChartLabels(usersSeries.labels, group);
       correctionsSeries.labels = formatChartLabels(correctionsSeries.labels, group);
       salesSeries.labels = formatChartLabels(salesSeries.labels, group);
@@ -431,6 +537,12 @@ document.addEventListener("DOMContentLoaded", () => {
         usersChart = buildChart(document.getElementById("usersChart"), "Usuários criados", usersSeries.labels, usersSeries.values, "#2563eb");
         correctionsChart = buildChart(document.getElementById("correctionsChart"), "Correções", correctionsSeries.labels, correctionsSeries.values, "#16a34a");
         salesChart = buildChart(document.getElementById("salesChart"), "Vendas (R$)", salesSeries.labels, salesSeries.values, "#f59e0b", "currency");
+        if (!usersChart) showChartEmpty("usersChart", "Sem dados de usuários no período.");
+        else clearChartEmpty("usersChart");
+        if (!correctionsChart) showChartEmpty("correctionsChart", "Sem dados de correções no período.");
+        else clearChartEmpty("correctionsChart");
+        if (!salesChart) showChartEmpty("salesChart", "Sem dados de vendas no período.");
+        else clearChartEmpty("salesChart");
       }
 
       setStatus("Métricas atualizadas!", "success");

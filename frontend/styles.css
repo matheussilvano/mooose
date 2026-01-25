@@ -1030,6 +1030,21 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   width: 100% !important;
   height: 100% !important;
 }
+.admin-chart-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 0.95rem;
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  border-radius: 16px;
+  pointer-events: none;
+}
 .admin-chart-title {
   display: flex;
   align-items: center;
