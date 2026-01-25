@@ -92,6 +92,18 @@ function setCreditsUI(value) {
   });
 }
 
+function showCreditsModal() {
+  const modal = document.getElementById("credits-modal");
+  if (!modal) return;
+  modal.classList.remove("hidden");
+}
+
+function hideCreditsModal() {
+  const modal = document.getElementById("credits-modal");
+  if (!modal) return;
+  modal.classList.add("hidden");
+}
+
 function encodeAttr(value) {
   return encodeURIComponent(value ?? "");
 }
@@ -379,6 +391,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  document.querySelectorAll("[data-credits-close]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      hideCreditsModal();
+    });
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") hideCreditsModal();
+  });
+
   document.addEventListener("click", (e) => {
     const starBtn = e.target.closest(".star-btn");
     if (starBtn && starBtn.closest("[data-review-stars]")) {
@@ -488,6 +510,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   async function sendCorrection(url, body, msgEl, isFile=false) {
+    if (currentCredits !== null && currentCredits <= 0) {
+      msgEl.textContent = "Você está sem créditos para corrigir agora.";
+      msgEl.className = "form-message error";
+      showCreditsModal();
+      return;
+    }
     showLoading("Corrigindo redação...");
     msgEl.textContent = "";
     try {
@@ -514,6 +542,9 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch(err) {
       msgEl.textContent = err.message;
       msgEl.className = "form-message error";
+      if (/cr[eé]dito|credits?/i.test(err.message || "")) {
+        showCreditsModal();
+      }
     } finally { hideLoading(); }
   }
 
