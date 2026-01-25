@@ -276,6 +276,11 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   color: var(--text-muted);
   line-height: 1.6;
 }
+.pricing-why {
+  margin-top: 0.4rem;
+  font-size: 0.95rem;
+  color: #475569;
+}
 .pricing-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -425,6 +430,11 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   font-size: 0.85rem;
   color: var(--text-muted);
 }
+.credit-why {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  color: #475569;
+}
 .credit-inline-note {
   margin-top: 0.75rem;
   font-size: 0.85rem;
@@ -477,6 +487,12 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
 .review-body {
   display: none;
   margin-top: 0.8rem;
+}
+.review-invite {
+  margin: 0 0 0.6rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0f172a;
 }
 .review-widget.open .review-body {
   display: block;

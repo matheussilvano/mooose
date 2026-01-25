@@ -164,7 +164,9 @@ function updateReviewSummary(widget, review) {
   const badge = widget.querySelector("[data-review-badge]");
   const hasReview = Number(review?.stars || 0) > 0;
   if (summaryStars) {
-    summaryStars.textContent = hasReview ? `${starText(review.stars)} (${review.stars}/5)` : "Sem avaliação";
+    summaryStars.textContent = hasReview
+      ? `${starText(review.stars)} (${review.stars}/5)`
+      : "Sua avaliação é muito importante pra nós — avalie!";
   }
   if (badge) {
     const dateLabel = formatReviewDate(review);
@@ -596,7 +598,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     <button type="button" class="link-btn review-toggle" data-review-toggle>Avaliar</button>
                   </div>
                   <div class="review-body">
-                    <div class="review-header">Avalie esta correção</div>
+                    <div class="review-header">Sua avaliação é muito importante pra nós!</div>
+                    <p class="review-invite">Leva só alguns segundos e ajuda a melhorar cada correção.</p>
                     <div class="review-row">
                       <div class="review-stars" data-review-stars></div>
                       <button type="button" class="duo-btn btn-secondary small" data-review-save>Salvar avaliação</button>
