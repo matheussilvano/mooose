@@ -327,6 +327,17 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   line-height: 1.6;
   color: var(--text-muted);
 }
+.weekly-card p {
+  margin-bottom: 0.8rem;
+}
+.weekly-source {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-bottom: 0;
+}
+.weekly-theme-card {
+  margin-bottom: 2rem;
+}
 .weekly-tag {
   display: inline-block;
   font-size: 0.75rem;
@@ -912,6 +923,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   .weekly-header { grid-template-columns: 1fr; gap: 1.5rem; }
   .weekly-header h2 { font-size: 1.6rem; }
   .weekly-image img { max-height: 240px; object-fit: cover; }
+  .weekly-theme-card .weekly-header { text-align: left; }
 
   .pricing-header { text-align: left; }
   .pricing-header h2 { font-size: 1.6rem; }
