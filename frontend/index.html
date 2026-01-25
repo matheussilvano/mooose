@@ -560,9 +560,9 @@
               <button class="duo-btn btn-primary" id="btn-share-native" type="button">Compartilhar</button>
               <a class="duo-btn btn-secondary" id="btn-share-download" download="mooose-nota.png">Baixar imagem</a>
               <a class="duo-btn btn-secondary" id="btn-share-whatsapp" target="_blank" rel="noopener">Abrir WhatsApp</a>
-              <p class="form-message" id="share-msg"></p>
-            </div>
-          </div>
+          <p class="form-message" id="share-msg"></p>
+        </div>
+      </div>
         </div>
         <div id="resultado-review" class="review-widget hidden" data-review-widget data-essay-id="">
           <div class="review-summary" data-review-summary>
@@ -657,6 +657,35 @@
             <button class="duo-btn btn-secondary" type="button" data-credits-close>Agora não</button>
           </div>
           <small class="credits-modal-note">Pagamento seguro via Mercado Pago.</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="review-modal" class="review-modal hidden">
+    <div class="review-modal-backdrop" data-review-close></div>
+    <div class="review-modal-card">
+      <button class="review-modal-close" type="button" data-review-close>✕</button>
+      <div class="review-modal-content">
+        <div class="review-modal-text">
+          <span class="review-modal-badge">AJUDA A MOOOSE</span>
+          <h3>Sua avaliação é muito importante pra nós!</h3>
+          <p>
+            Se o feedback te ajudou, avalie a correção. Isso melhora a plataforma e ajuda
+            outros estudantes a chegarem no 1000.
+          </p>
+        </div>
+        <div class="review-modal-widget review-widget" id="review-modal-widget" data-review-widget data-essay-id="">
+          <div class="review-header">Avalie agora</div>
+          <div class="review-row">
+            <div class="review-stars" data-review-stars></div>
+            <button type="button" class="duo-btn btn-primary" data-review-save>Enviar avaliação</button>
+          </div>
+          <textarea class="review-input" rows="3" placeholder="Comentário (opcional)" data-review-comment></textarea>
+          <p class="form-message" data-review-msg></p>
+          <div class="review-modal-actions">
+            <button type="button" class="duo-btn btn-secondary" data-review-close>Agora não</button>
+          </div>
         </div>
       </div>
     </div>

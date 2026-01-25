@@ -57,6 +57,9 @@ let lastEssayId = null;
 let lastReview = null;
 let lastResult = null;
 let lastTema = "";
+let reviewPopupTimer = null;
+let reviewPopupShown = false;
+let reviewPopupObserver = null;
 
 function normalizeCredits(value) {
   if (typeof value === "number" && Number.isFinite(value)) return value;
@@ -285,6 +288,54 @@ function hideCreditsModal() {
   modal.classList.add("hidden");
 }
 
+function showReviewPopup() {
+  if (reviewPopupShown) return;
+  const modal = document.getElementById("review-modal");
+  if (!modal) return;
+  reviewPopupShown = true;
+  modal.classList.remove("hidden");
+}
+
+function hideReviewPopup() {
+  const modal = document.getElementById("review-modal");
+  if (!modal) return;
+  modal.classList.add("hidden");
+}
+
+function setupReviewPopup(result) {
+  if (!result || !lastEssayId) return;
+  const existingStars = result?.review?.stars || lastReview?.stars || 0;
+  if (existingStars > 0) return;
+
+  reviewPopupShown = false;
+  if (reviewPopupTimer) clearTimeout(reviewPopupTimer);
+  if (reviewPopupObserver) reviewPopupObserver.disconnect();
+
+  const widget = document.getElementById("review-modal-widget");
+  if (widget) {
+    widget.dataset.essayId = lastEssayId;
+    widget.dataset.initialStars = 0;
+    widget.dataset.initialComment = "";
+    initReviewWidget(widget);
+  }
+
+  reviewPopupTimer = setTimeout(() => {
+    showReviewPopup();
+  }, 10000);
+
+  const sentinel = document.getElementById("resultado-end-sentinel");
+  if (sentinel && "IntersectionObserver" in window) {
+    reviewPopupObserver = new IntersectionObserver((entries) => {
+      if (entries.some(entry => entry.isIntersecting)) {
+        showReviewPopup();
+        if (reviewPopupTimer) clearTimeout(reviewPopupTimer);
+        reviewPopupObserver.disconnect();
+      }
+    }, { threshold: 0.6 });
+    reviewPopupObserver.observe(sentinel);
+  }
+}
+
 function encodeAttr(value) {
   return encodeURIComponent(value ?? "");
 }
@@ -444,6 +495,9 @@ async function submitReview(widget) {
       msgEl.textContent = "Avaliação salva!";
       msgEl.className = "form-message success";
     }
+    if (widget.id === "review-modal-widget") {
+      hideReviewPopup();
+    }
   } catch (err) {
     if (msgEl) {
       msgEl.textContent = err.message;
@@ -578,6 +632,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  document.querySelectorAll("[data-review-close]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      hideReviewPopup();
+    });
+  });
+
   document.querySelectorAll("[data-theme-target]").forEach(btn => {
     btn.addEventListener("click", () => {
       const target = btn.dataset.themeTarget;
@@ -611,6 +671,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") hideCreditsModal();
+    if (e.key === "Escape") hideReviewPopup();
   });
 
   document.addEventListener("click", (e) => {
@@ -795,8 +856,10 @@ document.addEventListener("DOMContentLoaded", () => {
       <div style="margin-bottom:1.5rem; line-height:1.6;">${marked.parse(res.analise_geral||"")}</div>
       <h4>Detalhamento por competência</h4>
       ${comps}
+      <div id="resultado-end-sentinel" style="height:1px;"></div>
     `;
     updateShareCard(res);
+    setupReviewPopup(res);
   }
 
   loadHistoricoFn = async () => {
