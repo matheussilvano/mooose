@@ -947,6 +947,14 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   gap: 1rem;
   margin-bottom: 2rem;
 }
+.admin-section-title {
+  margin: 2rem 0 1rem;
+}
+.admin-section-title h3 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text);
+}
 .admin-metric {
   text-align: center;
   padding: 1.4rem;

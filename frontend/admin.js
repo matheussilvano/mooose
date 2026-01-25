@@ -23,7 +23,7 @@ function setStatus(message, type = "") {
 const METRIC_INFO = {
   users_created: {
     label: "Usuários criados",
-    desc: "Novas contas criadas no período."
+    desc: "Usuários que fizeram a primeira correção no período."
   },
   corrections: {
     label: "Correções realizadas",
@@ -366,6 +366,32 @@ function renderOverview(data, start, end) {
   }
 }
 
+function renderAbsolute(data) {
+  const container = document.getElementById("absolute-cards");
+  if (!container) return;
+  const entries = Object.entries(data || {}).filter(([_, value]) => typeof value !== "object");
+  if (!entries.length) {
+    container.innerHTML = "<div class='card admin-card'><p class='card-sub'>Sem dados absolutos.</p></div>";
+    return;
+  }
+  container.innerHTML = entries.map(([key, value]) => {
+    const info = METRIC_INFO[key] || {};
+    const label = info.label || key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+    const desc = info.desc || "Métrica acumulada desde o início.";
+    const formatted = formatValue(key, value);
+    return `
+      <div class="card admin-card admin-metric">
+        <span class="admin-metric-label">
+          ${label}
+          <span class="metric-info" data-tooltip="${desc}">ⓘ</span>
+        </span>
+        <span class="admin-metric-value">${formatted}</span>
+        <span class="admin-metric-desc">${desc}</span>
+      </div>
+    `;
+  }).join("");
+}
+
 function renderTable(data) {
   const container = document.getElementById("corrections-by-user");
   if (!container) return;
@@ -502,7 +528,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (tz) qs.set("timezone", tz);
 
     try {
-      const [overview, users, corrections, sales, byUser] = await Promise.all([
+      const [absolute, overview, users, corrections, sales, byUser] = await Promise.all([
+        fetchAdmin(`/admin/metrics/absolute`),
         fetchAdmin(`/admin/metrics/overview?${qs.toString()}`),
         fetchAdmin(`/admin/metrics/users/created?${qs.toString()}`),
         fetchAdmin(`/admin/metrics/corrections?${qs.toString()}`),
@@ -510,6 +537,7 @@ document.addEventListener("DOMContentLoaded", () => {
         fetchAdmin(`/admin/metrics/corrections/by-user?${qs.toString()}&limit=50`)
       ]);
 
+      renderAbsolute(absolute);
       renderOverview(overview, start, end);
       renderTable(byUser);
 
