@@ -578,6 +578,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  document.querySelectorAll("[data-theme-target]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const target = btn.dataset.themeTarget;
+      if (!target) return;
+      const input = document.querySelector(`[name="${target}"]`);
+      if (input) {
+        input.value = btn.textContent.trim();
+        input.focus();
+      }
+    });
+  });
+
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") hideCreditsModal();
   });

@@ -152,6 +152,61 @@
         </div>
       </div>
 
+      <section class="weekly-theme">
+        <div class="weekly-header">
+          <div>
+            <span class="weekly-pill">Tema da Semana · 25/01/2026 a 31/01/2026</span>
+            <h2>Os impactos do uso excessivo das redes sociais na saúde mental dos jovens no Brasil</h2>
+            <p class="weekly-sub">
+              Tema alinhado ao padrão ENEM, com textos de apoio e sugestões de abordagem para orientar seu repertório.
+            </p>
+          </div>
+          <div class="weekly-image">
+            <img src="impacto_redes_sociais.png" alt="Jovem impactado pelo uso excessivo das redes sociais" />
+          </div>
+        </div>
+
+        <div class="weekly-support">
+          <h3>Textos de apoio</h3>
+          <div class="weekly-cards">
+            <div class="weekly-card">
+              <span class="weekly-tag">Texto I</span>
+              <p>
+                O uso intenso de redes sociais vem mudando a forma como jovens se relacionam, estudam e constroem
+                a própria identidade. A busca constante por curtidas e aprovação pode intensificar comparações,
+                inseguranças e a sensação de inadequação.
+              </p>
+            </div>
+            <div class="weekly-card">
+              <span class="weekly-tag">Texto II</span>
+              <p>
+                A hiperconexão favorece a exposição a discursos de ódio, cyberbullying e conteúdos inadequados,
+                o que pode gerar ansiedade, estresse e dificuldades para regular emoções. O problema se agrava
+                quando não há orientação ou limites de uso.
+              </p>
+            </div>
+            <div class="weekly-card">
+              <span class="weekly-tag">Texto III</span>
+              <p>
+                Enfrentar esse cenário exige ações articuladas: educação midiática nas escolas, diálogo familiar,
+                apoio psicológico acessível e responsabilidade das plataformas digitais para reduzir danos e
+                promover ambientes mais seguros.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="weekly-guidance">
+          <h3>Possíveis caminhos de abordagem</h3>
+          <ul>
+            <li>Consequências psicológicas: ansiedade, comparação social, medo de exclusão e baixa autoestima.</li>
+            <li>Aspectos sociais: isolamento, cyberbullying, pressão por performance e validação online.</li>
+            <li>Responsabilização: escolas, famílias, políticas públicas e plataformas digitais.</li>
+            <li>Proposta de intervenção: educação digital, campanhas de conscientização e apoio psicológico.</li>
+          </ul>
+        </div>
+      </section>
+
       <section class="pricing-section">
         <div class="pricing-header">
           <h2>Créditos e preços</h2>
@@ -354,9 +409,16 @@
               <input
                 type="text"
                 name="tema_arquivo"
+                list="tema-semana-list"
                 placeholder="Ex.: Invisibilidade do trabalho de cuidado"
                 required
               />
+            </div>
+            <div class="tema-week-box">
+              <span class="tema-week-badge">Tema da semana</span>
+              <button type="button" class="tema-week-btn" data-theme-target="tema_arquivo">
+                Os impactos do uso excessivo das redes sociais na saúde mental dos jovens no Brasil
+              </button>
             </div>
             <div class="input-group" style="margin-bottom: 1rem;">
               <label>Foto ou PDF da redação</label>
@@ -372,7 +434,13 @@
           <form id="form-corrigir">
             <div class="input-group" style="margin-bottom: 1rem;">
               <label>Tema da redação</label>
-              <input type="text" name="tema" placeholder="Tema da redação" required />
+              <input type="text" name="tema" list="tema-semana-list" placeholder="Tema da redação" required />
+            </div>
+            <div class="tema-week-box">
+              <span class="tema-week-badge">Tema da semana</span>
+              <button type="button" class="tema-week-btn" data-theme-target="tema">
+                Os impactos do uso excessivo das redes sociais na saúde mental dos jovens no Brasil
+              </button>
             </div>
             <div class="input-group" style="margin-bottom: 1rem;">
               <label>Texto</label>
@@ -484,6 +552,10 @@
       <span>© 2025 Mooose. Todos os direitos reservados.</span>
     </div>
   </footer>
+
+  <datalist id="tema-semana-list">
+    <option value="Os impactos do uso excessivo das redes sociais na saúde mental dos jovens no Brasil" label="Tema da semana"></option>
+  </datalist>
 
   <div id="credits-modal" class="credits-modal hidden">
     <div class="credits-modal-backdrop" data-credits-close></div>
