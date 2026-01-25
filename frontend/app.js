@@ -56,6 +56,7 @@ let currentCredits = null;
 let lastEssayId = null;
 let lastReview = null;
 let lastResult = null;
+let lastTema = "";
 
 function normalizeCredits(value) {
   if (typeof value === "number" && Number.isFinite(value)) return value;
@@ -119,7 +120,7 @@ async function loadImage(src) {
   });
 }
 
-async function buildShareImage(scoreText) {
+async function buildShareImage(scoreText, temaText = "") {
   const canvas = document.createElement("canvas");
   const width = 1080;
   const height = 1920;
@@ -134,13 +135,38 @@ async function buildShareImage(scoreText) {
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, width, height);
 
+  for (let i = 0; i < 24; i++) {
+    ctx.fillStyle = `rgba(59, 130, 246, ${0.15 + Math.random() * 0.25})`;
+    ctx.beginPath();
+    ctx.arc(Math.random() * width, Math.random() * height * 0.6, 8 + Math.random() * 16, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  for (let i = 0; i < 14; i++) {
+    ctx.strokeStyle = `rgba(250, 204, 21, ${0.4 + Math.random() * 0.3})`;
+    ctx.lineWidth = 3;
+    const x = Math.random() * width;
+    const y = Math.random() * height * 0.6;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + 30, y + 20);
+    ctx.lineTo(x + 8, y + 40);
+    ctx.stroke();
+  }
+
   ctx.fillStyle = "#1d4ed8";
   ctx.fillRect(0, 0, width, 140);
 
-  ctx.font = "bold 64px Montserrat, sans-serif";
-  ctx.fillStyle = "#ffffff";
   ctx.textAlign = "center";
-  ctx.fillText("MOOOSE", width / 2, 90);
+  ctx.font = "bold 64px Montserrat, sans-serif";
+  ctx.fillStyle = "#0b2f8a";
+  ctx.fillText("M", width / 2 - 140, 90);
+  ctx.fillStyle = "#93c5fd";
+  ctx.fillText("O", width / 2 - 70, 90);
+  ctx.fillText("O", width / 2, 90);
+  ctx.fillText("O", width / 2 + 70, 90);
+  ctx.fillStyle = "#0b2f8a";
+  ctx.fillText("SE", width / 2 + 150, 90);
 
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(90, 220, width - 180, 1200);
@@ -161,21 +187,44 @@ async function buildShareImage(scoreText) {
   ctx.font = "500 44px Nunito, sans-serif";
   ctx.fillText("Treinei redação com IA", width / 2, 710);
 
+  if (temaText) {
+    ctx.fillStyle = "#0f172a";
+    ctx.font = "600 36px Nunito, sans-serif";
+    const maxWidth = 820;
+    const lines = [];
+    const words = temaText.split(" ");
+    let current = "";
+    words.forEach(word => {
+      const test = current ? `${current} ${word}` : word;
+      if (ctx.measureText(test).width <= maxWidth) {
+        current = test;
+      } else {
+        if (current) lines.push(current);
+        current = word;
+      }
+    });
+    if (current) lines.push(current);
+    const startY = 760;
+    lines.slice(0, 2).forEach((line, idx) => {
+      ctx.fillText(line, width / 2, startY + idx * 44);
+    });
+  }
+
   try {
-    const logo = await loadImage("logo.png");
-    const logoSize = 160;
-    ctx.drawImage(logo, width / 2 - logoSize / 2, 820, logoSize, logoSize);
+    const mascot = await loadImage("nossa-missao.png");
+    const mascotSize = 240;
+    ctx.drawImage(mascot, width / 2 - mascotSize / 2, 900, mascotSize, mascotSize);
   } catch (err) {
     // segue sem logo se falhar
   }
 
   ctx.fillStyle = "#1d4ed8";
   ctx.font = "700 42px Montserrat, sans-serif";
-  ctx.fillText("www.mooose.com.br", width / 2, 1100);
+  ctx.fillText("www.mooose.com.br", width / 2, 1180);
 
   ctx.fillStyle = "#0f172a";
-  ctx.font = "700 40px Montserrat, sans-serif";
-  ctx.fillText("Bora chegar no 1000?", width / 2, 1260);
+  ctx.font = "700 36px Montserrat, sans-serif";
+  ctx.fillText("Bora chegar no 1000?", width / 2, 1280);
 
   return canvas.toDataURL("image/png");
 }
@@ -190,11 +239,12 @@ async function updateShareCard(result) {
   }
 
   const scoreText = formatScore(score);
+  const tema = (result?.tema || lastTema || "").trim();
   els.card.classList.remove("hidden");
   els.msg.textContent = "";
 
   try {
-    const dataUrl = await buildShareImage(scoreText);
+    const dataUrl = await buildShareImage(scoreText, tema);
     els.img.src = dataUrl;
     els.btnDownload.href = dataUrl;
 
@@ -681,11 +731,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   formCorrigir?.addEventListener("submit", (e) => {
     e.preventDefault();
+    lastTema = formCorrigir.tema.value || "";
     sendCorrection("/app/enem/corrigir-texto", JSON.stringify({ tema: formCorrigir.tema.value, texto: formCorrigir.texto.value }), msgCorrigir);
   });
 
   formCorrigirArquivo?.addEventListener("submit", (e) => {
     e.preventDefault();
+    lastTema = formCorrigirArquivo.tema_arquivo.value || "";
     const fd = new FormData(formCorrigirArquivo);
     fd.append("tema", formCorrigirArquivo.tema_arquivo.value);
     sendCorrection("/app/enem/corrigir-arquivo", fd, msgCorrigirArquivo, true);
