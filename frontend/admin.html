@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mooose · Admin Analytics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Nunito:wght@400;600;800&display=swap"
+    rel="stylesheet"
+  />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a href="index.html" class="logo-row">
+      <img src="logo.png" alt="Mooose" class="mooose-logo" />
+      <span class="logo-word">MOOOSE</span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-item">Voltar ao site</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="admin-login" class="admin-section visible">
+      <div class="card admin-card">
+        <h1 class="admin-title">Admin Analytics</h1>
+        <p class="card-sub">Entre com seu e-mail e senha. O acesso é liberado apenas para admins.</p>
+        <form id="admin-login-form">
+          <div class="input-group">
+            <label>E-mail</label>
+            <input type="email" name="email" placeholder="admin@mooose.com.br" required />
+          </div>
+          <div class="input-group">
+            <label>Senha</label>
+            <input type="password" name="password" placeholder="Sua senha" required />
+          </div>
+          <button type="submit" class="duo-btn btn-primary full">Entrar</button>
+          <p class="form-message" id="admin-login-msg"></p>
+        </form>
+      </div>
+    </section>
+
+    <section id="admin-dashboard" class="admin-section">
+      <div class="admin-toolbar">
+        <div>
+          <h2>Resumo de métricas</h2>
+          <p class="admin-range" id="admin-range-label"></p>
+        </div>
+        <button id="admin-logout" class="duo-btn btn-secondary" style="width:auto;">Sair</button>
+      </div>
+
+      <div class="card admin-card">
+        <div class="admin-filters">
+          <div class="input-group">
+            <label>Início</label>
+            <input type="datetime-local" id="admin-start" />
+          </div>
+          <div class="input-group">
+            <label>Fim</label>
+            <input type="datetime-local" id="admin-end" />
+          </div>
+          <div class="input-group">
+            <label>Agrupar por</label>
+            <select id="admin-group-by" class="admin-select">
+              <option value="day">Dia</option>
+              <option value="week">Semana</option>
+              <option value="month">Mês</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Timezone (opcional)</label>
+            <input type="text" id="admin-timezone" placeholder="America/Sao_Paulo" />
+          </div>
+        </div>
+        <div class="admin-actions">
+          <button id="admin-refresh" class="duo-btn btn-success" type="button">Atualizar métricas</button>
+          <p class="form-message" id="admin-status"></p>
+        </div>
+      </div>
+
+      <div id="overview-cards" class="admin-card-grid"></div>
+
+      <div class="admin-grid-2">
+        <div class="card admin-card">
+          <h3>Usuários criados</h3>
+          <div class="admin-chart">
+            <canvas id="usersChart"></canvas>
+          </div>
+        </div>
+        <div class="card admin-card">
+          <h3>Correções realizadas</h3>
+          <div class="admin-chart">
+            <canvas id="correctionsChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-grid-2">
+        <div class="card admin-card">
+          <h3>Vendas</h3>
+          <div class="admin-chart">
+            <canvas id="salesChart"></canvas>
+          </div>
+        </div>
+        <div class="card admin-card">
+          <h3>Correções por usuário</h3>
+          <div class="admin-table" id="corrections-by-user"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="admin.js"></script>
+</body>
+</html>

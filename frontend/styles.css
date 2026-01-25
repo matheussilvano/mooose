@@ -88,6 +88,12 @@ body {
 #nav-logged {
   font-size: 0.85rem;
 }
+#topbar-user-name {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 /* =========================
    LOGO ORIGINAL
@@ -577,6 +583,115 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   .hero-actions { margin: 0 auto; width: 100%; }
 }
 
+@media (max-width: 1024px) {
+  main { padding: 1.75rem 1.25rem; }
+  .hero-split { gap: 2rem; }
+  .hero-text h1 { font-size: 2.3rem; }
+  .hero-img img { max-width: 380px; }
+  .moose-promo { padding: 2.25rem; }
+  .promo-layout { gap: 2rem; }
+}
+
+@media (max-width: 900px) {
+  .topbar { flex-wrap: wrap; gap: 0.75rem; padding: 0.75rem 1rem; }
+  .nav-links { flex-wrap: wrap; justify-content: flex-end; gap: 0.6rem; }
+  .nav-item { font-size: 0.85rem !important; margin-right: 0.4rem !important; }
+  .hero-actions { max-width: none; }
+  .pricing-section { padding: 1.25rem 1rem 2.5rem; }
+  #nav-logged { flex-wrap: wrap; gap: 0.5rem !important; }
+}
+
+@media (max-width: 768px) {
+  main { padding: 1.5rem 1rem; }
+
+  .hero-split { gap: 1.5rem; margin-bottom: 3rem; }
+  .hero-text { text-align: left; }
+  .hero-text h1 { font-size: 2rem; line-height: 1.25; }
+  .hero-sub { font-size: 1rem; margin-bottom: 1.5rem; }
+  .hero-actions { gap: 0.6rem; margin: 0; }
+  .hero-note { text-align: left; }
+  .hero-img img { max-width: 320px; }
+
+  .moose-promo { padding: 1.5rem; margin-bottom: 3rem; }
+  .promo-layout { gap: 1.5rem; }
+  .promo-text { text-align: left; }
+  .promo-heading { font-size: 1.6rem; }
+  .promo-bullets li { font-size: 0.92rem; }
+  .promo-side-card { padding: 1.2rem; text-align: left; }
+
+  .pricing-header { text-align: left; }
+  .pricing-header h2 { font-size: 1.6rem; }
+  .pricing-grid { gap: 1rem; }
+  .pricing-card { padding: 1.2rem; text-align: left; }
+  .pricing-price { font-size: 1.6rem; }
+
+  .mission-section { padding: 1.5rem 0; margin-bottom: 2rem; }
+  .mission-text { text-align: left; }
+  .mission-text h2 { font-size: 1.5rem; }
+  .mission-lead { font-size: 1rem; }
+  .mission-img { max-width: 220px; }
+
+  .faq-section { margin-bottom: 3rem; }
+  .faq-section h2 { text-align: left !important; font-size: 1.6rem; }
+  .faq-container { text-align: left !important; }
+  .faq-item { padding: 1.2rem; }
+  .faq-question { font-size: 1rem; }
+
+  .auth-wrapper { padding: 1.25rem; }
+  .auth-form-side { text-align: left; }
+
+  .dashboard-header { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
+  .card { padding: 1.4rem; }
+  .credit-card-header { flex-direction: column; align-items: flex-start; }
+  .credit-balance { width: 100%; min-width: 0; }
+  .credit-actions { flex-direction: column; align-items: stretch; }
+  .credit-actions .duo-btn { width: 100%; }
+
+  .correction-switch { flex-direction: column; }
+  .switch-tab { padding: 0.8rem; font-size: 0.95rem; }
+
+  .resultado-score-pill { font-size: 2rem; padding: 0.4rem 1rem; }
+  .competencia-header { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+
+  .historico-main { flex-direction: column; align-items: flex-start; }
+  .review-summary { flex-direction: column; align-items: flex-start; }
+  .review-row { flex-direction: column; align-items: stretch; }
+  .review-row .duo-btn { width: 100%; }
+
+  .footer-inner { text-align: left; }
+}
+
+@media (max-width: 640px) {
+  .topbar { padding: 0.65rem 0.85rem; }
+  #nav-auth .duo-btn { padding: 0.45rem 1rem; font-size: 0.8rem; }
+  .mooose-logo { height: 32px; }
+  .logo-word { font-size: 1.05rem; letter-spacing: 0.08em; }
+  .duo-btn { font-size: 0.85rem; padding: 0.75rem 1.1rem; }
+
+  .hero-text h1 { font-size: 1.75rem; }
+  .hero-sub { font-size: 0.98rem; }
+  .hero-img img { max-width: 280px; }
+
+  .promo-heading { font-size: 1.4rem; }
+  .pricing-header h2 { font-size: 1.4rem; }
+
+  .card { padding: 1.2rem; }
+  .input-group input,
+  .input-text-area { font-size: 0.95rem; }
+
+  .footer { padding: 2.5rem 1rem; }
+}
+
+@media (max-width: 480px) {
+  main { padding: 1.25rem 0.9rem; }
+  .hero-text h1 { font-size: 1.6rem; }
+  .promo-bullets li { gap: 0.5rem; }
+  .pricing-card { padding: 1rem; }
+  .review-widget { padding: 0.75rem; }
+  .review-invite { font-size: 0.85rem; }
+  .resultado-score-pill { font-size: 1.8rem; }
+}
+
 /* =========================
    BLOG – Artigo e CTA
    ========================= */
@@ -762,4 +877,116 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
 .footer-legal-links a:hover {
   color: var(--brand);
   text-decoration: underline;
+}
+
+/* =========================
+   ADMIN
+   ========================= */
+.admin-section {
+  display: none;
+}
+.admin-section.visible {
+  display: block;
+}
+.admin-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  color: var(--text);
+}
+.admin-card {
+  box-shadow: var(--shadow-cartoon);
+}
+.admin-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.admin-range {
+  color: var(--text-muted);
+  margin-top: 0.4rem;
+}
+.admin-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.admin-select {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  background: #f8fafc;
+  font-size: 1rem;
+  font-family: inherit;
+}
+.admin-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.admin-metric {
+  text-align: center;
+  padding: 1.4rem;
+}
+.admin-metric-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+.admin-metric-value {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--brand);
+}
+.admin-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.admin-chart {
+  height: 260px;
+  margin-top: 1rem;
+}
+.admin-table {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.admin-table-row {
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.6rem 0.8rem;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+}
+.admin-table-head {
+  background: #e0f2fe;
+  font-weight: 700;
+  color: #0369a1;
+}
+
+@media (max-width: 768px) {
+  .admin-toolbar { flex-direction: column; align-items: flex-start; }
+  .admin-card-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  .admin-grid-2 { grid-template-columns: 1fr; }
+  .admin-chart { height: 220px; }
+  .admin-table-row { grid-template-columns: 1fr; }
 }
