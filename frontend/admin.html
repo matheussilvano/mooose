@@ -135,9 +135,29 @@
           </div>
         </div>
         <div class="card admin-card">
+          <div class="admin-chart-title">
+            <h3>Avaliações</h3>
+            <span class="metric-info" data-tooltip="Média das avaliações e distribuição por estrelas no período.">ⓘ</span>
+          </div>
+          <p class="card-sub admin-card-sub">Resumo das avaliações das correções.</p>
+          <div id="reviews-summary" class="reviews-summary"></div>
+          <div class="admin-chart">
+            <canvas id="reviewsChart"></canvas>
+          </div>
+          <div id="reviews-distribution" class="reviews-distribution"></div>
+        </div>
+      </div>
+
+      <div class="admin-grid-2">
+        <div class="card admin-card">
           <h3>Top 10 · Correções por usuário</h3>
           <p class="card-sub admin-card-sub">Quem mais corrigiu no período.</p>
           <div class="admin-table" id="corrections-by-user"></div>
+        </div>
+        <div class="card admin-card">
+          <h3>Comentários recentes</h3>
+          <p class="card-sub admin-card-sub">O que os alunos estão dizendo.</p>
+          <div id="reviews-comments" class="reviews-comments"></div>
         </div>
       </div>
     </section>

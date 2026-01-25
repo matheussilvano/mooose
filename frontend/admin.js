@@ -395,10 +395,13 @@ function renderAbsolute(data) {
 function renderTable(data) {
   const container = document.getElementById("corrections-by-user");
   if (!container) return;
+  const total = parseNumber(data?.total_corrections);
   const rows = normalizeList(data).map(item => {
-    const name = item.email || item.user_email || item.user || item.name || item.full_name || item.id || "—";
-    const count = item.count ?? item.total ?? item.corrections ?? item.total_corrections ?? item.value ?? 0;
-    return { name, count };
+    const name = item.full_name || item.email || item.user_email || item.user || item.name || item.id || "—";
+    const count = item.corrections ?? item.corrigidas ?? item.count ?? item.total ?? item.value ?? 0;
+    const percent = item.percent ?? (total ? (parseNumber(count) / total) * 100 : null);
+    const last = item.last_correction_at || "";
+    return { name, count, percent, last };
   });
   const ordered = rows
     .map(row => ({ ...row, count: parseNumber(row.count) }))
@@ -408,15 +411,21 @@ function renderTable(data) {
     container.innerHTML = "<p class='card-sub'>Sem dados no período.</p>";
     return;
   }
+  const totalText = total ? `Total no período: ${new Intl.NumberFormat("pt-BR").format(total)} correções` : "";
   container.innerHTML = `
+    ${totalText ? `<p class="card-sub admin-card-sub">${totalText}</p>` : ""}
     <div class="admin-table-row admin-table-head">
       <span>Usuário</span>
       <span>Correções</span>
+      <span>%</span>
+      <span>Última</span>
     </div>
     ${ordered.map(row => `
       <div class="admin-table-row">
         <span>${row.name}</span>
         <span>${new Intl.NumberFormat("pt-BR").format(row.count)}</span>
+        <span>${row.percent != null ? `${row.percent.toFixed(2).replace(".", ",")}%` : "-"}</span>
+        <span>${row.last ? formatDateTimePt(row.last) : "-"}</span>
       </div>
     `).join("")}
   `;
@@ -464,6 +473,87 @@ function buildChart(ctx, label, labels, values, color, format = "number") {
       }
     }
   });
+}
+
+function renderReviews(data, group) {
+  const summaryEl = document.getElementById("reviews-summary");
+  const distEl = document.getElementById("reviews-distribution");
+  const commentsEl = document.getElementById("reviews-comments");
+
+  if (summaryEl) {
+    const avg = Number(data?.avg_stars || 0);
+    const total = parseNumber(data?.total_reviews || 0);
+    const comments = parseNumber(data?.comments_count || 0);
+    summaryEl.innerHTML = `
+      <div class="reviews-metric">
+        <span class="reviews-metric-label">Média</span>
+        <span class="reviews-metric-value">${avg ? avg.toFixed(1).replace(".", ",") : "0,0"} ⭐</span>
+      </div>
+      <div class="reviews-metric">
+        <span class="reviews-metric-label">Avaliações</span>
+        <span class="reviews-metric-value">${new Intl.NumberFormat("pt-BR").format(total)}</span>
+      </div>
+      <div class="reviews-metric">
+        <span class="reviews-metric-label">Com comentários</span>
+        <span class="reviews-metric-value">${new Intl.NumberFormat("pt-BR").format(comments)}</span>
+      </div>
+    `;
+  }
+
+  if (distEl) {
+    const dist = data?.distribution || {};
+    const total = Object.values(dist).reduce((acc, value) => acc + parseNumber(value), 0) || 1;
+    distEl.innerHTML = [5, 4, 3, 2, 1].map(star => {
+      const count = parseNumber(dist[String(star)] || 0);
+      const width = Math.round((count / total) * 100);
+      return `
+        <div class="reviews-bar">
+          <span>${star}⭐</span>
+          <div class="reviews-bar-track">
+            <div class="reviews-bar-fill" style="width:${width}%"></div>
+          </div>
+          <span>${new Intl.NumberFormat("pt-BR").format(count)}</span>
+        </div>
+      `;
+    }).join("");
+  }
+
+  if (commentsEl) {
+    const comments = Array.isArray(data?.recent_comments) ? data.recent_comments : [];
+    if (!comments.length) {
+      commentsEl.innerHTML = "<p class='card-sub'>Sem comentários no período.</p>";
+    } else {
+      commentsEl.innerHTML = comments.map(item => `
+        <div class="reviews-comment">
+          <div class="reviews-comment-head">
+            <span class="reviews-comment-stars">${"★".repeat(item.stars || 0)}${"☆".repeat(5 - (item.stars || 0))}</span>
+            <span class="reviews-comment-date">${formatDateTimePt(item.created_at)}</span>
+          </div>
+          <p>${item.comment || ""}</p>
+          <small>${item.user_email || "—"} · ${item.tema || "Sem tema"}</small>
+        </div>
+      `).join("");
+    }
+  }
+
+  if (data?.series) {
+    const seriesData = normalizeSeries(data.series);
+    seriesData.labels = formatChartLabels(seriesData.labels, group);
+    if (typeof Chart !== "undefined") {
+      if (window.reviewsChartInstance) window.reviewsChartInstance.destroy();
+      window.reviewsChartInstance = buildChart(
+        document.getElementById("reviewsChart"),
+        "Avaliações",
+        seriesData.labels,
+        seriesData.values,
+        "#f59e0b"
+      );
+      if (!window.reviewsChartInstance) showChartEmpty("reviewsChart", "Sem dados de avaliações no período.");
+      else clearChartEmpty("reviewsChart");
+    }
+  } else {
+    showChartEmpty("reviewsChart", "Sem série temporal de avaliações.");
+  }
 }
 
 function showChartEmpty(canvasId, message) {
@@ -528,18 +618,20 @@ document.addEventListener("DOMContentLoaded", () => {
     if (tz) qs.set("timezone", tz);
 
     try {
-      const [absolute, overview, users, corrections, sales, byUser] = await Promise.all([
+      const [absolute, overview, users, corrections, sales, byUser, reviews] = await Promise.all([
         fetchAdmin(`/admin/metrics/absolute`),
         fetchAdmin(`/admin/metrics/overview?${qs.toString()}`),
         fetchAdmin(`/admin/metrics/users/created?${qs.toString()}`),
         fetchAdmin(`/admin/metrics/corrections?${qs.toString()}`),
         fetchAdmin(`/admin/metrics/sales?${qs.toString()}`),
-        fetchAdmin(`/admin/metrics/corrections/by-user?${qs.toString()}&limit=50`)
+        fetchAdmin(`/admin/metrics/corrections/by-user?${qs.toString()}&limit=10`),
+        fetchAdmin(`/admin/metrics/reviews?${qs.toString()}&limit=20`)
       ]);
 
       renderAbsolute(absolute);
       renderOverview(overview, start, end);
       renderTable(byUser);
+      renderReviews(reviews, group);
 
       const usersSeries = normalizeSeries(users);
       const correctionsSeries = normalizeSeries(corrections);
