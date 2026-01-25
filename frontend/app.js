@@ -55,6 +55,7 @@ let chartInstance = null;
 let currentCredits = null;
 let lastEssayId = null;
 let lastReview = null;
+let lastResult = null;
 
 function normalizeCredits(value) {
   if (typeof value === "number" && Number.isFinite(value)) return value;
@@ -90,6 +91,136 @@ function setCreditsUI(value) {
   document.querySelectorAll("[data-credit-balance]").forEach(el => {
     el.textContent = value === null ? "—" : value;
   });
+}
+
+function getShareElements() {
+  return {
+    card: document.getElementById("share-card"),
+    img: document.getElementById("share-image-preview"),
+    btnNative: document.getElementById("btn-share-native"),
+    btnDownload: document.getElementById("btn-share-download"),
+    btnWhatsapp: document.getElementById("btn-share-whatsapp"),
+    msg: document.getElementById("share-msg")
+  };
+}
+
+function formatScore(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "—";
+  return Math.round(n).toString();
+}
+
+async function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+async function buildShareImage(scoreText) {
+  const canvas = document.createElement("canvas");
+  const width = 1080;
+  const height = 1920;
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+
+  const gradient = ctx.createLinearGradient(0, 0, width, height);
+  gradient.addColorStop(0, "#dbeafe");
+  gradient.addColorStop(0.5, "#eff6ff");
+  gradient.addColorStop(1, "#fef9c3");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.fillStyle = "#1d4ed8";
+  ctx.fillRect(0, 0, width, 140);
+
+  ctx.font = "bold 64px Montserrat, sans-serif";
+  ctx.fillStyle = "#ffffff";
+  ctx.textAlign = "center";
+  ctx.fillText("MOOOSE", width / 2, 90);
+
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(90, 220, width - 180, 1200);
+  ctx.strokeStyle = "#bfdbfe";
+  ctx.lineWidth = 6;
+  ctx.strokeRect(90, 220, width - 180, 1200);
+
+  ctx.fillStyle = "#0f172a";
+  ctx.font = "700 60px Montserrat, sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText("Minha nota na Mooose", width / 2, 360);
+
+  ctx.fillStyle = "#2563eb";
+  ctx.font = "900 180px Montserrat, sans-serif";
+  ctx.fillText(scoreText, width / 2, 610);
+
+  ctx.fillStyle = "#475569";
+  ctx.font = "500 44px Nunito, sans-serif";
+  ctx.fillText("Treinei redação com IA", width / 2, 710);
+
+  try {
+    const logo = await loadImage("logo.png");
+    const logoSize = 160;
+    ctx.drawImage(logo, width / 2 - logoSize / 2, 820, logoSize, logoSize);
+  } catch (err) {
+    // segue sem logo se falhar
+  }
+
+  ctx.fillStyle = "#1d4ed8";
+  ctx.font = "700 42px Montserrat, sans-serif";
+  ctx.fillText("www.mooose.com.br", width / 2, 1100);
+
+  ctx.fillStyle = "#0f172a";
+  ctx.font = "700 40px Montserrat, sans-serif";
+  ctx.fillText("Bora chegar no 1000?", width / 2, 1260);
+
+  return canvas.toDataURL("image/png");
+}
+
+async function updateShareCard(result) {
+  const els = getShareElements();
+  if (!els.card) return;
+  const score = Number(result?.nota_final);
+  if (!Number.isFinite(score) || score <= 700) {
+    els.card.classList.add("hidden");
+    return;
+  }
+
+  const scoreText = formatScore(score);
+  els.card.classList.remove("hidden");
+  els.msg.textContent = "";
+
+  try {
+    const dataUrl = await buildShareImage(scoreText);
+    els.img.src = dataUrl;
+    els.btnDownload.href = dataUrl;
+
+    const shareText = `Tirei ${scoreText} na redação com a Mooose! Confira em https://www.mooose.com.br`;
+    els.btnWhatsapp.href = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+
+    els.btnNative.onclick = async () => {
+      const file = await (await fetch(dataUrl)).blob();
+      const shareData = {
+        title: "Minha nota na Mooose",
+        text: shareText,
+        files: [new File([file], "mooose-nota.png", { type: "image/png" })]
+      };
+      if (navigator.canShare && navigator.canShare(shareData)) {
+        await navigator.share(shareData);
+      } else if (navigator.share) {
+        await navigator.share({ title: "Minha nota na Mooose", text: shareText, url: "https://www.mooose.com.br" });
+      } else {
+        els.msg.textContent = "Seu navegador não suporta compartilhamento direto. Baixe a imagem ou use o WhatsApp.";
+        els.msg.className = "form-message";
+      }
+    };
+  } catch (err) {
+    els.msg.textContent = "Não foi possível gerar a imagem agora. Tente novamente.";
+    els.msg.className = "form-message error";
+  }
 }
 
 function showCreditsModal() {
@@ -563,6 +694,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderResultado(res) {
     const el = document.getElementById("resultado-wrapper");
     if(!res || !el) return;
+    lastResult = res;
     const comps = (res.competencias || []).map(c => `
       <div class="competencia-card">
         <div class="competencia-header">
@@ -581,6 +713,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <h4>Detalhamento por competência</h4>
       ${comps}
     `;
+    updateShareCard(res);
   }
 
   loadHistoricoFn = async () => {

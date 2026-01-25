@@ -541,6 +541,56 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   background: #ffffff;
 }
 
+/* =========================
+   COMPARTILHAMENTO DE NOTA
+   ========================= */
+.share-card {
+  margin-top: 2rem;
+  border: 2px dashed #bfdbfe;
+  border-radius: 20px;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #eff6ff, #e0f2fe);
+}
+.share-header h4 {
+  margin-bottom: 0.4rem;
+  font-size: 1.3rem;
+  color: var(--brand-dark);
+}
+.share-body {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 1.5rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+.share-preview {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  padding: 0.8rem;
+  display: flex;
+  justify-content: center;
+}
+.share-preview img {
+  width: 100%;
+  max-width: 280px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+}
+.share-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+.share-actions .duo-btn {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .share-body { grid-template-columns: 1fr; }
+  .share-preview img { max-width: 220px; }
+}
+
 /* Switch Tabs */
 .correction-switch { display: flex; background: #f1f5f9; padding: 0.4rem; border-radius: 16px; gap: 0.5rem; margin-bottom: 1.5rem; }
 .switch-tab {
