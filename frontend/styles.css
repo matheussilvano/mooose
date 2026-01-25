@@ -920,6 +920,18 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   gap: 1rem;
   margin-top: 1rem;
 }
+.admin-quick-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+.admin-filter-btn {
+  width: auto;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  border-radius: 999px;
+}
 .admin-select {
   width: 100%;
   padding: 0.8rem 1rem;
@@ -1077,4 +1089,5 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   .admin-grid-2 { grid-template-columns: 1fr; }
   .admin-chart { height: 220px; }
   .admin-table-row { grid-template-columns: 1fr; }
+  .admin-quick-filters { margin-top: 0.75rem; }
 }

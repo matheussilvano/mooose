@@ -56,6 +56,15 @@ function pad(value) {
   return String(value).padStart(2, "0");
 }
 
+function toInputValue(date) {
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1);
+  const day = pad(date.getDate());
+  const hour = pad(date.getHours());
+  const minute = pad(date.getMinutes());
+  return `${year}-${month}-${day}T${hour}:${minute}`;
+}
+
 function formatShortDate(date, withYear = false) {
   const formatter = new Intl.DateTimeFormat("pt-BR", {
     day: "2-digit",
@@ -167,14 +176,6 @@ function setDefaultRange() {
 
   const now = new Date();
   const firstDay = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0);
-  const toInputValue = (date) => {
-    const year = date.getFullYear();
-    const month = pad(date.getMonth() + 1);
-    const day = pad(date.getDate());
-    const hour = pad(date.getHours());
-    const minute = pad(date.getMinutes());
-    return `${year}-${month}-${day}T${hour}:${minute}`;
-  };
 
   startInput.value = toInputValue(firstDay);
   endInput.value = toInputValue(now);
@@ -469,6 +470,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginMsg = document.getElementById("admin-login-msg");
   const logoutBtn = document.getElementById("admin-logout");
   const refreshBtn = document.getElementById("admin-refresh");
+  const filterToday = document.getElementById("admin-filter-today");
+  const filterWeek = document.getElementById("admin-filter-week");
+  const filterMonth = document.getElementById("admin-filter-month");
 
   let usersChart = null;
   let correctionsChart = null;
@@ -586,6 +590,42 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   refreshBtn?.addEventListener("click", () => {
+    loadMetrics();
+  });
+
+  filterToday?.addEventListener("click", () => {
+    const startInput = document.getElementById("admin-start");
+    const endInput = document.getElementById("admin-end");
+    if (!startInput || !endInput) return;
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+    startInput.value = toInputValue(start);
+    endInput.value = toInputValue(now);
+    loadMetrics();
+  });
+
+  filterWeek?.addEventListener("click", () => {
+    const startInput = document.getElementById("admin-start");
+    const endInput = document.getElementById("admin-end");
+    if (!startInput || !endInput) return;
+    const now = new Date();
+    const day = (now.getDay() + 6) % 7;
+    const start = new Date(now);
+    start.setDate(now.getDate() - day);
+    start.setHours(0, 0, 0, 0);
+    startInput.value = toInputValue(start);
+    endInput.value = toInputValue(now);
+    loadMetrics();
+  });
+
+  filterMonth?.addEventListener("click", () => {
+    const startInput = document.getElementById("admin-start");
+    const endInput = document.getElementById("admin-end");
+    if (!startInput || !endInput) return;
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0);
+    startInput.value = toInputValue(start);
+    endInput.value = toInputValue(now);
     loadMetrics();
   });
 
