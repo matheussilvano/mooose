@@ -532,10 +532,20 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
 .weekly-extra {
   margin-top: 1.5rem;
 }
+.weekly-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  align-items: center;
+}
+.weekly-actions .weekly-toggle {
+  margin-top: 0;
+}
 
 .card {
   background: white; border: 2px solid var(--border); border-radius: var(--radius-lg);
-  padding: 2rem; box-shadow: var(--shadow-cartoon); margin-bottom: 2rem;
+  padding: 2rem; box-shadow: var(--shadow-cartoon); margin-bottom: 2rem; transition: box-shadow 0.2s, border-color 0.2s;
 }
 .card h3 { font-size: 1.25rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text); }
 .card-sub { color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.5; font-size: 0.95rem; }
@@ -574,6 +584,11 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   gap: 1rem;
   margin-top: 0.5rem;
 }
+.credit-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
 .credit-note {
   font-size: 0.85rem;
   color: var(--text-muted);
@@ -588,6 +603,30 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   font-size: 0.85rem;
   color: var(--text-muted);
   text-align: center;
+}
+.credit-lock {
+  margin-top: 0.75rem;
+  padding: 0.65rem 0.8rem;
+  border-radius: 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.duo-btn.is-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: auto;
+}
+.card.highlight {
+  border-color: #93c5fd;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
 /* =========================
@@ -884,6 +923,55 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
 }
 
 /* =========================
+   SUMMARY STRIP
+   ========================= */
+.summary-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 1.5rem;
+}
+.summary-item {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  text-align: left;
+  font-family: inherit;
+  appearance: none;
+  width: 100%;
+}
+.summary-item.summary-action {
+  background: #fff7ed;
+  border-color: #fed7aa;
+  cursor: pointer;
+}
+.summary-item.summary-action:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+.summary-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+  font-weight: 700;
+}
+.summary-value {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+.summary-sub {
+  font-size: 0.85rem;
+  color: #475569;
+  font-weight: 600;
+}
+
+/* =========================
    STATUS STRIP
    ========================= */
 .dashboard-stats {
@@ -1148,11 +1236,17 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   display: none;
   margin-top: 0.8rem;
 }
+.review-intro {
+  margin-bottom: 0.75rem;
+}
 .review-invite {
   margin: 0 0 0.6rem;
   font-size: 0.9rem;
   font-weight: 700;
   color: #0f172a;
+}
+.review-widget.has-review .review-intro {
+  display: none;
 }
 .review-widget.open .review-body {
   display: block;
@@ -1763,7 +1857,9 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   .dashboard-header { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
   .dashboard-actions { width: 100%; }
   .dashboard-actions .duo-btn { width: 100%; }
+  .summary-strip { grid-template-columns: 1fr; }
   .weekly-toggle { width: 100%; }
+  .weekly-actions .duo-btn { width: 100%; }
   .card { padding: 1.4rem; }
   .credit-card-header { flex-direction: column; align-items: flex-start; }
   .credit-balance { width: 100%; min-width: 0; }
@@ -1772,6 +1868,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
 
   .correction-switch { flex-direction: column; }
   .switch-tab { padding: 0.8rem; font-size: 0.95rem; }
+  .correction-panel .duo-btn { width: 100%; }
 
   .resultado-score-pill { font-size: 2rem; padding: 0.4rem 1rem; }
   .competencia-header { flex-direction: column; align-items: flex-start; gap: 0.4rem; }

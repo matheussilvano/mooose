@@ -389,82 +389,24 @@
           <p id="user-email" style="color: var(--text-muted);"></p>
         </div>
         <div class="dashboard-actions">
-          <button id="btn-go-correction" class="duo-btn btn-primary">CORRIGIR REDAÇÃO</button>
+          <button id="btn-go-correction" class="duo-btn btn-primary">Corrigir redação (grátis)</button>
           <button id="btn-logout" class="duo-btn btn-secondary" style="width: auto;">SAIR</button>
         </div>
       </div>
 
-      <div class="dashboard-stats">
-        <div class="stat-pill credits-pill" title="Créditos disponíveis">
-          <span class="stat-icon">💎</span>
-          <span class="stat-value" data-credit-balance>—</span>
+      <div class="summary-strip">
+        <div class="summary-item">
+          <span class="summary-label">Créditos disponíveis</span>
+          <strong class="summary-value" data-credit-balance>—</strong>
         </div>
-        <button class="stat-pill streak-pill" type="button" data-offensiva-open title="Ofensiva ENEM" aria-label="Abrir Ofensiva ENEM">
-          <span class="stat-icon">🔥</span>
-          <span class="stat-value" data-week-streak>0</span>
+        <button class="summary-item summary-action" type="button" data-offensiva-open aria-label="Abrir Ofensiva ENEM">
+          <span class="summary-label">Ofensiva ENEM</span>
+          <strong class="summary-value"><span data-week-streak>0</span> <span data-week-streak-label>semanas</span></strong>
+          <span class="summary-sub" data-week-summary>Você treinou esta semana?</span>
         </button>
-      </div>
-
-      <div class="card weekly-theme-card">
-        <div class="weekly-header">
-          <div>
-            <span class="weekly-pill">Tema da Semana · 25/01/2026 a 31/01/2026</span>
-            <h2>Os impactos do uso excessivo das redes sociais na saúde mental dos jovens no Brasil</h2>
-            <p class="weekly-sub">
-              Use o tema da semana para praticar com base no padrão ENEM. Abaixo, textos de apoio para repertório.
-            </p>
-          </div>
-          <div class="weekly-image">
-            <img src="impacto_redes_sociais.png" alt="Jovem impactado pelo uso excessivo das redes sociais" />
-          </div>
-        </div>
-
-        <button type="button" class="duo-btn btn-secondary weekly-toggle" data-weekly-toggle>
-          Ver textos de apoio
-        </button>
-
-        <div class="weekly-extra hidden">
-          <div class="weekly-support">
-            <h3>Textos de apoio</h3>
-            <div class="weekly-cards">
-              <div class="weekly-card">
-                <span class="weekly-tag">Texto I</span>
-                <p>
-                  A presença contínua nas redes sociais altera a rotina dos jovens, ampliando a exposição a padrões de
-                  comportamento e beleza que nem sempre correspondem à vida real. A busca por aprovação, visibilidade
-                  e validação cria um ciclo de comparação permanente, no qual o “sucesso” é medido por curtidas,
-                  seguidores e comentários.
-                </p>
-                <p class="weekly-source">Fonte: Elaboração Mooose (texto de apoio em padrão ENEM).</p>
-              </div>
-              <div class="weekly-card">
-                <span class="weekly-tag">Texto II</span>
-                <p>
-                  A hiperconexão facilita o contato com discursos de ódio e cyberbullying, aumentando a pressão
-                  emocional. Sem limites claros, o medo de exclusão e a exposição constante podem desencadear ansiedade
-                  e prejudicar relações presenciais.
-                </p>
-                <p class="weekly-source">Fonte: Elaboração Mooose (texto de apoio em padrão ENEM).</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="weekly-guidance">
-            <h3>Possíveis caminhos de abordagem</h3>
-            <ul>
-              <li>Consequências psicológicas: ansiedade, comparação social, baixa autoestima e dependência digital.</li>
-              <li>Aspectos sociais: isolamento, cyberbullying e pressão por validação.</li>
-              <li>Responsabilização: escolas, famílias, políticas públicas e plataformas digitais.</li>
-              <li>Proposta de intervenção: educação midiática, campanhas e apoio psicológico acessível.</li>
-            </ul>
-          </div>
-
-          <div class="tema-week-box">
-            <span class="tema-week-badge">Tema da semana</span>
-            <button type="button" class="tema-week-btn" data-theme-target="tema">
-              Os impactos do uso excessivo das redes sociais na saúde mental dos jovens no Brasil
-            </button>
-          </div>
+        <div class="summary-item">
+          <span class="summary-label">Média / Melhor</span>
+          <strong class="summary-value"><span data-summary-avg>0</span> • <span data-summary-best>0</span></strong>
         </div>
       </div>
 
@@ -472,8 +414,7 @@
         <div class="credit-card-header">
           <div>
             <h3>Seus créditos</h3>
-            <p class="card-sub">Você começou com 2 créditos grátis. Cada correção consome 1 crédito.</p>
-            <p class="credit-why">A cobrança ajuda a manter a Mooose funcionando e a financiar novas melhorias.</p>
+            <p class="card-sub" data-credit-info>Cada correção consome 1 crédito.</p>
           </div>
           <div class="credit-balance">
             <span class="credit-label">Créditos disponíveis</span>
@@ -481,9 +422,135 @@
           </div>
         </div>
         <div class="credit-actions">
-          <button class="duo-btn btn-primary" data-buy-credits>Continuar evoluindo</button>
-          <span class="credit-note">10 correções por R$ 9,90 · Pagamento seguro via Mercado Pago.</span>
+          <button class="duo-btn btn-primary" data-buy-credits>Desbloquear 10 correções por R$ 9,90</button>
+          <div class="credit-notes">
+            <span class="credit-note">Pagamento seguro via Mercado Pago</span>
+            <span class="credit-note">Sai por R$ 0,99 por correção</span>
+          </div>
         </div>
+      </div>
+
+      <div class="card" id="card-nova-correcao">
+        <h3>Nova correção</h3>
+        <p class="card-sub">Envie sua redação para receber nota por competência e feedback claro.</p>
+
+        <div class="correction-switch">
+          <button class="switch-tab active" data-target="arquivo">📸 Foto / PDF</button>
+          <button class="switch-tab" data-target="texto">⌨️ Digitar texto</button>
+        </div>
+
+        <div id="panel-arquivo" class="correction-panel active">
+          <form id="form-corrigir-arquivo">
+            <div class="input-group" style="margin-bottom: 1rem;">
+              <label>Tema da redação</label>
+              <input
+                type="text"
+                name="tema_arquivo"
+                list="tema-semana-list"
+                placeholder="Ex.: Invisibilidade do trabalho de cuidado"
+                required
+              />
+            </div>
+            <div class="input-group" style="margin-bottom: 1rem;">
+              <label>Foto ou PDF da redação</label>
+              <input type="file" name="arquivo" accept="image/*,application/pdf" required />
+            </div>
+            <button type="submit" class="duo-btn btn-success" data-send-btn>Enviar para correção</button>
+          </form>
+          <p class="credit-inline-note">1 correção = 1 crédito</p>
+          <div class="credit-lock hidden" data-credit-lock>
+            <span>Para enviar, você precisa de créditos.</span>
+            <button type="button" class="link-btn" data-buy-credits>Desbloquear correções</button>
+          </div>
+          <p class="form-message" id="msg-corrigir-arquivo"></p>
+        </div>
+
+        <div id="panel-texto" class="correction-panel">
+          <form id="form-corrigir">
+            <div class="input-group" style="margin-bottom: 1rem;">
+              <label>Tema da redação</label>
+              <input type="text" name="tema" list="tema-semana-list" placeholder="Tema da redação" required />
+            </div>
+            <div class="input-group" style="margin-bottom: 1rem;">
+              <label>Texto</label>
+              <textarea
+                name="texto"
+                rows="10"
+                placeholder="Escreva sua redação aqui..."
+                class="input-text-area"
+                required
+              ></textarea>
+            </div>
+            <button type="submit" class="duo-btn btn-success" data-send-btn>Enviar para correção</button>
+          </form>
+          <p class="credit-inline-note">1 correção = 1 crédito</p>
+          <div class="credit-lock hidden" data-credit-lock>
+            <span>Para enviar, você precisa de créditos.</span>
+            <button type="button" class="link-btn" data-buy-credits>Desbloquear correções</button>
+          </div>
+          <p class="form-message" id="msg-corrigir"></p>
+        </div>
+      </div>
+
+      <div class="card" id="card-resultado">
+        <h3>Resultado</h3>
+        <p class="card-sub">O resultado detalhado da sua última correção aparece aqui.</p>
+        <div id="resultado-wrapper">
+          <p style="color: #aaa; text-align: center; padding: 2rem;">
+            Seu resultado vai aparecer aqui assim que você enviar uma redação.
+          </p>
+        </div>
+        <div id="share-card" class="share-card hidden">
+          <div class="share-header">
+            <div>
+              <h4>Compartilhe sua nota</h4>
+              <p class="card-sub">Uma imagem especial com sua nota, tema da redação e a marca Mooose — perfeita para postar.</p>
+            </div>
+          </div>
+          <div class="share-body">
+            <div class="share-preview">
+              <img id="share-image-preview" alt="Imagem de compartilhamento" />
+            </div>
+            <div class="share-actions">
+              <button class="duo-btn btn-primary" id="btn-share-native" type="button">Compartilhar</button>
+              <a class="duo-btn btn-secondary" id="btn-share-download" download="mooose-nota.png">Baixar imagem</a>
+              <a class="duo-btn btn-secondary" id="btn-share-whatsapp" target="_blank" rel="noopener">Abrir WhatsApp</a>
+          <p class="form-message" id="share-msg"></p>
+        </div>
+      </div>
+        </div>
+        <div id="resultado-review" class="review-widget hidden" data-review-widget data-essay-id="">
+          <div class="review-summary" data-review-summary>
+            <span class="review-summary-stars" data-review-summary-stars>Sem avaliação</span>
+            <span class="review-badge hidden" data-review-badge></span>
+            <button type="button" class="link-btn review-toggle" data-review-toggle>Avaliar</button>
+          </div>
+          <div class="review-body">
+            <div class="review-intro">
+              <div class="review-header">Avalie esta correção</div>
+              <p class="review-invite">Leva menos de 1 minuto.</p>
+            </div>
+            <div class="review-row">
+              <div class="review-stars" data-review-stars></div>
+              <button type="button" class="duo-btn btn-secondary small" data-review-save>Salvar avaliação</button>
+            </div>
+            <textarea class="review-input" rows="2" placeholder="Comentário (opcional)" data-review-comment></textarea>
+            <p class="form-message" data-review-msg></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Sua evolução nas redações</h3>
+        <p class="card-sub">Acompanhe suas notas ao longo do tempo e veja seu histórico.</p>
+
+        <div id="evolucao-resumo" class="evolucao-resumo"></div>
+
+        <div style="margin-bottom: 2rem; height: 220px;">
+          <canvas id="evolucaoChart"></canvas>
+        </div>
+
+        <div id="historico-list"></div>
       </div>
 
       <div class="card referral-card referral-loading" id="card-referrals">
@@ -529,129 +596,68 @@
         </div>
       </div>
 
-      <div class="card" id="card-nova-correcao">
-        <h3>Nova correção</h3>
-        <p class="card-sub">Envie sua redação para a Mooose corrigir!</p>
-
-        <div class="correction-switch">
-          <button class="switch-tab active" data-target="arquivo">📸 Foto / PDF</button>
-          <button class="switch-tab" data-target="texto">⌨️ Digitar texto</button>
-        </div>
-
-        <div id="panel-arquivo" class="correction-panel active">
-          <form id="form-corrigir-arquivo">
-            <div class="input-group" style="margin-bottom: 1rem;">
-              <label>Tema da redação</label>
-              <input
-                type="text"
-                name="tema_arquivo"
-                list="tema-semana-list"
-                placeholder="Ex.: Invisibilidade do trabalho de cuidado"
-                required
-              />
-            </div>
-            <div class="tema-week-box">
-              <span class="tema-week-badge">Tema da semana</span>
-              <button type="button" class="tema-week-btn" data-theme-target="tema_arquivo">
-                Os impactos do uso excessivo das redes sociais na saúde mental dos jovens no Brasil
+      <div class="card weekly-theme-card">
+        <div class="weekly-header">
+          <div>
+            <span class="weekly-pill">MISSÃO DA SEMANA</span>
+            <h2>Os impactos do uso excessivo das redes sociais na saúde mental dos jovens no Brasil</h2>
+            <p class="weekly-sub">Treine neste tema e evolua com feedback no padrão ENEM.</p>
+            <div class="weekly-actions">
+              <button
+                type="button"
+                class="duo-btn btn-primary"
+                data-theme-target="all"
+                data-theme-value="Os impactos do uso excessivo das redes sociais na saúde mental dos jovens no Brasil"
+                data-scroll-target="correcao"
+              >
+                Usar este tema
+              </button>
+              <button type="button" class="duo-btn btn-secondary weekly-toggle" data-weekly-toggle>
+                Ver textos de apoio
               </button>
             </div>
-            <div class="input-group" style="margin-bottom: 1rem;">
-              <label>Foto ou PDF da redação</label>
-              <input type="file" name="arquivo" accept="image/*,application/pdf" required />
-            </div>
-            <button type="submit" class="duo-btn btn-success">ENVIAR PARA CORREÇÃO</button>
-          </form>
-          <p class="credit-inline-note">1 correção = 1 crédito.</p>
-          <p class="form-message" id="msg-corrigir-arquivo"></p>
-        </div>
-
-        <div id="panel-texto" class="correction-panel">
-          <form id="form-corrigir">
-            <div class="input-group" style="margin-bottom: 1rem;">
-              <label>Tema da redação</label>
-              <input type="text" name="tema" list="tema-semana-list" placeholder="Tema da redação" required />
-            </div>
-            <div class="tema-week-box">
-              <span class="tema-week-badge">Tema da semana</span>
-              <button type="button" class="tema-week-btn" data-theme-target="tema">
-                Os impactos do uso excessivo das redes sociais na saúde mental dos jovens no Brasil
-              </button>
-            </div>
-            <div class="input-group" style="margin-bottom: 1rem;">
-              <label>Texto</label>
-              <textarea
-                name="texto"
-                rows="10"
-                placeholder="Escreva sua redação aqui..."
-                class="input-text-area"
-                required
-              ></textarea>
-            </div>
-            <button type="submit" class="duo-btn btn-success">CORRIGIR AGORA</button>
-          </form>
-          <p class="credit-inline-note">1 correção = 1 crédito.</p>
-          <p class="form-message" id="msg-corrigir"></p>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>Resultado</h3>
-        <p class="card-sub">O resultado detalhado da sua última correção aparece aqui.</p>
-        <div id="resultado-wrapper">
-          <p style="color: #aaa; text-align: center; padding: 2rem;">
-            O resultado da sua correção aparecerá aqui! 🌟
-          </p>
-        </div>
-        <div id="share-card" class="share-card hidden">
-          <div class="share-header">
-            <div>
-              <h4>Compartilhe sua nota</h4>
-              <p class="card-sub">Uma imagem especial com sua nota, tema da redação e a marca Mooose — perfeita para postar.</p>
-            </div>
           </div>
-          <div class="share-body">
-            <div class="share-preview">
-              <img id="share-image-preview" alt="Imagem de compartilhamento" />
-            </div>
-            <div class="share-actions">
-              <button class="duo-btn btn-primary" id="btn-share-native" type="button">Compartilhar</button>
-              <a class="duo-btn btn-secondary" id="btn-share-download" download="mooose-nota.png">Baixar imagem</a>
-              <a class="duo-btn btn-secondary" id="btn-share-whatsapp" target="_blank" rel="noopener">Abrir WhatsApp</a>
-          <p class="form-message" id="share-msg"></p>
-        </div>
-      </div>
-        </div>
-        <div id="resultado-review" class="review-widget hidden" data-review-widget data-essay-id="">
-          <div class="review-summary" data-review-summary>
-            <span class="review-summary-stars" data-review-summary-stars>Sem avaliação</span>
-            <span class="review-badge hidden" data-review-badge></span>
-            <button type="button" class="link-btn review-toggle" data-review-toggle>Avaliar</button>
-          </div>
-          <div class="review-body">
-            <div class="review-header">Sua avaliação é muito importante pra nós!</div>
-            <p class="review-invite">Leva só alguns segundos e ajuda a melhorar cada correção.</p>
-            <div class="review-row">
-              <div class="review-stars" data-review-stars></div>
-              <button type="button" class="duo-btn btn-secondary small" data-review-save>Salvar avaliação</button>
-            </div>
-            <textarea class="review-input" rows="2" placeholder="Comentário (opcional)" data-review-comment></textarea>
-            <p class="form-message" data-review-msg></p>
+          <div class="weekly-image">
+            <img src="impacto_redes_sociais.png" alt="Jovem impactado pelo uso excessivo das redes sociais" />
           </div>
         </div>
-      </div>
 
-      <div class="card">
-        <h3>Sua evolução nas redações</h3>
-        <p class="card-sub">Acompanhe suas notas ao longo do tempo e veja seu histórico.</p>
+        <div class="weekly-extra hidden">
+          <div class="weekly-support">
+            <h3>Textos de apoio</h3>
+            <div class="weekly-cards">
+              <div class="weekly-card">
+                <span class="weekly-tag">Texto I</span>
+                <p>
+                  A presença contínua nas redes sociais altera a rotina dos jovens, ampliando a exposição a padrões de
+                  comportamento e beleza que nem sempre correspondem à vida real. A busca por aprovação, visibilidade
+                  e validação cria um ciclo de comparação permanente, no qual o “sucesso” é medido por curtidas,
+                  seguidores e comentários.
+                </p>
+                <p class="weekly-source">Fonte: Elaboração Mooose (texto de apoio em padrão ENEM).</p>
+              </div>
+              <div class="weekly-card">
+                <span class="weekly-tag">Texto II</span>
+                <p>
+                  A hiperconexão facilita o contato com discursos de ódio e cyberbullying, aumentando a pressão
+                  emocional. Sem limites claros, o medo de exclusão e a exposição constante podem desencadear ansiedade
+                  e prejudicar relações presenciais.
+                </p>
+                <p class="weekly-source">Fonte: Elaboração Mooose (texto de apoio em padrão ENEM).</p>
+              </div>
+            </div>
+          </div>
 
-        <div id="evolucao-resumo" class="evolucao-resumo"></div>
-
-        <div style="margin-bottom: 2rem; height: 220px;">
-          <canvas id="evolucaoChart"></canvas>
+          <div class="weekly-guidance">
+            <h3>Possíveis caminhos de abordagem</h3>
+            <ul>
+              <li>Consequências psicológicas: ansiedade, comparação social, baixa autoestima e dependência digital.</li>
+              <li>Aspectos sociais: isolamento, cyberbullying e pressão por validação.</li>
+              <li>Responsabilização: escolas, famílias, políticas públicas e plataformas digitais.</li>
+              <li>Proposta de intervenção: educação midiática, campanhas e apoio psicológico acessível.</li>
+            </ul>
+          </div>
         </div>
-
-        <div id="historico-list"></div>
       </div>
     </section>
   </main>
@@ -689,7 +695,7 @@
   </footer>
 
   <datalist id="tema-semana-list">
-    <option value="Os impactos do uso excessivo das redes sociais na saúde mental dos jovens no Brasil" label="Tema da semana"></option>
+    <option value="Os impactos do uso excessivo das redes sociais na saúde mental dos jovens no Brasil" label="Missão da semana"></option>
   </datalist>
 
   <div id="credits-modal" class="credits-modal hidden">

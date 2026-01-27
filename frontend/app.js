@@ -2,13 +2,12 @@ const API_BASE = "https://mooose-backend.onrender.com";
 
 /* FRASES DE LOADING DIVERTIDAS */
 const funnyMessages = [
-  "Afiando o lápis virtual...",
-  "Consultando os universitários...",
-  "Colocando os óculos de leitura...",
-  "Caçando erros de vírgula...",
-  "Calculando sua nota 1000...",
-  "Verificando a coesão...",
-  "Analisando a proposta de intervenção..."
+  "Analisando competências...",
+  "Gerando feedback...",
+  "Calculando sua nota...",
+  "Organizando sugestões...",
+  "Revisando coesão e coerência...",
+  "Preparando sua devolutiva..."
 ];
 const PAYWALL_STORAGE_KEY = "mooose_paywall_after_free_shown";
 const REFERRAL_STORAGE_KEY = "mooose_referral_code";
@@ -22,7 +21,12 @@ function showLoading(msg) {
   if (overlay) overlay.classList.remove("hidden");
   
   if (msgEl) {
-    msgEl.textContent = msg || funnyMessages[0];
+    if (msg) {
+      msgEl.textContent = msg;
+      if (msgEl.dataset.interval) clearInterval(msgEl.dataset.interval);
+      return;
+    }
+    msgEl.textContent = funnyMessages[0];
     if (msgEl.dataset.interval) clearInterval(msgEl.dataset.interval);
     let i = 0;
     msgEl.dataset.interval = setInterval(() => {
@@ -170,11 +174,34 @@ function extractCredits(data) {
   return null;
 }
 
+function updateCreditCardCopy(credits) {
+  const infoEl = document.querySelector("[data-credit-info]");
+  if (!infoEl) return;
+  if (credits !== null && Number(credits) <= 0) {
+    infoEl.textContent = "Você está sem créditos. Desbloqueie correções para continuar seu treino.";
+  } else {
+    infoEl.textContent = "Cada correção consome 1 crédito.";
+  }
+}
+
+function updateCreditLockState(credits) {
+  const locked = credits !== null && Number(credits) <= 0;
+  document.querySelectorAll("[data-credit-lock]").forEach(el => {
+    el.classList.toggle("hidden", !locked);
+  });
+  document.querySelectorAll("[data-send-btn]").forEach(btn => {
+    btn.classList.toggle("is-disabled", locked);
+    btn.setAttribute("aria-disabled", locked ? "true" : "false");
+  });
+}
+
 function setCreditsUI(value) {
   currentCredits = value;
   document.querySelectorAll("[data-credit-balance]").forEach(el => {
     el.textContent = value === null ? "—" : value;
   });
+  updateCreditCardCopy(value);
+  updateCreditLockState(value);
   updateOffensivaMonetization(value);
 }
 
@@ -321,6 +348,15 @@ function setOffensivaProgressStats(total, best, avg) {
   });
 }
 
+function updateSummaryScores(avg, best) {
+  const avgEl = document.querySelector("[data-summary-avg]");
+  const bestEl = document.querySelector("[data-summary-best]");
+  const avgValue = normalizeScore(avg) ?? 0;
+  const bestValue = normalizeScore(best) ?? 0;
+  if (avgEl) avgEl.textContent = avgValue ? avgValue.toFixed(0) : "0";
+  if (bestEl) bestEl.textContent = bestValue ? bestValue.toFixed(0) : "0";
+}
+
 function updateOffensivaCTA(credits) {
   const cta = document.getElementById("offensiva-cta");
   if (!cta) return;
@@ -415,9 +451,11 @@ function formatWeekDeadline(weekStart) {
 
 function updateWeeklyStreak(items = []) {
   const streakEls = document.querySelectorAll("[data-week-streak]");
+  const streakLabelEls = document.querySelectorAll("[data-week-streak-label]");
   const listEl = document.querySelector("[data-week-list]");
   const msgEl = document.querySelector("[data-week-message]");
-  if (!streakEls.length && !listEl && !msgEl) return;
+  const summaryEl = document.querySelector("[data-week-summary]");
+  if (!streakEls.length && !listEl && !msgEl && !summaryEl) return;
 
   const weekSet = new Set();
   items.forEach(item => {
@@ -449,6 +487,12 @@ function updateWeeklyStreak(items = []) {
       el.textContent = String(streak);
     });
   }
+  if (streakLabelEls.length) {
+    const label = streak === 1 ? "semana" : "semanas";
+    streakLabelEls.forEach(el => {
+      el.textContent = label;
+    });
+  }
   if (msgEl) {
     if (streak >= 2) msgEl.textContent = `🔥 Ofensiva ENEM: ${streak} semanas seguidas.`;
     else if (streak === 1) msgEl.textContent = "📅 Você treinou por 1 semana consecutiva. Continue!";
@@ -469,6 +513,9 @@ function updateWeeklyStreak(items = []) {
   const deadlineLabel = currentWeekStart ? formatWeekDeadline(currentWeekStart) : "";
   updateOffensivaStatus(status, deadlineLabel);
   updateOffensivaMotivation(streak);
+  if (summaryEl) {
+    summaryEl.textContent = hasCurrentWeek ? "Você treinou esta semana." : "Você treinou esta semana?";
+  }
 
   if (listEl) {
     if (!currentWeekStart) return;
@@ -826,10 +873,11 @@ function updateReviewSummary(widget, review) {
   const summaryStars = widget.querySelector("[data-review-summary-stars]");
   const badge = widget.querySelector("[data-review-badge]");
   const hasReview = Number(review?.stars || 0) > 0;
+  widget.classList.toggle("has-review", hasReview);
   if (summaryStars) {
     summaryStars.textContent = hasReview
       ? `${starText(review.stars)} (${review.stars}/5)`
-      : "Sua avaliação é muito importante pra nós — avalie!";
+      : "Sem avaliação";
   }
   if (badge) {
     const dateLabel = formatReviewDate(review);
@@ -1115,12 +1163,34 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("[data-theme-target]").forEach(btn => {
     btn.addEventListener("click", () => {
       const target = btn.dataset.themeTarget;
-      if (!target) return;
-      const input = document.querySelector(`[name="${target}"]`);
-      if (input) {
-        input.value = btn.textContent.trim();
-        input.focus();
+      const value = (btn.dataset.themeValue || btn.textContent || "").trim();
+      if (!target || !value) return;
+      if (target === "all") {
+        ["tema", "tema_arquivo"].forEach(name => {
+          const input = document.querySelector(`[name="${name}"]`);
+          if (input) input.value = value;
+        });
+      } else {
+        const input = document.querySelector(`[name="${target}"]`);
+        if (input) input.value = value;
       }
+      const activePanel = document.querySelector(".correction-panel.active");
+      const activeInput = activePanel?.querySelector('input[name="tema"], input[name="tema_arquivo"]');
+      if (activeInput) activeInput.focus();
+      const scrollTarget = btn.dataset.scrollTarget;
+      if (scrollTarget === "correcao") {
+        const card = document.getElementById("card-nova-correcao");
+        if (card) card.scrollIntoView({ behavior: "smooth" });
+      }
+    });
+  });
+
+  document.querySelectorAll("[data-send-btn]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      if (!btn.classList.contains("is-disabled")) return;
+      e.preventDefault();
+      e.stopPropagation();
+      showCreditsModal();
     });
   });
 
@@ -1280,12 +1350,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function sendCorrection(url, body, msgEl, isFile=false) {
     if (currentCredits !== null && currentCredits <= 0) {
-      msgEl.textContent = "🚧 Seus créditos gratuitos acabaram. Continue com a Mooose para treinar mais.";
+      msgEl.textContent = "Para enviar, você precisa de créditos.";
       msgEl.className = "form-message error";
       showCreditsModal();
       return;
     }
-    showLoading("Corrigindo redação...");
+    showLoading();
     msgEl.textContent = "";
     try {
       const token = getToken();
@@ -1310,7 +1380,14 @@ document.addEventListener("DOMContentLoaded", () => {
       loadHistoricoFn();
       msgEl.textContent = "Corrigido com sucesso!";
       msgEl.className = "form-message success";
-      document.getElementById("resultado-wrapper").scrollIntoView({behavior:"smooth"});
+      const resultadoCard = document.getElementById("card-resultado");
+      if (resultadoCard) {
+        resultadoCard.classList.add("highlight");
+        resultadoCard.scrollIntoView({ behavior: "smooth" });
+        setTimeout(() => resultadoCard.classList.remove("highlight"), 2000);
+      } else {
+        document.getElementById("resultado-wrapper")?.scrollIntoView({ behavior: "smooth" });
+      }
       if (shouldShowPaywallAfterFree(prevCredits, credits)) {
         const correctionsCount = prevCredits !== null ? Number(prevCredits) + 1 : 2;
         if (Number.isFinite(correctionsCount)) setPaywallCorrections(correctionsCount);
@@ -1394,13 +1471,14 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
       }
 
+      updateSummaryScores(avgScore, bestScore);
       setOffensivaProgressStats(items.length, bestScore, avgScore);
       const progressBase = avgScore ?? normalizeScore(lastResult?.nota_final) ?? 0;
       setProgressTo800(progressBase);
       
       const list = document.getElementById("historico-list");
       if(list) {
-        if(!items.length) list.innerHTML = "<p style='color:#94a3b8; text-align:center; padding:1rem;'>Nenhuma redação ainda.</p>";
+        if(!items.length) list.innerHTML = "<p style='color:#94a3b8; text-align:center; padding:1rem;'>Você ainda não tem histórico. Faça sua primeira correção para começar a acompanhar sua evolução.</p>";
         else {
           list.innerHTML = items.map(i => {
             const review = i.review || null;
@@ -1420,8 +1498,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     <button type="button" class="link-btn review-toggle" data-review-toggle>Avaliar</button>
                   </div>
                   <div class="review-body">
-                    <div class="review-header">Sua avaliação é muito importante pra nós!</div>
-                    <p class="review-invite">Leva só alguns segundos e ajuda a melhorar cada correção.</p>
+                    <div class="review-intro">
+                      <div class="review-header">Avalie esta correção</div>
+                      <p class="review-invite">Leva menos de 1 minuto.</p>
+                    </div>
                     <div class="review-row">
                       <div class="review-stars" data-review-stars></div>
                       <button type="button" class="duo-btn btn-secondary small" data-review-save>Salvar avaliação</button>
