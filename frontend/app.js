@@ -10,6 +10,9 @@ const funnyMessages = [
   "Verificando a coesão...",
   "Analisando a proposta de intervenção..."
 ];
+const PAYWALL_STORAGE_KEY = "mooose_paywall_after_free_shown";
+const PROGRESS_TARGET_SCORE = 800;
+const WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000;
 
 function showLoading(msg) {
   const overlay = document.getElementById("loading-overlay");
@@ -60,11 +63,17 @@ let lastTema = "";
 let reviewPopupTimer = null;
 let reviewPopupShown = false;
 let reviewPopupObserver = null;
+let paywallShownInSession = false;
 
 function normalizeCredits(value) {
   if (typeof value === "number" && Number.isFinite(value)) return value;
   if (typeof value === "string" && value.trim() !== "" && !Number.isNaN(Number(value))) return Number(value);
   return null;
+}
+
+function normalizeScore(value) {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
 }
 
 function extractCredits(data) {
@@ -95,6 +104,181 @@ function setCreditsUI(value) {
   document.querySelectorAll("[data-credit-balance]").forEach(el => {
     el.textContent = value === null ? "—" : value;
   });
+  updateOffensivaMonetization(value);
+}
+
+function setProgressTo800(value) {
+  const score = normalizeScore(value) ?? 0;
+  const percent = Math.max(0, Math.min(100, Math.round((score / PROGRESS_TARGET_SCORE) * 100)));
+  document.querySelectorAll("[data-progress-percent]").forEach(el => {
+    el.textContent = `${percent}%`;
+  });
+  document.querySelectorAll("[data-progress-fill]").forEach(el => {
+    el.style.width = `${percent}%`;
+  });
+}
+
+function setOffensivaProgressStats(total, best, avg) {
+  const totalValue = Math.max(0, Math.round(Number(total) || 0));
+  const bestValue = normalizeScore(best) ?? 0;
+  const avgValue = normalizeScore(avg) ?? 0;
+  document.querySelectorAll("[data-total-essays]").forEach(el => {
+    el.textContent = totalValue;
+  });
+  document.querySelectorAll("[data-best-score]").forEach(el => {
+    el.textContent = bestValue ? bestValue.toFixed(0) : "0";
+  });
+  document.querySelectorAll("[data-avg-score]").forEach(el => {
+    el.textContent = avgValue ? avgValue.toFixed(0) : "0";
+  });
+}
+
+function updateOffensivaCTA(credits) {
+  const cta = document.getElementById("offensiva-cta");
+  if (!cta) return;
+  const hasCredits = credits === null || Number(credits) > 0;
+  if (hasCredits) {
+    cta.textContent = "✍️ Enviar nova redação";
+    cta.dataset.action = "send";
+  } else {
+    cta.textContent = "💳 Desbloquear correções";
+    cta.dataset.action = "buy";
+  }
+}
+
+function updateOffensivaMonetization(credits) {
+  const show = credits !== null && Number(credits) <= 0;
+  document.querySelectorAll("[data-offensiva-monetization]").forEach(el => {
+    el.classList.toggle("hidden", !show);
+  });
+  updateOffensivaCTA(credits);
+}
+
+function updateOffensivaMotivation(streak) {
+  const titleEl = document.querySelector("[data-offensiva-motivation-title]");
+  const textEl = document.querySelector("[data-offensiva-motivation-text]");
+  if (!titleEl && !textEl) return;
+
+  let title = "🌱 Você começou bem.";
+  let text = "Agora é hora de criar o hábito.";
+  if (streak >= 6) {
+    title = "🏆 Compromisso de quem quer passar.";
+    text = "Poucos chegam até aqui.";
+  } else if (streak >= 3) {
+    title = "🚀 Você está à frente da maioria.";
+    text = "Continue assim.";
+  }
+
+  if (titleEl) titleEl.textContent = title;
+  if (textEl) textEl.textContent = text;
+}
+
+function updateOffensivaStatus(status, deadlineLabel) {
+  const titleEl = document.querySelector("[data-offensiva-status-title]");
+  const subEl = document.querySelector("[data-offensiva-status-sub]");
+  if (!titleEl && !subEl) return;
+
+  let title = "😕 Sua ofensiva foi interrompida.";
+  let sub = "Mas você pode recomeçar hoje. Toda aprovação começa com constância.";
+
+  if (status === "active") {
+    title = "💪 Você está em ritmo de treino!";
+    sub = "Continue enviando pelo menos uma redação por semana para manter sua ofensiva.";
+  } else if (status === "warning") {
+    title = "⚠️ Não perca sua ofensiva!";
+    const label = deadlineLabel || "domingo";
+    sub = `Envie uma redação até ${label} para continuar no ritmo.`;
+  }
+
+  if (titleEl) titleEl.textContent = title;
+  if (subEl) subEl.textContent = sub;
+}
+
+function getWeekStart(date) {
+  const d = new Date(date);
+  if (Number.isNaN(d.getTime())) return null;
+  const day = (d.getDay() + 6) % 7;
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() - day);
+  return d;
+}
+
+function formatWeekLabel(date) {
+  return date.toLocaleDateString("pt-BR", { month: "short", day: "2-digit" });
+}
+
+function formatWeekDeadline(weekStart) {
+  const end = new Date(weekStart.getTime() + 6 * 24 * 60 * 60 * 1000);
+  return end.toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "2-digit" });
+}
+
+function updateWeeklyStreak(items = []) {
+  const streakEl = document.querySelector("[data-week-streak]");
+  const listEl = document.querySelector("[data-week-list]");
+  const msgEl = document.querySelector("[data-week-message]");
+  if (!streakEl && !listEl && !msgEl) return;
+
+  const weekSet = new Set();
+  items.forEach(item => {
+    const raw = item?.created_at || item?.createdAt || item?.date;
+    if (!raw) return;
+    const weekStart = getWeekStart(raw);
+    if (!weekStart) return;
+    weekSet.add(weekStart.getTime());
+  });
+
+  const sorted = Array.from(weekSet).sort((a, b) => a - b);
+  let streak = 0;
+  if (sorted.length) {
+    streak = 1;
+    let current = sorted[sorted.length - 1];
+    for (let i = sorted.length - 2; i >= 0; i--) {
+      const diff = current - sorted[i];
+      if (diff === WEEK_IN_MS) {
+        streak += 1;
+        current = sorted[i];
+      } else if (diff > WEEK_IN_MS) {
+        break;
+      }
+    }
+  }
+
+  if (streakEl) streakEl.textContent = String(streak);
+  if (msgEl) {
+    if (streak >= 2) msgEl.textContent = `🔥 Ofensiva ENEM: ${streak} semanas seguidas.`;
+    else if (streak === 1) msgEl.textContent = "📅 Você treinou por 1 semana consecutiva. Continue!";
+    else msgEl.textContent = "📅 Você ainda não iniciou sua ofensiva semanal. Que tal começar hoje?";
+  }
+
+  const currentWeekStart = getWeekStart(new Date());
+  const lastWeekStart = sorted.length ? new Date(sorted[sorted.length - 1]) : null;
+  const hasCurrentWeek = currentWeekStart ? weekSet.has(currentWeekStart.getTime()) : false;
+  const isPreviousWeek = currentWeekStart && lastWeekStart
+    ? (currentWeekStart.getTime() - lastWeekStart.getTime() === WEEK_IN_MS)
+    : false;
+
+  let status = "broken";
+  if (hasCurrentWeek) status = "active";
+  else if (streak > 0 && isPreviousWeek) status = "warning";
+
+  const deadlineLabel = currentWeekStart ? formatWeekDeadline(currentWeekStart) : "";
+  updateOffensivaStatus(status, deadlineLabel);
+  updateOffensivaMotivation(streak);
+
+  if (listEl) {
+    if (!currentWeekStart) return;
+    const weeksToShow = 4;
+    const pills = [];
+    for (let i = 0; i < weeksToShow; i++) {
+      const start = new Date(currentWeekStart.getTime() - i * WEEK_IN_MS);
+      const has = weekSet.has(start.getTime());
+      const status = has ? "done" : (i === 0 ? "pending" : "missed");
+      const label = formatWeekLabel(start);
+      const note = !has && i === 0 ? "<span class=\"week-note\">em andamento</span>" : "";
+      pills.push(`<div class="week-pill ${status}"><span class="week-icon">${has ? "✓" : "•"}</span><span class="week-label">${label}</span>${note}</div>`);
+    }
+    listEl.innerHTML = pills.join("");
+  }
 }
 
 function getShareElements() {
@@ -276,10 +460,40 @@ async function updateShareCard(result) {
   }
 }
 
-function showCreditsModal() {
+function shouldShowPaywallAfterFree(prevCredits, nextCredits) {
+  if (nextCredits === null || Number(nextCredits) !== 0) return false;
+  if (prevCredits !== null && Number(prevCredits) <= 0) return false;
+  if (paywallShownInSession) return false;
+  try {
+    if (localStorage.getItem(PAYWALL_STORAGE_KEY) === "1") return false;
+  } catch (err) {
+    // ignore storage errors
+  }
+  return true;
+}
+
+function markPaywallShown() {
+  paywallShownInSession = true;
+  try {
+    localStorage.setItem(PAYWALL_STORAGE_KEY, "1");
+  } catch (err) {
+    // ignore storage errors
+  }
+}
+
+function setPaywallCorrections(value) {
+  if (value === null || value === undefined) return;
+  const normalized = Math.max(0, Math.round(Number(value) || 0));
+  document.querySelectorAll("[data-paywall-corrections]").forEach(el => {
+    el.textContent = normalized;
+  });
+}
+
+function showCreditsModal(options = {}) {
   const modal = document.getElementById("credits-modal");
   if (!modal) return;
   modal.classList.remove("hidden");
+  if (options.markShown) markPaywallShown();
 }
 
 function hideCreditsModal() {
@@ -568,6 +782,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnPromoStart = document.getElementById("btn-promo-start");
   const btnLogout = document.getElementById("btn-logout");
   const btnLogoutTopbar = document.getElementById("btn-logout-topbar");
+  const offensivaCta = document.getElementById("offensiva-cta");
 
   // Auth switchers
   const cardLogin = document.getElementById("card-login");
@@ -648,6 +863,17 @@ document.addEventListener("DOMContentLoaded", () => {
         input.focus();
       }
     });
+  });
+
+  offensivaCta?.addEventListener("click", (e) => {
+    e.preventDefault();
+    const action = offensivaCta.dataset.action || "send";
+    if (action === "buy") {
+      startCheckout();
+      return;
+    }
+    const target = document.getElementById("card-nova-correcao");
+    if (target) target.scrollIntoView({ behavior: "smooth" });
   });
 
   document.querySelectorAll("[data-weekly-toggle]").forEach(btn => {
@@ -784,7 +1010,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function sendCorrection(url, body, msgEl, isFile=false) {
     if (currentCredits !== null && currentCredits <= 0) {
-      msgEl.textContent = "Você está sem créditos para corrigir agora.";
+      msgEl.textContent = "🚧 Seus créditos gratuitos acabaram. Continue com a Mooose para treinar mais.";
       msgEl.className = "form-message error";
       showCreditsModal();
       return;
@@ -805,13 +1031,21 @@ document.addEventListener("DOMContentLoaded", () => {
       lastReview = d?.review || d?.resultado?.review || null;
       const resultado = d?.resultado || d;
       renderResultado(resultado);
+      const progressScore = normalizeScore(resultado?.nota_final);
+      if (progressScore !== null) setProgressTo800(progressScore);
       updateResultadoReview(lastEssayId, lastReview);
       const credits = extractCredits(d);
+      const prevCredits = currentCredits;
       if (credits !== null) setCreditsUI(credits);
       loadHistoricoFn();
       msgEl.textContent = "Corrigido com sucesso!";
       msgEl.className = "form-message success";
       document.getElementById("resultado-wrapper").scrollIntoView({behavior:"smooth"});
+      if (shouldShowPaywallAfterFree(prevCredits, credits)) {
+        const correctionsCount = prevCredits !== null ? Number(prevCredits) + 1 : 2;
+        if (Number.isFinite(correctionsCount)) setPaywallCorrections(correctionsCount);
+        showCreditsModal({ markShown: true });
+      }
     } catch(err) {
       msgEl.textContent = err.message;
       msgEl.className = "form-message error";
@@ -871,20 +1105,28 @@ document.addEventListener("DOMContentLoaded", () => {
       
       // Update Resumo
       const stats = data.stats || {};
+      const scoreValues = items.map(i => normalizeScore(i.nota_final)).filter(n => n !== null);
+      const avgScore = normalizeScore(stats.media_nota_final) ?? (scoreValues.length ? scoreValues.reduce((sum, v) => sum + v, 0) / scoreValues.length : null);
+      const bestScore = normalizeScore(stats.melhor_nota) ?? (scoreValues.length ? Math.max(...scoreValues) : null);
+
       const resumo = document.getElementById("evolucao-resumo");
       if(resumo) {
         resumo.innerHTML = `
-          <div style="text-align:center;">
-             <small style="color:#64748b; font-weight:700;">MÉDIA</small>
-             <div style="font-size:1.4rem; font-weight:800; color:var(--brand);">${stats.media_nota_final?.toFixed(0)||"0"}</div>
+          <div class="evolucao-metric">
+             <small>MÉDIA</small>
+             <div class="evolucao-value">${avgScore !== null ? avgScore.toFixed(0) : "0"}</div>
           </div>
-          <div style="width:1px; background:#e2e8f0;"></div>
-          <div style="text-align:center;">
-             <small style="color:#64748b; font-weight:700;">MELHOR</small>
-             <div style="font-size:1.4rem; font-weight:800; color:#22c55e;">${stats.melhor_nota||"0"}</div>
+          <div class="evolucao-divider"></div>
+          <div class="evolucao-metric">
+             <small>MELHOR</small>
+             <div class="evolucao-value best">${bestScore !== null ? bestScore.toFixed(0) : "0"}</div>
           </div>
         `;
       }
+
+      setOffensivaProgressStats(items.length, bestScore, avgScore);
+      const progressBase = avgScore ?? normalizeScore(lastResult?.nota_final) ?? 0;
+      setProgressTo800(progressBase);
       
       const list = document.getElementById("historico-list");
       if(list) {
@@ -924,6 +1166,9 @@ document.addEventListener("DOMContentLoaded", () => {
           hydrateReviewWidgets(list);
         }
       }
+
+      setPaywallCorrections(items.length);
+      updateWeeklyStreak(items);
       
       // Update Chart
       const canvas = document.getElementById("evolucaoChart");

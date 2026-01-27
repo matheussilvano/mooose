@@ -114,7 +114,7 @@
             Você começa com <strong>2 créditos grátis</strong>.
           </p>
           <div class="hero-actions">
-            <button id="btn-cta-start" class="duo-btn btn-primary">COMEÇAR AGORA</button>
+            <button id="btn-cta-start" class="duo-btn btn-primary">Quero melhorar minha nota</button>
             <button id="btn-cta-login" class="duo-btn btn-secondary">JÁ TENHO CONTA</button>
             <span class="hero-note">2 créditos grátis para todos. Pacote: 10 créditos por R$ 9,90.</span>
           </div>
@@ -138,7 +138,7 @@
               <li>Cada correção consome 1 crédito (você começa com 2 grátis).</li>
             </ul>
             <button id="btn-promo-start" class="duo-btn btn-primary full small">
-              Quero testar a Mooose agora
+              Quero ir além dos 700
             </button>
           </div>
           <div class="promo-side-card">
@@ -239,7 +239,7 @@
             <h3>10 créditos</h3>
             <div class="pricing-price">R$ 9,90</div>
             <p>Recarregue sempre que quiser e continue praticando.</p>
-            <button class="duo-btn btn-primary" data-buy-credits>Comprar créditos</button>
+            <button class="duo-btn btn-primary" data-buy-credits>Desbloquear correções</button>
             <span class="pricing-note">Pagamento seguro via Mercado Pago.</span>
           </div>
         </div>
@@ -466,8 +466,8 @@
           </div>
         </div>
         <div class="credit-actions">
-          <button class="duo-btn btn-primary" data-buy-credits>Comprar 10 créditos por R$ 9,90</button>
-          <span class="credit-note">Pagamento seguro via Mercado Pago.</span>
+          <button class="duo-btn btn-primary" data-buy-credits>Continuar evoluindo</button>
+          <span class="credit-note">10 correções por R$ 9,90 · Pagamento seguro via Mercado Pago.</span>
         </div>
       </div>
 
@@ -583,12 +583,76 @@
         </div>
       </div>
 
+      <div class="card offensiva-card" id="card-offensiva">
+        <div class="offensiva-header">
+          <h3>🔥 Ofensiva ENEM</h3>
+          <p class="card-sub">Seu compromisso com a sua aprovação.</p>
+        </div>
+        <div class="offensiva-grid">
+          <div class="offensiva-block offensiva-status">
+            <div class="offensiva-block-title" data-offensiva-status-title>💪 Você está em ritmo de treino!</div>
+            <p class="offensiva-status-line">📅 Semanas consecutivas: <strong data-week-streak>0</strong></p>
+            <div class="evolucao-weeks" data-week-list></div>
+            <p class="evolucao-streak-note" data-week-message>📅 Você treinou por 0 semanas consecutivas. Continue!</p>
+            <p class="offensiva-status-sub" data-offensiva-status-sub>
+              Continue enviando pelo menos uma redação por semana para manter sua ofensiva.
+            </p>
+            <div class="offensiva-microcopy">
+              <span>“Cada semana conta.”</span>
+              <span>“Constância vence talento.”</span>
+            </div>
+          </div>
+
+          <div class="offensiva-block offensiva-progress">
+            <div class="offensiva-block-title">📈 Seu progresso</div>
+            <ul class="offensiva-progress-list">
+              <li>✔️ Redações corrigidas: <strong data-total-essays>0</strong></li>
+              <li>✔️ Melhor nota: <strong data-best-score>0</strong></li>
+              <li>✔️ Média atual: <strong data-avg-score>0</strong></li>
+            </ul>
+            <div class="offensiva-progress-bar">
+              <div class="progress-track">
+                <span class="progress-fill" data-progress-fill style="width: 0%;"></span>
+              </div>
+              <span class="progress-percent" data-progress-percent>0%</span>
+              <span class="offensiva-progress-label">Rumo aos 800+</span>
+            </div>
+            <p class="offensiva-helper">Quem treina com frequência evolui mais rápido.</p>
+            <p class="offensiva-social">72% dos alunos já fizeram mais de 5 correções.</p>
+          </div>
+
+          <div class="offensiva-block offensiva-motivation">
+            <div class="offensiva-block-title">🏅 Motivação</div>
+            <p class="offensiva-motivation-title" data-offensiva-motivation-title>🌱 Você começou bem.</p>
+            <p class="offensiva-motivation-text" data-offensiva-motivation-text>Agora é hora de criar o hábito.</p>
+            <p class="offensiva-microcopy-inline">“Você está construindo sua aprovação.”</p>
+          </div>
+
+          <div class="offensiva-block offensiva-monetization hidden" data-offensiva-monetization>
+            <div class="offensiva-block-title">💰 Continue sua ofensiva</div>
+            <p>Não deixe seu esforço parar agora.</p>
+            <p><strong>Desbloqueie 10 correções por apenas R$ 9,90.</strong></p>
+            <button class="duo-btn btn-primary offensiva-buy" data-buy-credits>👉 Manter minha ofensiva</button>
+          </div>
+        </div>
+
+        <div class="offensiva-cta">
+          <button class="duo-btn btn-primary" id="offensiva-cta">✍️ Enviar nova redação</button>
+          <span class="offensiva-cta-note">“Não quebre o ritmo agora.”</span>
+        </div>
+
+        <div class="offensiva-footer">
+          <span>📚 +700 redações corrigidas</span>
+          <span>🎯 Alunos em todo o Brasil</span>
+          <span>🚀 Foco no ENEM</span>
+        </div>
+      </div>
+
       <div class="card">
         <h3>Sua evolução nas redações</h3>
         <p class="card-sub">Acompanhe suas notas ao longo do tempo e veja seu histórico.</p>
 
-        <div id="evolucao-resumo" style="display: flex; gap: 1rem; margin-bottom: 1.5rem; justify-content: center;">
-        </div>
+        <div id="evolucao-resumo" class="evolucao-resumo"></div>
 
         <div style="margin-bottom: 2rem; height: 220px;">
           <canvas id="evolucaoChart"></canvas>
@@ -637,26 +701,55 @@
 
   <div id="credits-modal" class="credits-modal hidden">
     <div class="credits-modal-backdrop" data-credits-close></div>
-    <div class="credits-modal-card">
+    <div class="credits-modal-card paywall-card">
       <button class="credits-modal-close" type="button" data-credits-close>✕</button>
-      <div class="credits-modal-content">
-        <img src="mooose-triste.png" alt="Mooose triste" class="credits-modal-image" />
-        <div class="credits-modal-text">
-          <span class="credits-modal-badge">SUPERPROMOÇÃO DE LANÇAMENTO</span>
-          <h3>Seus créditos acabaram?</h3>
-          <p>
-            A gente quer continuar te ajudando a tirar 1000. Para manter o sistema no ar e investir em
-            melhorias na plataforma, liberamos uma oferta especial para você continuar corrigindo.
-          </p>
-          <div class="credits-modal-price">
-            <span>10 créditos por</span>
-            <strong>R$ 9,90</strong>
+      <div class="paywall-header">
+        <span class="paywall-kicker">🚀 Você já começou a evoluir.</span>
+        <h3>Em apenas <span data-paywall-corrections>2</span> redações, você já deu o primeiro passo rumo a uma nota maior.</h3>
+      </div>
+      <div class="paywall-body">
+        <div class="paywall-left">
+          <div class="paywall-alert">🚧 Seus créditos gratuitos acabaram.</div>
+          <p class="paywall-intro">Mas olha o que você já conquistou:</p>
+          <ul class="paywall-achievements">
+            <li>✔️ <strong data-paywall-corrections>2</strong> redações corrigidas</li>
+            <li>✔️ Feedback detalhado</li>
+            <li>✔️ Pontos claros pra melhorar</li>
+          </ul>
+          <div class="paywall-progress-block">
+            <div class="paywall-progress-title">Rumo aos 800+</div>
+            <div class="progress-track">
+              <span class="progress-fill" data-progress-fill style="width: 0%;"></span>
+            </div>
+            <span class="progress-percent" data-progress-percent>0%</span>
           </div>
-          <div class="credits-modal-actions">
-            <button class="duo-btn btn-primary" data-buy-credits>Quero mais créditos</button>
-            <button class="duo-btn btn-secondary" type="button" data-credits-close>Agora não</button>
+          <p class="paywall-promise">Agora é hora de treinar como quem quer passar.</p>
+          <p class="paywall-social">72% dos alunos já fizeram mais de 5 correções.</p>
+          <div class="paywall-urgency">
+            <strong>⏳ Não perca o ritmo.</strong>
+            <p>Alunos que param agora costumam estagnar.</p>
+            <p>Continue treinando por menos de R$1 por redação.</p>
           </div>
-          <small class="credits-modal-note">Pagamento seguro via Mercado Pago.</small>
+        </div>
+        <div class="paywall-right">
+          <div class="paywall-offer">
+            <span class="paywall-offer-title">🎓 Plano ENEM Mooose</span>
+            <p class="paywall-offer-sub">Desbloqueie 10 correções por apenas R$ 9,90</p>
+            <ul class="paywall-offer-list">
+              <li>✔️ 10 correções detalhadas</li>
+              <li>✔️ Feedback por competência</li>
+              <li>✔️ Histórico de evolução</li>
+              <li>✔️ Acompanhamento até a prova</li>
+            </ul>
+            <div class="paywall-price">
+              <span class="paywall-price-old">De R$ 29,90</span>
+              <span class="paywall-price-now">por R$ 9,90</span>
+              <span class="paywall-price-tag">(lançamento)</span>
+            </div>
+            <button class="duo-btn btn-primary paywall-cta" data-buy-credits>👉 Continuar com a Mooose</button>
+            <small class="paywall-secure">🔒 Pagamento seguro via Mercado Pago</small>
+          </div>
+          <button class="duo-btn btn-secondary paywall-dismiss" type="button" data-credits-close>Agora não</button>
         </div>
       </div>
     </div>
