@@ -351,6 +351,10 @@
                 <label>Senha</label>
                 <input type="password" name="password" placeholder="Senha (mín. 4 caracteres)" minlength="4" required />
               </div>
+              <div class="referral-applied hidden" data-referral-applied>
+                <span>Você foi indicado? Código aplicado: <strong data-register-ref-code>—</strong></span>
+                <button type="button" class="link-btn" data-referral-remove>Remover</button>
+              </div>
               <button type="submit" class="duo-btn btn-success full">CRIAR CONTA</button>
               <p class="form-message" id="msg-register"></p>
             </form>
@@ -479,6 +483,49 @@
         <div class="credit-actions">
           <button class="duo-btn btn-primary" data-buy-credits>Continuar evoluindo</button>
           <span class="credit-note">10 correções por R$ 9,90 · Pagamento seguro via Mercado Pago.</span>
+        </div>
+      </div>
+
+      <div class="card referral-card referral-loading" id="card-referrals">
+        <div class="referral-header">
+          <h3>Convide amigos e ganhe créditos</h3>
+          <p class="card-sub">Ganhe 2 créditos por cada amigo que se cadastrar e ativar a conta.</p>
+        </div>
+        <div class="referral-skeleton" aria-hidden="true">
+          <div class="skeleton-line w-60"></div>
+          <div class="skeleton-line w-100"></div>
+          <div class="skeleton-line w-40"></div>
+          <div class="skeleton-row">
+            <div class="skeleton-block"></div>
+            <div class="skeleton-block"></div>
+            <div class="skeleton-block"></div>
+          </div>
+        </div>
+        <div class="referral-content">
+          <label class="referral-label">Seu link de indicação</label>
+          <div class="referral-link-row">
+            <input type="text" id="referral-link" class="referral-input" readonly value="—" />
+            <button class="duo-btn btn-primary" data-referral-copy>Copiar link</button>
+          </div>
+          <div class="referral-actions">
+            <button class="duo-btn btn-secondary" data-referral-whatsapp>Compartilhar no WhatsApp</button>
+            <span class="referral-code">Código: <strong data-referral-code>—</strong></span>
+          </div>
+          <p class="referral-error" id="referral-error" role="status"></p>
+          <div class="referral-stats">
+            <div class="referral-stat">
+              <small>Pendentes</small>
+              <strong data-referral-pending>0</strong>
+            </div>
+            <div class="referral-stat">
+              <small>Confirmadas</small>
+              <strong data-referral-confirmed>0</strong>
+            </div>
+            <div class="referral-stat">
+              <small>Créditos ganhos</small>
+              <strong data-referral-credits>0</strong>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -768,6 +815,8 @@
       </div>
     </div>
   </div>
+
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
   <div id="review-modal" class="review-modal hidden">
     <div class="review-modal-backdrop" data-review-close></div>

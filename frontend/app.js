@@ -11,6 +11,8 @@ const funnyMessages = [
   "Analisando a proposta de intervenção..."
 ];
 const PAYWALL_STORAGE_KEY = "mooose_paywall_after_free_shown";
+const REFERRAL_STORAGE_KEY = "mooose_referral_code";
+const DEVICE_FP_KEY = "mooose_device_fingerprint";
 const PROGRESS_TARGET_SCORE = 1000;
 const WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -35,6 +37,24 @@ function hideLoading() {
   const msgEl = document.getElementById("loading-msg");
   if (overlay) overlay.classList.add("hidden");
   if (msgEl && msgEl.dataset.interval) clearInterval(msgEl.dataset.interval);
+}
+
+function trackEvent(name, params = {}) {
+  if (typeof window.gtag === "function") {
+    window.gtag("event", name, params);
+  }
+}
+
+function showToast(message, type = "success") {
+  const toast = document.getElementById("toast");
+  if (!toast) return;
+  toast.textContent = message;
+  toast.className = `toast ${type}`.trim();
+  toast.classList.remove("hidden");
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.add("hidden");
+  }, 2500);
 }
 
 function showSection(id) {
@@ -64,6 +84,9 @@ let reviewPopupTimer = null;
 let reviewPopupShown = false;
 let reviewPopupObserver = null;
 let paywallShownInSession = false;
+let currentReferralCode = "";
+let currentReferralLink = "";
+let toastTimer = null;
 
 function normalizeCredits(value) {
   if (typeof value === "number" && Number.isFinite(value)) return value;
@@ -74,6 +97,54 @@ function normalizeCredits(value) {
 function normalizeScore(value) {
   const n = Number(value);
   return Number.isFinite(n) ? n : null;
+}
+
+function getDeviceFingerprint() {
+  try {
+    let fp = localStorage.getItem(DEVICE_FP_KEY);
+    if (!fp) {
+      fp = (window.crypto && window.crypto.randomUUID)
+        ? window.crypto.randomUUID()
+        : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+      localStorage.setItem(DEVICE_FP_KEY, fp);
+    }
+    return fp;
+  } catch (err) {
+    return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+  }
+}
+
+function getStoredReferralCode() {
+  try {
+    return localStorage.getItem(REFERRAL_STORAGE_KEY) || "";
+  } catch (err) {
+    return "";
+  }
+}
+
+function applyReferralCode(code) {
+  const normalized = String(code || "").trim();
+  currentReferralCode = normalized;
+  try {
+    if (normalized) localStorage.setItem(REFERRAL_STORAGE_KEY, normalized);
+    else localStorage.removeItem(REFERRAL_STORAGE_KEY);
+  } catch (err) {
+    // ignore storage errors
+  }
+  updateReferralAppliedUI(normalized);
+}
+
+function updateReferralAppliedUI(code) {
+  const container = document.querySelector("[data-referral-applied]");
+  const codeEl = document.querySelector("[data-register-ref-code]");
+  if (!container || !codeEl) return;
+  if (code) {
+    container.classList.remove("hidden");
+    codeEl.textContent = code;
+  } else {
+    container.classList.add("hidden");
+    codeEl.textContent = "";
+  }
 }
 
 function extractCredits(data) {
@@ -105,6 +176,123 @@ function setCreditsUI(value) {
     el.textContent = value === null ? "—" : value;
   });
   updateOffensivaMonetization(value);
+}
+
+function setReferralLoading(isLoading) {
+  const card = document.getElementById("card-referrals");
+  if (!card) return;
+  card.classList.toggle("referral-loading", isLoading);
+}
+
+function setReferralError(message) {
+  const el = document.getElementById("referral-error");
+  if (!el) return;
+  el.textContent = message || "";
+}
+
+function setReferralLink(link) {
+  const input = document.getElementById("referral-link");
+  if (input) input.value = link || "—";
+  currentReferralLink = link || "";
+  const disabled = !currentReferralLink;
+  const copyBtn = document.querySelector("[data-referral-copy]");
+  const waBtn = document.querySelector("[data-referral-whatsapp]");
+  if (copyBtn) copyBtn.disabled = disabled;
+  if (waBtn) waBtn.disabled = disabled;
+}
+
+function setReferralCode(code) {
+  document.querySelectorAll("[data-referral-code]").forEach(el => {
+    el.textContent = code || "—";
+  });
+}
+
+function setReferralStats(pending, confirmed, credits) {
+  const pendingEl = document.querySelector("[data-referral-pending]");
+  const confirmedEl = document.querySelector("[data-referral-confirmed]");
+  const creditsEl = document.querySelector("[data-referral-credits]");
+  if (pendingEl) pendingEl.textContent = Math.max(0, Math.round(Number(pending) || 0));
+  if (confirmedEl) confirmedEl.textContent = Math.max(0, Math.round(Number(confirmed) || 0));
+  if (creditsEl) creditsEl.textContent = Math.max(0, Math.round(Number(credits) || 0));
+}
+
+function normalizeReferralData(data) {
+  if (!data) return { link: "", code: "", pending: 0, confirmed: 0, credits: 0 };
+  const link = data.referral_link || data.referralLink || data.link || data?.referral?.link || data?.referral?.referral_link || "";
+  const code = data.referral_code || data.code || data?.referral?.code || data?.referral?.referral_code || data?.referral?.ref || "";
+  const stats = data.stats || data.referral_stats || data.referrals || data;
+  const pending = stats.pending ?? stats.pendentes ?? stats.pending_count ?? stats.pendings ?? 0;
+  const confirmed = stats.confirmed ?? stats.confirmadas ?? stats.confirmed_count ?? stats.activated ?? stats.approved ?? 0;
+  const credits = stats.total_credits ?? stats.total_creditos ?? stats.credits ?? stats.earned_credits ?? stats.credits_earned ?? 0;
+  const fallbackLink = code ? `${window.location.origin}/register?ref=${encodeURIComponent(code)}` : "";
+  return {
+    link: link || fallbackLink,
+    code: code || "",
+    pending,
+    confirmed,
+    credits
+  };
+}
+
+async function loadReferral() {
+  const card = document.getElementById("card-referrals");
+  if (!card || !getToken()) return;
+  setReferralLoading(true);
+  setReferralError("");
+  try {
+    const res = await fetch(`${API_BASE}/me/referral`, { headers: getAuthHeaders() });
+    if (!res.ok) throw new Error("Falha ao carregar");
+    const data = await res.json();
+    const info = normalizeReferralData(data);
+    if (!info.link) throw new Error("Link indisponível");
+    setReferralLink(info.link);
+    setReferralCode(info.code);
+    setReferralStats(info.pending, info.confirmed, info.credits);
+  } catch (err) {
+    setReferralLink("");
+    setReferralCode("");
+    setReferralStats(0, 0, 0);
+    setReferralError("Não foi possível carregar seu link.");
+  } finally {
+    setReferralLoading(false);
+  }
+}
+
+function getReferralShareText(link) {
+  return `Tô usando a Mooose pra corrigir redação. Se cadastrar por aqui você ganha bônus: ${link}`;
+}
+
+async function copyReferralLink() {
+  if (!currentReferralLink) {
+    showToast("Link indisponível.", "error");
+    return;
+  }
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(currentReferralLink);
+    } else {
+      const input = document.getElementById("referral-link");
+      if (input) {
+        input.select();
+        document.execCommand("copy");
+      }
+    }
+    showToast("Link copiado!");
+    trackEvent("referral_copy");
+  } catch (err) {
+    showToast("Não foi possível copiar.", "error");
+  }
+}
+
+function shareReferralWhatsapp() {
+  if (!currentReferralLink) {
+    showToast("Link indisponível.", "error");
+    return;
+  }
+  const text = getReferralShareText(currentReferralLink);
+  const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+  window.open(url, "_blank");
+  trackEvent("referral_whatsapp_share");
 }
 
 function setProgressTo800(value) {
@@ -784,6 +972,7 @@ async function fetchMe() {
     setCreditsUI(credits);
     showSection("section-dashboard");
     if (loadHistoricoFn) loadHistoricoFn();
+    loadReferral();
   } catch(e) {
     setToken(null);
     updateTopbarUser(null);
@@ -840,6 +1029,12 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   function goToAuth(mode='login') {
+    const authSection = document.getElementById("section-auth");
+    if (!authSection) {
+      const param = mode === "login" ? "login=1" : "start=1";
+      window.location.href = `/?${param}`;
+      return;
+    }
     showSection("section-auth");
     cardLogin.classList.remove("hidden");
     cardRegister.classList.add("hidden");
@@ -850,6 +1045,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
   window.goToAuth = goToAuth;
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlRef = (urlParams.get("ref") || "").trim();
+  const startParam = (urlParams.get("start") || "").trim();
+  const loginParam = (urlParams.get("login") || "").trim();
+  const storedRef = getStoredReferralCode();
+  if (urlRef) {
+    applyReferralCode(urlRef);
+  } else if (storedRef) {
+    applyReferralCode(storedRef);
+  }
+  if (!getToken()) {
+    if (loginParam) {
+      goToAuth("login");
+    } else if (urlRef || startParam || window.location.pathname.includes("/register")) {
+      goToAuth("register");
+    }
+  }
 
   document.querySelectorAll("[data-buy-credits]").forEach(btn => {
     btn.addEventListener("click", (e) => {
@@ -868,6 +1081,23 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", () => {
       hideReviewPopup();
     });
+  });
+
+  document.querySelectorAll("[data-referral-remove]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      applyReferralCode("");
+    });
+  });
+
+  const referralCopyBtn = document.querySelector("[data-referral-copy]");
+  const referralWhatsappBtn = document.querySelector("[data-referral-whatsapp]");
+  referralCopyBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    copyReferralLink();
+  });
+  referralWhatsappBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    shareReferralWhatsapp();
   });
 
   document.querySelectorAll("[data-offensiva-open]").forEach(btn => {
@@ -995,13 +1225,23 @@ document.addEventListener("DOMContentLoaded", () => {
     msgRegister.textContent = "";
     showLoading("Criando conta...");
     try {
+      const payload = {
+        full_name: formRegister.full_name.value,
+        email: formRegister.email.value,
+        password: formRegister.password.value,
+        device_fingerprint: getDeviceFingerprint()
+      };
+      if (currentReferralCode) payload.ref = currentReferralCode;
       const res = await fetch(`${API_BASE}/auth/register`, {
         method: "POST", headers: getAuthHeaders(),
-        body: JSON.stringify({ full_name: formRegister.full_name.value, email: formRegister.email.value, password: formRegister.password.value })
+        body: JSON.stringify(payload)
       });
       if(!res.ok) throw new Error("Erro ao criar conta");
       msgRegister.textContent = "Conta criada! Verifique seu e-mail.";
       msgRegister.className = "form-message success";
+      if (currentReferralCode) {
+        trackEvent("register_with_ref", { ref: currentReferralCode });
+      }
       formRegister.reset();
     } catch(err) {
       msgRegister.textContent = err.message;
