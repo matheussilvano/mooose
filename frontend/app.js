@@ -11,7 +11,7 @@ const funnyMessages = [
   "Analisando a proposta de intervenção..."
 ];
 const PAYWALL_STORAGE_KEY = "mooose_paywall_after_free_shown";
-const PROGRESS_TARGET_SCORE = 800;
+const PROGRESS_TARGET_SCORE = 1000;
 const WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000;
 
 function showLoading(msg) {
@@ -194,6 +194,19 @@ function updateOffensivaStatus(status, deadlineLabel) {
   if (subEl) subEl.textContent = sub;
 }
 
+function showOffensivaModal() {
+  const modal = document.getElementById("offensiva-modal");
+  if (!modal) return;
+  modal.classList.remove("hidden");
+  updateOffensivaMonetization(currentCredits);
+}
+
+function hideOffensivaModal() {
+  const modal = document.getElementById("offensiva-modal");
+  if (!modal) return;
+  modal.classList.add("hidden");
+}
+
 function getWeekStart(date) {
   const d = new Date(date);
   if (Number.isNaN(d.getTime())) return null;
@@ -213,10 +226,10 @@ function formatWeekDeadline(weekStart) {
 }
 
 function updateWeeklyStreak(items = []) {
-  const streakEl = document.querySelector("[data-week-streak]");
+  const streakEls = document.querySelectorAll("[data-week-streak]");
   const listEl = document.querySelector("[data-week-list]");
   const msgEl = document.querySelector("[data-week-message]");
-  if (!streakEl && !listEl && !msgEl) return;
+  if (!streakEls.length && !listEl && !msgEl) return;
 
   const weekSet = new Set();
   items.forEach(item => {
@@ -243,7 +256,11 @@ function updateWeeklyStreak(items = []) {
     }
   }
 
-  if (streakEl) streakEl.textContent = String(streak);
+  if (streakEls.length) {
+    streakEls.forEach(el => {
+      el.textContent = String(streak);
+    });
+  }
   if (msgEl) {
     if (streak >= 2) msgEl.textContent = `🔥 Ofensiva ENEM: ${streak} semanas seguidas.`;
     else if (streak === 1) msgEl.textContent = "📅 Você treinou por 1 semana consecutiva. Continue!";
@@ -853,6 +870,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  document.querySelectorAll("[data-offensiva-open]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      showOffensivaModal();
+    });
+  });
+
+  document.querySelectorAll("[data-offensiva-close]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      hideOffensivaModal();
+    });
+  });
+
   document.querySelectorAll("[data-theme-target]").forEach(btn => {
     btn.addEventListener("click", () => {
       const target = btn.dataset.themeTarget;
@@ -872,6 +901,7 @@ document.addEventListener("DOMContentLoaded", () => {
       startCheckout();
       return;
     }
+    hideOffensivaModal();
     const target = document.getElementById("card-nova-correcao");
     if (target) target.scrollIntoView({ behavior: "smooth" });
   });

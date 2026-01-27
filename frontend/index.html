@@ -390,6 +390,17 @@
         </div>
       </div>
 
+      <div class="dashboard-stats">
+        <div class="stat-pill credits-pill" title="Créditos disponíveis">
+          <span class="stat-icon">💎</span>
+          <span class="stat-value" data-credit-balance>—</span>
+        </div>
+        <button class="stat-pill streak-pill" type="button" data-offensiva-open title="Ofensiva ENEM" aria-label="Abrir Ofensiva ENEM">
+          <span class="stat-icon">🔥</span>
+          <span class="stat-value" data-week-streak>0</span>
+        </button>
+      </div>
+
       <div class="card weekly-theme-card">
         <div class="weekly-header">
           <div>
@@ -583,71 +594,6 @@
         </div>
       </div>
 
-      <div class="card offensiva-card" id="card-offensiva">
-        <div class="offensiva-header">
-          <h3>🔥 Ofensiva ENEM</h3>
-          <p class="card-sub">Seu compromisso com a sua aprovação.</p>
-        </div>
-        <div class="offensiva-grid">
-          <div class="offensiva-block offensiva-status">
-            <div class="offensiva-block-title" data-offensiva-status-title>💪 Você está em ritmo de treino!</div>
-            <p class="offensiva-status-line">📅 Semanas consecutivas: <strong data-week-streak>0</strong></p>
-            <div class="evolucao-weeks" data-week-list></div>
-            <p class="evolucao-streak-note" data-week-message>📅 Você treinou por 0 semanas consecutivas. Continue!</p>
-            <p class="offensiva-status-sub" data-offensiva-status-sub>
-              Continue enviando pelo menos uma redação por semana para manter sua ofensiva.
-            </p>
-            <div class="offensiva-microcopy">
-              <span>“Cada semana conta.”</span>
-              <span>“Constância vence talento.”</span>
-            </div>
-          </div>
-
-          <div class="offensiva-block offensiva-progress">
-            <div class="offensiva-block-title">📈 Seu progresso</div>
-            <ul class="offensiva-progress-list">
-              <li>✔️ Redações corrigidas: <strong data-total-essays>0</strong></li>
-              <li>✔️ Melhor nota: <strong data-best-score>0</strong></li>
-              <li>✔️ Média atual: <strong data-avg-score>0</strong></li>
-            </ul>
-            <div class="offensiva-progress-bar">
-              <div class="progress-track">
-                <span class="progress-fill" data-progress-fill style="width: 0%;"></span>
-              </div>
-              <span class="progress-percent" data-progress-percent>0%</span>
-              <span class="offensiva-progress-label">Rumo aos 800+</span>
-            </div>
-            <p class="offensiva-helper">Quem treina com frequência evolui mais rápido.</p>
-            <p class="offensiva-social">72% dos alunos já fizeram mais de 5 correções.</p>
-          </div>
-
-          <div class="offensiva-block offensiva-motivation">
-            <div class="offensiva-block-title">🏅 Motivação</div>
-            <p class="offensiva-motivation-title" data-offensiva-motivation-title>🌱 Você começou bem.</p>
-            <p class="offensiva-motivation-text" data-offensiva-motivation-text>Agora é hora de criar o hábito.</p>
-            <p class="offensiva-microcopy-inline">“Você está construindo sua aprovação.”</p>
-          </div>
-
-          <div class="offensiva-block offensiva-monetization hidden" data-offensiva-monetization>
-            <div class="offensiva-block-title">💰 Continue sua ofensiva</div>
-            <p>Não deixe seu esforço parar agora.</p>
-            <p><strong>Desbloqueie 10 correções por apenas R$ 9,90.</strong></p>
-            <button class="duo-btn btn-primary offensiva-buy" data-buy-credits>👉 Manter minha ofensiva</button>
-          </div>
-        </div>
-
-        <div class="offensiva-cta">
-          <button class="duo-btn btn-primary" id="offensiva-cta">✍️ Enviar nova redação</button>
-          <span class="offensiva-cta-note">“Não quebre o ritmo agora.”</span>
-        </div>
-
-        <div class="offensiva-footer">
-          <span>📚 +700 redações corrigidas</span>
-          <span>🎯 Alunos em todo o Brasil</span>
-          <span>🚀 Foco no ENEM</span>
-        </div>
-      </div>
-
       <div class="card">
         <h3>Sua evolução nas redações</h3>
         <p class="card-sub">Acompanhe suas notas ao longo do tempo e veja seu histórico.</p>
@@ -717,7 +663,7 @@
             <li>✔️ Pontos claros pra melhorar</li>
           </ul>
           <div class="paywall-progress-block">
-            <div class="paywall-progress-title">Rumo aos 800+</div>
+          <div class="paywall-progress-title">Rumo à nota 1000</div>
             <div class="progress-track">
               <span class="progress-fill" data-progress-fill style="width: 0%;"></span>
             </div>
@@ -751,6 +697,74 @@
           </div>
           <button class="duo-btn btn-secondary paywall-dismiss" type="button" data-credits-close>Agora não</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="offensiva-modal" class="offensiva-modal hidden">
+    <div class="offensiva-modal-backdrop" data-offensiva-close></div>
+    <div class="offensiva-modal-card">
+      <button class="offensiva-modal-close" type="button" data-offensiva-close>✕</button>
+      <div class="offensiva-modal-header">
+        <h3>🔥 Ofensiva ENEM</h3>
+        <p class="card-sub">Seu compromisso com a sua aprovação.</p>
+      </div>
+
+      <div class="offensiva-modal-grid">
+        <div class="offensiva-modal-block">
+          <div class="offensiva-block-title" data-offensiva-status-title>💪 Você está em ritmo de treino!</div>
+          <p class="offensiva-status-line">📅 Semanas consecutivas: <strong data-week-streak>0</strong></p>
+          <div class="offensiva-weeks" data-week-list></div>
+          <p class="offensiva-status-sub" data-offensiva-status-sub>
+            Continue enviando pelo menos uma redação por semana para manter sua ofensiva.
+          </p>
+          <div class="offensiva-microcopy-row">
+            <span>“Cada semana conta.”</span>
+            <span>“Constância vence talento.”</span>
+            <span>“Não quebre o ritmo agora.”</span>
+          </div>
+        </div>
+
+        <div class="offensiva-modal-block">
+          <div class="offensiva-block-title">📈 Seu progresso</div>
+          <ul class="offensiva-progress-list">
+            <li>✔️ Redações corrigidas: <strong data-total-essays>0</strong></li>
+            <li>✔️ Melhor nota: <strong data-best-score>0</strong></li>
+            <li>✔️ Média atual: <strong data-avg-score>0</strong></li>
+          </ul>
+          <div class="offensiva-progress-bar">
+            <div class="progress-track">
+              <span class="progress-fill" data-progress-fill style="width: 0%;"></span>
+            </div>
+            <span class="progress-percent" data-progress-percent>0%</span>
+            <span class="offensiva-progress-label">Rumo à nota 1000</span>
+          </div>
+          <p class="offensiva-helper">Quem treina com frequência evolui mais rápido.</p>
+        </div>
+
+        <div class="offensiva-modal-block">
+          <div class="offensiva-block-title">🏅 Motivação</div>
+          <p class="offensiva-motivation-title" data-offensiva-motivation-title>🌱 Você começou bem.</p>
+          <p class="offensiva-motivation-text" data-offensiva-motivation-text>Agora é hora de criar o hábito.</p>
+          <p class="offensiva-microcopy-inline">“Você está construindo sua aprovação.”</p>
+        </div>
+
+        <div class="offensiva-modal-block offensiva-monetization hidden" data-offensiva-monetization>
+          <div class="offensiva-block-title">🔓 Continue sua ofensiva</div>
+          <p>Não deixe seu esforço parar agora.</p>
+          <p><strong>Desbloqueie 10 correções por apenas R$ 9,90.</strong></p>
+          <button class="duo-btn btn-primary offensiva-buy" data-buy-credits>👉 Manter minha ofensiva</button>
+        </div>
+      </div>
+
+      <div class="offensiva-modal-cta">
+        <button class="duo-btn btn-primary" id="offensiva-cta">✍️ Enviar nova redação</button>
+      </div>
+
+      <div class="offensiva-modal-footer">
+        <span>📚 +700 redações corrigidas</span>
+        <span>🎯 Alunos em todo o Brasil</span>
+        <span>🚀 Foco no ENEM</span>
       </div>
     </div>
   </div>

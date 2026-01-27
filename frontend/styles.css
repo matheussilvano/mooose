@@ -710,22 +710,99 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
 }
 
 /* =========================
-   OFENSIVA ENEM
+   STATUS STRIP
    ========================= */
-.offensiva-card {
-  border: 2px solid #dbeafe;
-  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+.dashboard-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin: 1rem 0 1.5rem;
 }
-.offensiva-header h3 {
-  margin-bottom: 0.3rem;
+.stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  font-weight: 800;
+  color: #0f172a;
+  font-family: inherit;
+  appearance: none;
 }
-.offensiva-grid {
+.stat-pill:hover {
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+}
+.stat-pill.streak-pill {
+  background: #fff7ed;
+  border-color: #fed7aa;
+  color: #9a3412;
+  cursor: pointer;
+}
+.stat-pill.streak-pill:hover {
+  box-shadow: 0 8px 18px rgba(234, 88, 12, 0.2);
+}
+.stat-icon {
+  font-size: 1rem;
+}
+.stat-value {
+  min-width: 1.4ch;
+  text-align: right;
+}
+
+/* =========================
+   MODAL OFENSIVA ENEM
+   ========================= */
+.offensiva-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10002;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.offensiva-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(2px);
+}
+.offensiva-modal-card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 24px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.25);
+  max-width: 920px;
+  width: min(94vw, 920px);
+  padding: 1.8rem;
+  z-index: 1;
+}
+.offensiva-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  border: none;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 800;
+  border-radius: 999px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+}
+.offensiva-modal-header h3 {
+  margin-bottom: 0.4rem;
+}
+.offensiva-modal-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1rem;
   margin-top: 1.2rem;
 }
-.offensiva-block {
+.offensiva-modal-block {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
@@ -737,25 +814,31 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   margin-bottom: 0.5rem;
 }
 .offensiva-status-line {
-  margin: 0.4rem 0 0.5rem;
+  margin: 0.3rem 0 0.6rem;
   font-weight: 700;
   color: #0f172a;
 }
 .offensiva-status-sub {
-  margin: 0;
+  margin: 0.4rem 0 0;
   color: #475569;
   line-height: 1.5;
 }
-.offensiva-microcopy {
+.offensiva-weeks {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.5rem;
+  margin: 0.4rem 0 0.4rem;
+}
+.offensiva-microcopy-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
   margin-top: 0.8rem;
   font-size: 0.75rem;
-  color: #64748b;
   font-weight: 700;
+  color: #64748b;
 }
-.offensiva-microcopy span {
+.offensiva-microcopy-row span {
   background: #e2e8f0;
   padding: 0.2rem 0.6rem;
   border-radius: 999px;
@@ -792,12 +875,6 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   font-size: 0.85rem;
   font-weight: 600;
 }
-.offensiva-social {
-  margin: 0.4rem 0 0;
-  color: #1e293b;
-  font-size: 0.85rem;
-  font-weight: 700;
-}
 .offensiva-motivation-title {
   margin: 0 0 0.3rem;
   font-weight: 800;
@@ -822,23 +899,12 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   width: 100%;
   margin-top: 0.6rem;
 }
-.offensiva-cta {
+.offensiva-modal-cta {
+  margin-top: 1.4rem;
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.8rem;
-  margin-top: 1.5rem;
-  padding: 0.8rem 1rem;
-  background: #eff6ff;
-  border-radius: 16px;
+  justify-content: flex-start;
 }
-.offensiva-cta-note {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #1e3a8a;
-}
-.offensiva-footer {
+.offensiva-modal-footer {
   display: flex;
   flex-wrap: wrap;
   gap: 0.8rem;
@@ -849,11 +915,15 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
 }
 
 @media (max-width: 768px) {
-  .offensiva-cta {
-    flex-direction: column;
-    align-items: stretch;
+  .offensiva-modal { align-items: flex-end; }
+  .offensiva-modal-card {
+    width: 100%;
+    border-radius: 24px 24px 0 0;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 1.2rem;
   }
-  .offensiva-cta .duo-btn {
+  .offensiva-modal-cta .duo-btn {
     width: 100%;
   }
 }
