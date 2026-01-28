@@ -140,6 +140,152 @@ body {
   display: grid;
   gap: 1rem;
 }
+
+/* =========================
+   LANDING PÚBLICA
+   ========================= */
+.landing-public {
+  display: grid;
+  gap: 3rem;
+  padding: 2.5rem 0 3rem;
+}
+.landing-hero {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+.landing-hero-text h1 {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0 0 0.75rem;
+}
+.landing-sub {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin: 0 0 1.2rem;
+}
+.landing-cta {
+  width: 100%;
+}
+.landing-microcopy {
+  margin: 0.6rem 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.landing-hero-media {
+  display: flex;
+  justify-content: center;
+}
+.landing-hero-media img {
+  width: 100%;
+  max-width: 260px;
+  height: auto;
+}
+.landing-section h2 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0 0 1rem;
+}
+.landing-steps {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--text-muted);
+  display: grid;
+  gap: 0.6rem;
+}
+.landing-steps li {
+  line-height: 1.6;
+}
+.landing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+.landing-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 1rem;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.06);
+  display: grid;
+  gap: 0.4rem;
+}
+.landing-card h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text);
+}
+.landing-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+.landing-bullets {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--text-muted);
+  display: grid;
+  gap: 0.5rem;
+}
+.landing-cta-block {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  border-radius: 18px;
+  border: 1px dashed #bfdbfe;
+  background: #f8fafc;
+}
+.landing-cta-block .landing-sub {
+  margin-bottom: 1rem;
+}
+.landing-cta-block .landing-cta {
+  max-width: 320px;
+  margin: 0 auto;
+}
+.faq-accordion .faq-item {
+  padding: 1rem;
+}
+.faq-accordion .faq-question {
+  width: 100%;
+  border: none;
+  background: none;
+  text-align: left;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+.faq-accordion .faq-icon {
+  font-size: 1rem;
+  color: var(--brand);
+}
+.faq-accordion .faq-answer {
+  display: none;
+  margin-top: 0.6rem;
+}
+.faq-accordion .faq-item.is-open .faq-answer {
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .landing-hero-text h1 {
+    font-size: 1.7rem;
+  }
+  .landing-cta-block {
+    text-align: left;
+  }
+  .landing-cta-block .landing-cta {
+    max-width: none;
+    margin: 0;
+  }
+}
 .view {
   display: none;
   animation: slideUp 0.2s ease-out;

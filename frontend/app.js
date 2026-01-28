@@ -66,12 +66,14 @@ function showSection(id) {
   const el = document.getElementById(id);
   if (el) el.classList.add("visible");
   const isLanding = id === "section-landing";
-  document.body.classList.toggle("app-shell", isLanding);
+  const shouldShell = isLanding && shouldUseAppShell() && Boolean(getToken());
+  document.body.classList.toggle("app-shell", shouldShell);
   const appBar = document.getElementById("app-bottom-bar");
-  if (appBar) appBar.classList.toggle("hidden", !isLanding);
+  if (appBar) appBar.classList.toggle("hidden", !shouldShell);
   const creditsSheet = document.getElementById("credits-sheet");
   if (creditsSheet) creditsSheet.classList.add("hidden");
-  if (isLanding && typeof renderAppView === "function") {
+  if (isLanding) setLandingMode();
+  if (shouldShell && typeof renderAppView === "function") {
     renderAppView(currentAppView || "home");
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -85,6 +87,15 @@ function updateAppHeaderHeight() {
   if (height > 0) {
     document.documentElement.style.setProperty("--app-header-height", `${height}px`);
   }
+}
+
+function setLandingMode() {
+  const landingPublic = document.querySelector("[data-landing-public]");
+  const landingApp = document.querySelector("[data-landing-app]");
+  if (!landingPublic && !landingApp) return;
+  const shouldShowApp = Boolean(getToken()) && shouldUseAppShell();
+  if (landingPublic) landingPublic.classList.toggle("hidden", shouldShowApp);
+  if (landingApp) landingApp.classList.toggle("hidden", !shouldShowApp);
 }
 
 /* AUTH & TOKEN */
@@ -1351,9 +1362,11 @@ document.addEventListener("DOMContentLoaded", () => {
       showSection("section-landing");
     }
   }
-  if (shouldUseAppShell() && document.getElementById("section-landing")?.classList.contains("visible")) {
-    document.body.classList.add("app-shell");
-    document.getElementById("app-bottom-bar")?.classList.remove("hidden");
+  if (document.getElementById("section-landing")?.classList.contains("visible")) {
+    setLandingMode();
+    const shouldShell = Boolean(getToken()) && shouldUseAppShell();
+    document.body.classList.toggle("app-shell", shouldShell);
+    document.getElementById("app-bottom-bar")?.classList.toggle("hidden", !shouldShell);
   }
 
   document.querySelectorAll("[data-buy-credits]").forEach(btn => {
@@ -1506,6 +1519,30 @@ document.addEventListener("DOMContentLoaded", () => {
       const widget = saveBtn.closest("[data-review-widget]");
       submitReview(widget);
     }
+  });
+
+  const faqItems = document.querySelectorAll(".faq-accordion .faq-item");
+  faqItems.forEach(item => {
+    const toggle = item.querySelector("[data-faq-toggle]");
+    const answer = item.querySelector(".faq-answer");
+    const icon = toggle?.querySelector(".faq-icon");
+    if (!toggle || !answer) return;
+    toggle.addEventListener("click", () => {
+      faqItems.forEach(other => {
+        if (other === item) return;
+        other.classList.remove("is-open");
+        const otherToggle = other.querySelector("[data-faq-toggle]");
+        const otherAnswer = other.querySelector(".faq-answer");
+        const otherIcon = otherToggle?.querySelector(".faq-icon");
+        if (otherToggle) otherToggle.setAttribute("aria-expanded", "false");
+        if (otherAnswer) otherAnswer.hidden = true;
+        if (otherIcon) otherIcon.textContent = "+";
+      });
+      const isOpen = item.classList.toggle("is-open");
+      toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      answer.hidden = !isOpen;
+      if (icon) icon.textContent = isOpen ? "–" : "+";
+    });
   });
 
   // Listeners Nav
