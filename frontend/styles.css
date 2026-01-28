@@ -67,9 +67,23 @@ body {
   margin: 0 auto;
   padding: 0.75rem 1.5rem;
   display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.4rem;
+  border-bottom: 1px solid var(--border);
+}
+.topbar-row {
+  display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--border);
+  width: 100%;
+}
+.topbar-secondary .nav-links {
+  margin-left: 0;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  width: 100%;
 }
 
 .nav-links {
@@ -639,22 +653,29 @@ body {
 }
 .app-bottom-bar .app-tab.active {
   color: #2563eb;
+  background: #eff6ff;
+  border-radius: 999px;
 }
 .app-cta {
-  background: #2563eb;
-  color: #ffffff;
-  border: none;
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
   border-radius: 999px;
   padding: 0.65rem 1.1rem;
   font-weight: 800;
   font-size: 0.9rem;
-  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
+  box-shadow: none;
   cursor: pointer;
   min-width: 54px;
   min-height: 54px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+.app-cta.active {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
 }
 .app-cta .app-tab-icon {
   font-size: 1.2rem;
@@ -2507,8 +2528,8 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
 }
 
 @media (max-width: 900px) {
-  .topbar { flex-wrap: nowrap; gap: 0.5rem; padding: 0.75rem 1rem; }
-  .nav-links { flex-wrap: nowrap; justify-content: flex-end; gap: 0.6rem; overflow-x: auto; }
+  .topbar { gap: 0.35rem; padding: 0.65rem 1rem; }
+  .nav-links { flex-wrap: nowrap; justify-content: flex-start; gap: 0.6rem; overflow-x: auto; }
   .nav-item { font-size: 0.85rem !important; margin-right: 0.4rem !important; }
   .hero-actions { max-width: none; }
   .pricing-section { padding: 1.25rem 1rem 2.5rem; }
