@@ -104,6 +104,10 @@ let currentReferralLink = "";
 let toastTimer = null;
 const WEEK_THEME_TEXT = "Os impactos do uso excessivo das redes sociais na saúde mental dos jovens no Brasil";
 
+function shouldUseAppShell() {
+  return Boolean(document.querySelector(".app-views") && document.getElementById("app-bottom-bar"));
+}
+
 function normalizeCredits(value) {
   if (typeof value === "number" && Number.isFinite(value)) return value;
   if (typeof value === "string" && value.trim() !== "" && !Number.isNaN(Number(value))) return Number(value);
@@ -1092,7 +1096,11 @@ async function fetchMe() {
     updateTopbarUser(data);
     const credits = extractCredits(data);
     setCreditsUI(credits);
-    showSection("section-dashboard");
+    if (shouldUseAppShell()) {
+      showSection("section-landing");
+    } else {
+      showSection("section-dashboard");
+    }
     if (loadHistoricoFn) loadHistoricoFn();
     loadReferral();
   } catch(e) {
@@ -1275,6 +1283,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (shouldShowLanding && document.getElementById("section-landing")) {
       showSection("section-landing");
     }
+  }
+  if (shouldUseAppShell() && document.getElementById("section-landing")?.classList.contains("visible")) {
+    document.body.classList.add("app-shell");
+    document.getElementById("app-bottom-bar")?.classList.remove("hidden");
   }
 
   document.querySelectorAll("[data-buy-credits]").forEach(btn => {
