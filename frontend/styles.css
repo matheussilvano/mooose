@@ -77,6 +77,11 @@ body {
   display: flex;
   align-items: center;
   gap: 1rem;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.nav-links::-webkit-scrollbar {
+  display: none;
 }
 
 .credits-pill {
@@ -94,15 +99,18 @@ body {
   font-weight: 900;
 }
 .buy-pill {
-  border: 1px solid #bfdbfe;
-  background: #ffffff;
-  color: #1d4ed8;
+  border: 1px solid #1d4ed8;
+  background: #2563eb;
+  color: #ffffff;
   font-weight: 800;
   border-radius: 999px;
   padding: 0.4rem 0.8rem;
   cursor: pointer;
   font-size: 0.85rem;
   appearance: none;
+}
+.buy-pill:hover {
+  filter: brightness(1.05);
 }
 .streak-mini {
   border: 1px solid #fed7aa;
@@ -623,6 +631,11 @@ body {
   font-size: 0.85rem;
   padding: 0.4rem 0.6rem;
   cursor: pointer;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .app-bottom-bar .app-tab.active {
   color: #2563eb;
@@ -637,6 +650,18 @@ body {
   font-size: 0.9rem;
   box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
   cursor: pointer;
+  min-width: 54px;
+  min-height: 54px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.app-cta .app-tab-icon {
+  font-size: 1.2rem;
+}
+.app-tab-icon {
+  font-size: 1.1rem;
+  line-height: 1;
 }
 
 .credits-sheet {
@@ -2482,12 +2507,33 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
 }
 
 @media (max-width: 900px) {
-  .topbar { flex-wrap: wrap; gap: 0.75rem; padding: 0.75rem 1rem; }
-  .nav-links { flex-wrap: wrap; justify-content: flex-end; gap: 0.6rem; }
+  .topbar { flex-wrap: nowrap; gap: 0.5rem; padding: 0.75rem 1rem; }
+  .nav-links { flex-wrap: nowrap; justify-content: flex-end; gap: 0.6rem; overflow-x: auto; }
   .nav-item { font-size: 0.85rem !important; margin-right: 0.4rem !important; }
   .hero-actions { max-width: none; }
   .pricing-section { padding: 1.25rem 1rem 2.5rem; }
-  #nav-logged { flex-wrap: wrap; gap: 0.5rem !important; }
+  #nav-logged { flex-wrap: nowrap; gap: 0.5rem !important; }
+}
+
+@media (max-width: 900px) {
+  .app-shell .topbar {
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+  }
+  .app-shell .nav-links {
+    flex-wrap: nowrap;
+    gap: 0.4rem;
+  }
+  .app-shell .credits-pill,
+  .app-shell .buy-pill {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.55rem;
+    white-space: nowrap;
+  }
+  .app-shell .streak-mini {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+  }
 }
 
 @media (max-width: 768px) {
