@@ -166,6 +166,30 @@ body {
   font-weight: 700;
   color: #0f172a;
 }
+.app-theme-card {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  box-shadow: none;
+}
+.app-theme-card .app-tag {
+  color: #64748b;
+}
+.app-theme-card .app-card-title {
+  color: #334155;
+  font-weight: 600;
+}
+.app-theme-card .link-btn {
+  color: #64748b;
+}
+.app-theme-card .duo-btn {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+  border-bottom-color: #94a3b8;
+  color: #475569;
+}
+.app-theme-card .duo-btn:hover {
+  background-color: #e2e8f0;
+}
 .app-shortcuts .duo-btn {
   width: 100%;
 }
