@@ -1179,11 +1179,11 @@ async function fetchMe() {
 document.addEventListener("DOMContentLoaded", () => {
   // Navigation
   const btnNavLogin = document.getElementById("btn-nav-login");
+  const btnNavRegister = document.getElementById("btn-nav-register");
   const btnCtaStart = document.getElementById("btn-cta-start");
   const btnCtaLogin = document.getElementById("btn-cta-login");
   const btnPromoStart = document.getElementById("btn-promo-start");
   const btnLogout = document.getElementById("btn-logout");
-  const btnLogoutTopbar = document.getElementById("btn-logout-topbar");
   const offensivaCta = document.getElementById("offensiva-cta");
 
   // Auth switchers
@@ -1217,11 +1217,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const appLogoutBtn = document.getElementById("btn-app-logout");
   updateAppHeaderHeight();
   window.addEventListener("resize", updateAppHeaderHeight);
+  updateTopbarUser(getToken() ? {} : null);
 
   updateTopbarUser = (data) => {
     const navAuth = document.getElementById("nav-auth");
     const navLogged = document.getElementById("nav-logged");
     const nameEl = document.getElementById("topbar-user-name");
+    const topbarSecondary = document.querySelector(".topbar-secondary");
+    const buyBtn = document.querySelector(".buy-pill");
     
     if (data) {
       navAuth.classList.add("hidden");
@@ -1229,11 +1232,15 @@ document.addEventListener("DOMContentLoaded", () => {
       if(nameEl) nameEl.textContent = data.full_name?.split(" ")[0] || "Aluno";
       if (appLoginBtn) appLoginBtn.classList.add("hidden");
       if (appLogoutBtn) appLogoutBtn.classList.remove("hidden");
+      if (topbarSecondary) topbarSecondary.classList.remove("hidden");
+      if (buyBtn) buyBtn.classList.remove("hidden");
     } else {
       navAuth.classList.remove("hidden");
       navLogged.classList.add("hidden");
       if (appLoginBtn) appLoginBtn.classList.remove("hidden");
       if (appLogoutBtn) appLogoutBtn.classList.add("hidden");
+      if (topbarSecondary) topbarSecondary.classList.add("hidden");
+      if (buyBtn) buyBtn.classList.add("hidden");
     }
     requestAnimationFrame(updateAppHeaderHeight);
   };
@@ -1575,6 +1582,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Listeners Nav
   if(btnNavLogin) btnNavLogin.addEventListener("click", () => goToAuth('login'));
+  if(btnNavRegister) btnNavRegister.addEventListener("click", () => goToAuth('register'));
   if(btnCtaStart) btnCtaStart.addEventListener("click", () => goToAuth('register'));
   if(btnCtaLogin) btnCtaLogin.addEventListener("click", () => goToAuth('login'));
   if(btnPromoStart) btnPromoStart.addEventListener("click", () => goToAuth('register'));
@@ -1588,13 +1596,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   
   if(btnLogout) btnLogout.addEventListener("click", () => {
-    setToken(null);
-    updateTopbarUser(null);
-    resetCreditsUI();
-    resetAppData();
-    showSection("section-landing");
-  });
-  if(btnLogoutTopbar) btnLogoutTopbar.addEventListener("click", () => {
     setToken(null);
     updateTopbarUser(null);
     resetCreditsUI();

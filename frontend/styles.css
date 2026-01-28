@@ -78,6 +78,16 @@ body {
   justify-content: space-between;
   width: 100%;
 }
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.topbar-actions #nav-auth {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 .topbar-secondary .nav-links {
   margin-left: 0;
   justify-content: flex-start;
@@ -676,6 +686,10 @@ body {
   background: #2563eb;
   color: #ffffff;
   box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
+}
+.app-bottom-bar .app-cta.active {
+  background: #2563eb;
+  color: #ffffff;
 }
 .app-cta .app-tab-icon {
   font-size: 1.2rem;

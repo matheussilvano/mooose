@@ -98,11 +98,21 @@
         <img src="logo.png" alt="Mooose" class="mooose-logo" />
         <span class="logo-word">MOOOSE</span>
       </a>
-      <button type="button" class="buy-pill" data-buy-open>
-        Comprar correções
-      </button>
+      <div class="topbar-actions">
+        <button type="button" class="buy-pill hidden" data-buy-open>
+          Comprar correções
+        </button>
+        <div id="nav-auth">
+          <button id="btn-nav-register" class="duo-btn btn-primary" style="padding: 0.5rem 1rem;">
+            Cadastrar-se
+          </button>
+          <button id="btn-nav-login" class="duo-btn btn-secondary" style="padding: 0.5rem 1rem;">
+            Entrar
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="topbar-row topbar-secondary">
+    <div class="topbar-row topbar-secondary hidden">
       <nav class="nav-links">
         <button type="button" class="credits-pill" data-credits-open>
           Correções disponíveis: <span data-credit-balance>2</span>
@@ -115,20 +125,14 @@
           aria-label="Ofensiva: 0 semanas seguidas"
         >
           🔥<span data-week-streak-mini>0</span>
-        </button>
-        <a href="/blog/" class="nav-item" style="margin-right: 1rem; text-decoration: none; color: #64748b; font-weight: 600; font-size: 0.9rem;">Dicas & Blog</a>
-        
-        <div id="nav-auth">
-          <button id="btn-nav-login" class="duo-btn btn-secondary" style="padding: 0.5rem 1rem;">
-            Entrar
-          </button>
-        </div>
-        <div id="nav-logged" class="hidden" style="align-items: center; display: flex; gap: 1rem;">
-          <span id="topbar-user-name" style="font-weight: 700;"></span>
-          <button id="btn-logout-topbar" class="link-btn">Sair</button>
-        </div>
-      </nav>
-    </div>
+      </button>
+      <a href="/blog/" class="nav-item" style="margin-right: 1rem; text-decoration: none; color: #64748b; font-weight: 600; font-size: 0.9rem;">Dicas & Blog</a>
+
+      <div id="nav-logged" class="hidden" style="align-items: center; display: flex; gap: 1rem;">
+        <span id="topbar-user-name" style="font-weight: 700;"></span>
+      </div>
+    </nav>
+  </div>
   </header>
 
   <main>
