@@ -440,10 +440,10 @@ function updateOffensivaCTA(credits) {
   if (!cta) return;
   const hasCredits = credits === null || Number(credits) > 0;
   if (hasCredits) {
-    cta.textContent = "✍️ Enviar nova redação";
+    cta.textContent = "Enviar redação agora";
     cta.dataset.action = "send";
   } else {
-    cta.textContent = "💳 Desbloquear correções";
+    cta.textContent = "Manter ofensiva (R$ 9,90)";
     cta.dataset.action = "buy";
   }
 }
@@ -501,12 +501,26 @@ function showOffensivaModal() {
   if (!modal) return;
   modal.classList.remove("hidden");
   updateOffensivaMonetization(currentCredits);
+  const card = modal.querySelector(".offensiva-modal-card");
+  if (card) card.focus();
 }
 
 function hideOffensivaModal() {
   const modal = document.getElementById("offensiva-modal");
   if (!modal) return;
   modal.classList.add("hidden");
+}
+
+function focusAppCorrection() {
+  showSection("section-landing");
+  renderAppView("new");
+  requestAnimationFrame(() => {
+    const activePanel = document.querySelector("[data-app-panel].active");
+    const input =
+      activePanel?.querySelector('input[name="tema_app_file"], input[name="tema_app"]') ||
+      document.querySelector('input[name="tema_app_file"], input[name="tema_app"]');
+    if (input) input.focus();
+  });
 }
 
 function getWeekStart(date) {
@@ -518,96 +532,125 @@ function getWeekStart(date) {
   return d;
 }
 
-function formatWeekLabel(date) {
-  return date.toLocaleDateString("pt-BR", { month: "short", day: "2-digit" });
+function getISOWeekKey(date) {
+  const d = new Date(date);
+  if (Number.isNaN(d.getTime())) return null;
+  const utc = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const day = utc.getUTCDay() || 7;
+  utc.setUTCDate(utc.getUTCDate() + 4 - day);
+  const yearStart = new Date(Date.UTC(utc.getUTCFullYear(), 0, 1));
+  const weekNo = Math.ceil((((utc - yearStart) / 86400000) + 1) / 7);
+  return `${utc.getUTCFullYear()}-W${String(weekNo).padStart(2, "0")}`;
 }
 
-function formatWeekDeadline(weekStart) {
-  const end = new Date(weekStart.getTime() + 6 * 24 * 60 * 60 * 1000);
-  return end.toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "2-digit" });
+function computeWeeklyStreak(items = []) {
+  const weekSet = new Set();
+  items.forEach(item => {
+    const raw = item?.created_at || item?.createdAt || item?.date;
+    const key = getISOWeekKey(raw);
+    if (key) weekSet.add(key);
+  });
+
+  const today = new Date();
+  const currentWeekKey = getISOWeekKey(today);
+  const currentWeekStart = getWeekStart(today);
+  const dayIndex = (today.getDay() + 6) % 7;
+  const daysLeftInWeek = 6 - dayIndex;
+  const hasDoneThisWeek = currentWeekKey ? weekSet.has(currentWeekKey) : false;
+
+  let streak = 0;
+  if (currentWeekStart && currentWeekKey) {
+    let cursor = hasDoneThisWeek
+      ? new Date(currentWeekStart.getTime())
+      : new Date(currentWeekStart.getTime() - WEEK_IN_MS);
+    while (cursor && weekSet.has(getISOWeekKey(cursor))) {
+      streak += 1;
+      cursor = new Date(cursor.getTime() - WEEK_IN_MS);
+    }
+  }
+
+  const lastWeeksStatus = [];
+  if (currentWeekStart && currentWeekKey) {
+    const labels = ["Sem 1", "Sem 2", "Sem 3", "Esta semana"];
+    for (let i = 3; i >= 1; i--) {
+      const start = new Date(currentWeekStart.getTime() - i * WEEK_IN_MS);
+      lastWeeksStatus.push({ label: labels[3 - i], done: weekSet.has(getISOWeekKey(start)) });
+    }
+    lastWeeksStatus.push({ label: labels[3], done: hasDoneThisWeek });
+  } else {
+    ["Sem 1", "Sem 2", "Sem 3", "Esta semana"].forEach(label => {
+      lastWeeksStatus.push({ label, done: false });
+    });
+  }
+
+  return { streak, hasDoneThisWeek, daysLeftInWeek, lastWeeksStatus };
 }
 
 function updateWeeklyStreak(items = []) {
   const streakEls = document.querySelectorAll("[data-week-streak]");
   const streakLabelEls = document.querySelectorAll("[data-week-streak-label]");
-  const listEl = document.querySelector("[data-week-list]");
-  const msgEl = document.querySelector("[data-week-message]");
   const summaryEl = document.querySelector("[data-week-summary]");
-  if (!streakEls.length && !listEl && !msgEl && !summaryEl) return;
+  const miniEl = document.querySelector("[data-offensiva-mini]");
+  const miniValueEls = document.querySelectorAll("[data-week-streak-mini]");
+  const lineValueEls = document.querySelectorAll("[data-week-streak-line]");
+  const weeksEls = document.querySelectorAll("[data-offensiva-weeks], [data-week-list]");
+  const messageEl = document.querySelector("[data-offensiva-message]");
+  if (
+    !streakEls.length &&
+    !streakLabelEls.length &&
+    !summaryEl &&
+    !miniEl &&
+    !miniValueEls.length &&
+    !lineValueEls.length &&
+    !weeksEls.length &&
+    !messageEl
+  ) {
+    return;
+  }
 
-  const weekSet = new Set();
-  items.forEach(item => {
-    const raw = item?.created_at || item?.createdAt || item?.date;
-    if (!raw) return;
-    const weekStart = getWeekStart(raw);
-    if (!weekStart) return;
-    weekSet.add(weekStart.getTime());
+  const { streak, hasDoneThisWeek, lastWeeksStatus } = computeWeeklyStreak(items);
+
+  streakEls.forEach(el => {
+    el.textContent = String(streak);
   });
 
-  const sorted = Array.from(weekSet).sort((a, b) => a - b);
-  let streak = 0;
-  if (sorted.length) {
-    streak = 1;
-    let current = sorted[sorted.length - 1];
-    for (let i = sorted.length - 2; i >= 0; i--) {
-      const diff = current - sorted[i];
-      if (diff === WEEK_IN_MS) {
-        streak += 1;
-        current = sorted[i];
-      } else if (diff > WEEK_IN_MS) {
-        break;
-      }
-    }
+  streakLabelEls.forEach(el => {
+    el.textContent = streak === 1 ? "semana" : "semanas";
+  });
+
+  miniValueEls.forEach(el => {
+    el.textContent = String(streak);
+  });
+  if (miniEl) {
+    miniEl.classList.toggle("hidden", streak === 0);
+    const label = `Ofensiva: ${streak} semanas seguidas`;
+    miniEl.setAttribute("aria-label", label);
+    miniEl.setAttribute("title", label);
   }
 
-  if (streakEls.length) {
-    streakEls.forEach(el => {
-      el.textContent = String(streak);
-    });
-  }
-  if (streakLabelEls.length) {
-    const label = streak === 1 ? "semana" : "semanas";
-    streakLabelEls.forEach(el => {
-      el.textContent = label;
-    });
-  }
-  if (msgEl) {
-    if (streak >= 2) msgEl.textContent = `🔥 Ofensiva ENEM: ${streak} semanas seguidas.`;
-    else if (streak === 1) msgEl.textContent = "📅 Você treinou por 1 semana consecutiva. Continue!";
-    else msgEl.textContent = "📅 Você ainda não iniciou sua ofensiva semanal. Que tal começar hoje?";
-  }
+  lineValueEls.forEach(el => {
+    el.textContent = String(streak);
+  });
 
-  const currentWeekStart = getWeekStart(new Date());
-  const lastWeekStart = sorted.length ? new Date(sorted[sorted.length - 1]) : null;
-  const hasCurrentWeek = currentWeekStart ? weekSet.has(currentWeekStart.getTime()) : false;
-  const isPreviousWeek = currentWeekStart && lastWeekStart
-    ? (currentWeekStart.getTime() - lastWeekStart.getTime() === WEEK_IN_MS)
-    : false;
-
-  let status = "broken";
-  if (hasCurrentWeek) status = "active";
-  else if (streak > 0 && isPreviousWeek) status = "warning";
-
-  const deadlineLabel = currentWeekStart ? formatWeekDeadline(currentWeekStart) : "";
-  updateOffensivaStatus(status, deadlineLabel);
-  updateOffensivaMotivation(streak);
   if (summaryEl) {
-    summaryEl.textContent = hasCurrentWeek ? "Você treinou esta semana." : "Você treinou esta semana?";
+    summaryEl.textContent = hasDoneThisWeek ? "Você treinou esta semana." : "Você treinou esta semana?";
   }
 
-  if (listEl) {
-    if (!currentWeekStart) return;
-    const weeksToShow = 4;
-    const pills = [];
-    for (let i = 0; i < weeksToShow; i++) {
-      const start = new Date(currentWeekStart.getTime() - i * WEEK_IN_MS);
-      const has = weekSet.has(start.getTime());
-      const status = has ? "done" : (i === 0 ? "pending" : "missed");
-      const label = formatWeekLabel(start);
-      const note = !has && i === 0 ? "<span class=\"week-note\">em andamento</span>" : "";
-      pills.push(`<div class="week-pill ${status}"><span class="week-icon">${has ? "✓" : "•"}</span><span class="week-label">${label}</span>${note}</div>`);
-    }
-    listEl.innerHTML = pills.join("");
+  if (messageEl) {
+    messageEl.textContent = hasDoneThisWeek
+      ? "Você está mantendo constância. Continue assim."
+      : "⚠️ Envie uma redação até domingo para não perder sua ofensiva.";
+  }
+
+  if (weeksEls.length) {
+    const chips = lastWeeksStatus.map(week => {
+      const icon = week.done ? "✓" : "•";
+      const statusClass = week.done ? "done" : "";
+      return `<div class="offensiva-week-chip ${statusClass}"><span class="offensiva-week-icon">${icon}</span><span>${week.label}</span></div>`;
+    }).join("");
+    weeksEls.forEach(el => {
+      el.innerHTML = chips;
+    });
   }
 }
 
@@ -1390,8 +1433,15 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     hideOffensivaModal();
-    const target = document.getElementById("card-nova-correcao");
-    if (target) target.scrollIntoView({ behavior: "smooth" });
+    const dashboardVisible = document.getElementById("section-dashboard")?.classList.contains("visible");
+    if (dashboardVisible) {
+      const target = document.getElementById("card-nova-correcao");
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth" });
+        return;
+      }
+    }
+    focusAppCorrection();
   });
 
   document.querySelectorAll("[data-weekly-toggle]").forEach(btn => {
@@ -1417,6 +1467,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Escape") hideCreditsModal();
     if (e.key === "Escape") hideReviewPopup();
     if (e.key === "Escape") hideCreditsSheet();
+    if (e.key === "Escape") hideOffensivaModal();
   });
 
   document.addEventListener("click", (e) => {
