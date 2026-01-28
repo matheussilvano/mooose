@@ -130,7 +130,12 @@
               <span class="app-tag">Tema da semana</span>
               <button class="link-btn" data-view-target="new">Começar</button>
             </div>
-            <p class="app-card-title">Os impactos do uso excessivo das redes sociais na saúde mental dos jovens no Brasil</p>
+            <div class="app-theme-body">
+              <p class="app-card-title">Os impactos do uso excessivo das redes sociais na saúde mental dos jovens no Brasil</p>
+              <div class="app-theme-image">
+                <img src="impacto_redes_sociais.png" alt="Jovem impactado pelo uso excessivo das redes sociais" />
+              </div>
+            </div>
             <button type="button" class="duo-btn btn-secondary full" data-app-use-theme>
               Usar tema
             </button>
@@ -154,11 +159,23 @@
           </div>
 
           <div class="app-toggle">
-            <button type="button" class="app-toggle-tab active" data-app-tab="text">Texto</button>
-            <button type="button" class="app-toggle-tab" data-app-tab="file">Foto/PDF</button>
+            <button type="button" class="app-toggle-tab active" data-app-tab="file">Foto/PDF</button>
+            <button type="button" class="app-toggle-tab" data-app-tab="text">Texto</button>
           </div>
 
-          <div class="app-panel active" data-app-panel="text">
+          <div class="app-panel active" data-app-panel="file">
+            <form id="form-app-file">
+              <input type="text" name="tema_app_file" class="app-input" placeholder="Tema da redação" required />
+              <label class="app-upload">
+                <input type="file" name="arquivo_app" accept="image/*,application/pdf" required />
+                <span>Enviar foto ou PDF</span>
+              </label>
+              <button type="submit" class="duo-btn btn-primary full">Enviar para correção</button>
+              <p class="form-message" id="msg-app-file"></p>
+            </form>
+          </div>
+
+          <div class="app-panel" data-app-panel="text">
             <form id="form-app-text">
               <input type="text" name="tema_app" class="app-input" placeholder="Tema da redação" required />
               <textarea id="app-textarea" name="texto_app" rows="6" maxlength="3000" placeholder="Escreva ou cole sua redação" required></textarea>
@@ -170,16 +187,17 @@
             </form>
           </div>
 
-          <div class="app-panel" data-app-panel="file">
-            <form id="form-app-file">
-              <input type="text" name="tema_app_file" class="app-input" placeholder="Tema da redação" required />
-              <label class="app-upload">
-                <input type="file" name="arquivo_app" accept="image/*,application/pdf" required />
-                <span>Enviar foto ou PDF</span>
-              </label>
-              <button type="submit" class="duo-btn btn-primary full">Enviar para correção</button>
-              <p class="form-message" id="msg-app-file"></p>
-            </form>
+          <div class="app-card app-theme-card">
+            <div class="app-card-head">
+              <span class="app-tag">Tema da semana</span>
+              <button class="link-btn" type="button" data-app-use-theme>Aplicar tema</button>
+            </div>
+            <div class="app-theme-body">
+              <p class="app-card-title">Os impactos do uso excessivo das redes sociais na saúde mental dos jovens no Brasil</p>
+              <div class="app-theme-image">
+                <img src="impacto_redes_sociais.png" alt="Jovem impactado pelo uso excessivo das redes sociais" />
+              </div>
+            </div>
           </div>
         </div>
 

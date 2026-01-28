@@ -1217,14 +1217,25 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCount();
   }
 
-  const themeBtn = document.querySelector("[data-app-use-theme]");
-  themeBtn?.addEventListener("click", () => {
-    renderAppView("new");
-    const input = document.querySelector('input[name="tema_app"]');
-    if (input) {
+  const applyAppTheme = () => {
+    const inputs = document.querySelectorAll('input[name="tema_app"], input[name="tema_app_file"]');
+    inputs.forEach(input => {
       input.value = WEEK_THEME_TEXT;
-      input.focus();
+    });
+    const activePanel = document.querySelector("[data-app-panel].active");
+    const activeInput =
+      activePanel?.querySelector('input[name="tema_app"], input[name="tema_app_file"]') || inputs[0];
+    if (activeInput) {
+      activeInput.focus();
     }
+  };
+
+  document.querySelectorAll("[data-app-use-theme]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      renderAppView("new");
+      applyAppTheme();
+    });
   });
 
   const creditsSheet = document.getElementById("credits-sheet");
