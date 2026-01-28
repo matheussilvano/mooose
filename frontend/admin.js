@@ -35,11 +35,11 @@ const METRIC_INFO = {
   },
   sales_credited: {
     label: "Vendas creditadas",
-    desc: "Pagamentos que já geraram créditos."
+    desc: "Pagamentos que já geraram correções."
   },
   credits_sold_credited: {
-    label: "Créditos vendidos",
-    desc: "Quantidade de créditos creditados (vendas)."
+    label: "Correções vendidas",
+    desc: "Quantidade de correções creditadas (vendas)."
   },
   estimated_revenue: {
     label: "Receita estimada",

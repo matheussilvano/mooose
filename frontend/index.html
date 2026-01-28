@@ -54,7 +54,7 @@
         "name": "É gratuito?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Você começa com 2 correções grátis. Depois, pode comprar créditos para continuar."
+          "text": "Você começa com 2 correções grátis. Depois, pode comprar correções para continuar."
         }
       },
       {
@@ -99,7 +99,7 @@
     </a>
     <nav class="nav-links">
       <button type="button" class="credits-pill" data-credits-open>
-        Créditos: <span data-credit-balance>2</span>
+        Correções disponíveis: <span data-credit-balance>2</span>
       </button>
       <button
         type="button"
@@ -188,7 +188,7 @@
                 <span class="faq-icon">+</span>
               </button>
               <div class="faq-answer" hidden>
-                Você começa com 2 correções grátis. Depois, pode comprar créditos para continuar.
+                Você começa com 2 correções grátis. Depois, pode comprar correções para continuar.
               </div>
             </div>
             <div class="faq-item">
@@ -288,6 +288,7 @@
               <label class="app-upload">
                 <input type="file" name="arquivo_app" accept="image/*,application/pdf" required />
                 <span>Enviar foto ou PDF</span>
+                <span class="app-upload-status hidden" data-upload-status></span>
               </label>
               <button type="submit" class="duo-btn btn-primary full">Enviar para correção</button>
               <p class="form-message" id="msg-app-file"></p>
@@ -400,7 +401,7 @@
 
           <div id="card-register" class="hidden">
             <h3>Criar perfil</h3>
-            <p class="card-sub">Crie sua conta e ganhe 2 créditos para começar a corrigir.</p>
+            <p class="card-sub">Crie sua conta e ganhe 2 correções grátis para começar a corrigir.</p>
             <form id="form-register">
               <div class="input-group">
                 <label>Nome completo</label>
@@ -459,7 +460,7 @@
 
       <div class="summary-strip">
         <div class="summary-item">
-          <span class="summary-label">Créditos disponíveis</span>
+          <span class="summary-label">Correções disponíveis</span>
           <strong class="summary-value" data-credit-balance>—</strong>
         </div>
         <button class="summary-item summary-action" type="button" data-offensiva-open aria-label="Abrir Ofensiva ENEM">
@@ -476,11 +477,11 @@
       <div class="card credit-card">
         <div class="credit-card-header">
           <div>
-            <h3>Seus créditos</h3>
-            <p class="card-sub" data-credit-info>Cada correção consome 1 crédito.</p>
+            <h3>Suas correções</h3>
+            <p class="card-sub" data-credit-info>Cada correção consome 1 correção disponível.</p>
           </div>
           <div class="credit-balance">
-            <span class="credit-label">Créditos disponíveis</span>
+            <span class="credit-label">Correções disponíveis</span>
             <span class="credit-value" data-credit-balance>—</span>
           </div>
         </div>
@@ -517,12 +518,13 @@
             <div class="input-group" style="margin-bottom: 1rem;">
               <label>Foto ou PDF da redação</label>
               <input type="file" name="arquivo" accept="image/*,application/pdf" required />
+              <span class="file-status hidden" data-upload-status></span>
             </div>
             <button type="submit" class="duo-btn btn-success" data-send-btn>Enviar para correção</button>
           </form>
-          <p class="credit-inline-note">1 correção = 1 crédito</p>
+          <p class="credit-inline-note">Cada envio usa 1 correção disponível.</p>
           <div class="credit-lock hidden" data-credit-lock>
-            <span>Para enviar, você precisa de créditos.</span>
+            <span>Para enviar, você precisa de correções disponíveis.</span>
             <button type="button" class="link-btn" data-buy-credits>Desbloquear correções</button>
           </div>
           <p class="form-message" id="msg-corrigir-arquivo"></p>
@@ -546,9 +548,9 @@
             </div>
             <button type="submit" class="duo-btn btn-success" data-send-btn>Enviar para correção</button>
           </form>
-          <p class="credit-inline-note">1 correção = 1 crédito</p>
+          <p class="credit-inline-note">Cada envio usa 1 correção disponível.</p>
           <div class="credit-lock hidden" data-credit-lock>
-            <span>Para enviar, você precisa de créditos.</span>
+            <span>Para enviar, você precisa de correções disponíveis.</span>
             <button type="button" class="link-btn" data-buy-credits>Desbloquear correções</button>
           </div>
           <p class="form-message" id="msg-corrigir"></p>
@@ -618,8 +620,8 @@
 
       <div class="card referral-card referral-loading" id="card-referrals">
         <div class="referral-header">
-          <h3>Convide amigos e ganhe créditos</h3>
-          <p class="card-sub">Ganhe 2 créditos por cada amigo que se cadastrar e ativar a conta.</p>
+          <h3>Convide amigos e ganhe correções</h3>
+          <p class="card-sub">Ganhe 2 correções por cada amigo que se cadastrar e ativar a conta.</p>
         </div>
         <div class="referral-skeleton" aria-hidden="true">
           <div class="skeleton-line w-60"></div>
@@ -652,7 +654,7 @@
               <strong data-referral-confirmed>0</strong>
             </div>
             <div class="referral-stat">
-              <small>Créditos ganhos</small>
+              <small>Correções ganhas</small>
               <strong data-referral-credits>0</strong>
             </div>
           </div>
@@ -771,9 +773,15 @@
   <div id="credits-sheet" class="credits-sheet hidden">
     <div class="credits-sheet-backdrop" data-credits-sheet-close></div>
     <div class="credits-sheet-card">
-      <h3>Comprar créditos</h3>
-      <p class="card-sub">Desbloqueie 10 correções por R$ 9,90.</p>
-      <button class="duo-btn btn-primary full" data-buy-credits>Comprar agora</button>
+      <h3>Você ficou sem correções ⚠️</h3>
+      <p class="card-sub">Cada correção libera a análise completa de uma redação com feedback personalizado.</p>
+      <div class="no-credits-offer">
+        <strong>🚀 Oferta especial agora:</strong>
+        <span class="no-credits-price">10 correções por R$ 9,90</span>
+        <span class="no-credits-note">Preço promocional por tempo limitado.</span>
+      </div>
+      <p class="no-credits-reminder">Não perca a chance de continuar treinando hoje.</p>
+      <button class="duo-btn btn-primary full" data-buy-credits>Comprar agora — R$ 9,90</button>
       <button class="link-btn" type="button" data-credits-sheet-close>Fechar</button>
     </div>
   </div>
@@ -782,54 +790,17 @@
     <div class="credits-modal-backdrop" data-credits-close></div>
     <div class="credits-modal-card paywall-card">
       <button class="credits-modal-close" type="button" data-credits-close>✕</button>
-      <div class="paywall-header">
-        <span class="paywall-kicker">🚀 Você já começou a evoluir.</span>
-        <h3>Em apenas <span data-paywall-corrections>2</span> redações, você já deu o primeiro passo rumo a uma nota maior.</h3>
-      </div>
-      <div class="paywall-body">
-        <div class="paywall-left">
-          <div class="paywall-alert">🚧 Seus créditos gratuitos acabaram.</div>
-          <p class="paywall-intro">Mas olha o que você já conquistou:</p>
-          <ul class="paywall-achievements">
-            <li>✔️ <strong data-paywall-corrections>2</strong> redações corrigidas</li>
-            <li>✔️ Feedback detalhado</li>
-            <li>✔️ Pontos claros pra melhorar</li>
-          </ul>
-          <div class="paywall-progress-block">
-          <div class="paywall-progress-title">Rumo à nota 1000</div>
-            <div class="progress-track">
-              <span class="progress-fill" data-progress-fill style="width: 0%;"></span>
-            </div>
-            <span class="progress-percent" data-progress-percent>0%</span>
-          </div>
-          <p class="paywall-promise">Agora é hora de treinar como quem quer passar.</p>
-          <p class="paywall-social">72% dos alunos já fizeram mais de 5 correções.</p>
-          <div class="paywall-urgency">
-            <strong>⏳ Não perca o ritmo.</strong>
-            <p>Alunos que param agora costumam estagnar.</p>
-            <p>Continue treinando por menos de R$1 por redação.</p>
-          </div>
+      <div class="no-credits-modal">
+        <h3>Você ficou sem correções ⚠️</h3>
+        <p class="card-sub">Cada correção libera a análise completa de uma redação com feedback personalizado.</p>
+        <div class="no-credits-offer">
+          <strong>🚀 Oferta especial agora:</strong>
+          <span class="no-credits-price">10 correções por R$ 9,90</span>
+          <span class="no-credits-note">Preço promocional por tempo limitado.</span>
         </div>
-        <div class="paywall-right">
-          <div class="paywall-offer">
-            <span class="paywall-offer-title">🎓 Plano ENEM Mooose</span>
-            <p class="paywall-offer-sub">Desbloqueie 10 correções por apenas R$ 9,90</p>
-            <ul class="paywall-offer-list">
-              <li>✔️ 10 correções detalhadas</li>
-              <li>✔️ Feedback por competência</li>
-              <li>✔️ Histórico de evolução</li>
-              <li>✔️ Acompanhamento até a prova</li>
-            </ul>
-            <div class="paywall-price">
-              <span class="paywall-price-old">De R$ 29,90</span>
-              <span class="paywall-price-now">por R$ 9,90</span>
-              <span class="paywall-price-tag">(lançamento)</span>
-            </div>
-            <button class="duo-btn btn-primary paywall-cta" data-buy-credits>👉 Continuar com a Mooose</button>
-            <small class="paywall-secure">🔒 Pagamento seguro via Mercado Pago</small>
-          </div>
-          <button class="duo-btn btn-secondary paywall-dismiss" type="button" data-credits-close>Agora não</button>
-        </div>
+        <p class="no-credits-reminder">Não perca a chance de continuar treinando hoje.</p>
+        <button class="duo-btn btn-primary full" data-buy-credits>Comprar agora — R$ 9,90</button>
+        <button class="duo-btn btn-secondary paywall-dismiss" type="button" data-credits-close>Agora não</button>
       </div>
     </div>
   </div>

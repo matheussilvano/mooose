@@ -215,9 +215,9 @@ function updateCreditCardCopy(credits) {
   const infoEl = document.querySelector("[data-credit-info]");
   if (!infoEl) return;
   if (credits !== null && Number(credits) <= 0) {
-    infoEl.textContent = "Você está sem créditos. Desbloqueie correções para continuar seu treino.";
+    infoEl.textContent = "Você está sem correções disponíveis. Desbloqueie correções para continuar seu treino.";
   } else {
-    infoEl.textContent = "Cada correção consome 1 crédito.";
+    infoEl.textContent = "Cada correção consome 1 correção disponível.";
   }
 }
 
@@ -1545,6 +1545,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  document.querySelectorAll('input[type="file"]').forEach(input => {
+    input.addEventListener("change", () => {
+      const file = input.files && input.files[0];
+      const container = input.closest(".app-upload") || input.closest(".input-group") || input.parentElement;
+      const status = container?.querySelector("[data-upload-status]");
+      if (!status) return;
+      if (file) {
+        status.textContent = `Arquivo selecionado: ${file.name}`;
+        status.classList.remove("hidden");
+      } else {
+        status.textContent = "";
+        status.classList.add("hidden");
+      }
+    });
+  });
+
   // Listeners Nav
   if(btnNavLogin) btnNavLogin.addEventListener("click", () => goToAuth('login'));
   if(btnCtaStart) btnCtaStart.addEventListener("click", () => goToAuth('register'));
@@ -1660,7 +1676,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function sendCorrection(url, body, msgEl, isFile=false) {
     if (currentCredits !== null && currentCredits <= 0) {
-      msgEl.textContent = "Para enviar, você precisa de créditos.";
+      msgEl.textContent = "Você ficou sem correções ⚠️";
       msgEl.className = "form-message error";
       if (document.body.classList.contains("app-shell")) {
         document.getElementById("credits-sheet")?.classList.remove("hidden");

@@ -480,6 +480,18 @@ body {
 .app-upload input {
   display: none;
 }
+.app-upload-status {
+  font-size: 0.8rem;
+  color: #1e3a8a;
+  font-weight: 700;
+}
+.file-status {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #1e3a8a;
+  font-weight: 700;
+}
 .app-result-score {
   font-size: 2.4rem;
   font-weight: 900;
@@ -1960,6 +1972,36 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   width: min(92vw, 980px);
   padding: 2rem;
   z-index: 1;
+}
+.no-credits-modal {
+  display: grid;
+  gap: 0.8rem;
+}
+.no-credits-offer {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.9rem;
+  border-radius: 16px;
+  border: 1px dashed #bfdbfe;
+  background: #f8fafc;
+  color: #0f172a;
+  font-weight: 700;
+}
+.no-credits-price {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--brand-dark);
+}
+.no-credits-note {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.no-credits-reminder {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 .credits-modal-close {
   position: absolute;
