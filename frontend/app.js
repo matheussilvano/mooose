@@ -1545,6 +1545,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  document.querySelectorAll("[data-buy-open]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (!getToken()) {
+        goToAuth("register");
+        return;
+      }
+      showSection("section-landing");
+      renderAppView("buy");
+    });
+  });
+
   document.querySelectorAll('input[type="file"]').forEach(input => {
     input.addEventListener("change", () => {
       const file = input.files && input.files[0];

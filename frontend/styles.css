@@ -93,6 +93,17 @@ body {
 .credits-pill span {
   font-weight: 900;
 }
+.buy-pill {
+  border: 1px solid #bfdbfe;
+  background: #ffffff;
+  color: #1d4ed8;
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  appearance: none;
+}
 .streak-mini {
   border: 1px solid #fed7aa;
   background: #fff7ed;
@@ -317,6 +328,75 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
+}
+.buy-plan-card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+.buy-plan-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.4rem;
+  color: #334155;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.buy-plan-price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #1d4ed8;
+}
+.buy-plan-price span {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+}
+.buy-plan-note {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+.buy-plan-highlight {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #9a3412;
+  background: #fff7ed;
+  border: 1px dashed #fed7aa;
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+}
+.buy-plan-security {
+  display: grid;
+  gap: 0.2rem;
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 600;
+  text-align: center;
+}
+.buy-plan-proof {
+  font-weight: 700;
+  color: #0f172a;
+  text-align: center;
+}
+.buy-plan-faq {
+  display: grid;
+  gap: 0.75rem;
+}
+.buy-plan-faq-item p {
+  margin: 0.3rem 0 0;
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.5;
 }
 .app-tag {
   font-size: 0.7rem;

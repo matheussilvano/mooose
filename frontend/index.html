@@ -101,6 +101,9 @@
       <button type="button" class="credits-pill" data-credits-open>
         Correções disponíveis: <span data-credit-balance>2</span>
       </button>
+      <button type="button" class="buy-pill" data-buy-open>
+        Comprar correções
+      </button>
       <button
         type="button"
         class="streak-mini hidden"
@@ -345,6 +348,52 @@
           <div class="app-card">
             <div class="app-list" id="app-history-list">
               <span class="app-empty">Sem histórico.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="view" data-view="buy">
+          <div class="app-view-header">
+            <h2>Garanta suas próximas correções</h2>
+            <span class="app-sub">Cada correção equivale à análise completa de 1 redação no padrão ENEM, com nota e feedback detalhado.</span>
+          </div>
+
+          <div class="app-card buy-plan-card">
+            <h3>Plano Essencial — ENEM</h3>
+            <ul class="buy-plan-list">
+              <li>✔ 10 correções completas</li>
+              <li>✔ Nota por competência</li>
+              <li>✔ Análise detalhada</li>
+              <li>✔ Dicas personalizadas</li>
+              <li>✔ Histórico e evolução</li>
+            </ul>
+            <div class="buy-plan-price">
+              <strong>R$ 9,90</strong>
+              <span>(pagamento único)</span>
+            </div>
+            <span class="buy-plan-note">Menos de R$1 por redação</span>
+            <span class="buy-plan-highlight">🔥 Mais escolhido pelos alunos</span>
+            <button type="button" class="duo-btn btn-primary full" data-buy-credits>
+              Garantir 10 correções por R$ 9,90
+            </button>
+            <div class="buy-plan-security">
+              <span>Pagamento seguro via Mercado Pago</span>
+              <span>Liberação imediata após confirmação</span>
+            </div>
+          </div>
+
+          <div class="app-card buy-plan-proof">
+            Mais de 700 redações corrigidas na Mooose
+          </div>
+
+          <div class="app-card buy-plan-faq">
+            <div class="buy-plan-faq-item">
+              <strong>❓ Como funciona?</strong>
+              <p>Você compra correções e usa quando quiser. Cada correção = 1 redação analisada.</p>
+            </div>
+            <div class="buy-plan-faq-item">
+              <strong>❓ Expira?</strong>
+              <p>Não. Suas correções ficam disponíveis na sua conta.</p>
             </div>
           </div>
         </div>
@@ -731,6 +780,7 @@
     <button class="app-tab" data-view-target="home">Home</button>
     <button class="app-cta" data-view-target="new">Corrigir agora</button>
     <button class="app-tab" data-view-target="history">Histórico</button>
+    <button class="app-tab" data-view-target="buy">Comprar</button>
     <button class="app-tab" data-view-target="profile">Perfil</button>
   </div>
 
