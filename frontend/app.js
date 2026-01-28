@@ -75,6 +75,16 @@ function showSection(id) {
     renderAppView(currentAppView || "home");
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  requestAnimationFrame(updateAppHeaderHeight);
+}
+
+function updateAppHeaderHeight() {
+  const header = document.querySelector(".topbar");
+  if (!header) return;
+  const height = Math.ceil(header.getBoundingClientRect().height);
+  if (height > 0) {
+    document.documentElement.style.setProperty("--app-header-height", `${height}px`);
+  }
 }
 
 /* AUTH & TOKEN */
@@ -1194,6 +1204,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const appTextArea = document.getElementById("app-textarea");
   const appLoginBtn = document.getElementById("btn-app-login");
   const appLogoutBtn = document.getElementById("btn-app-logout");
+  updateAppHeaderHeight();
+  window.addEventListener("resize", updateAppHeaderHeight);
 
   updateTopbarUser = (data) => {
     const navAuth = document.getElementById("nav-auth");
@@ -1212,6 +1224,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (appLoginBtn) appLoginBtn.classList.remove("hidden");
       if (appLogoutBtn) appLogoutBtn.classList.add("hidden");
     }
+    requestAnimationFrame(updateAppHeaderHeight);
   };
 
   const viewEls = document.querySelectorAll("[data-view]");
