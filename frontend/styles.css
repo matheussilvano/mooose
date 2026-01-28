@@ -35,6 +35,9 @@
   --radius-xl: 32px;
   
   --shadow-cartoon: 0 5px 0 rgba(148, 163, 184, 0.4); /* A sombra "sólida" */
+
+  --app-header-height: 64px;
+  --app-bottom-height: 74px;
 }
 
 /* pra esconder overlay, cards, etc */
@@ -74,6 +77,291 @@ body {
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+.credits-pill {
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  appearance: none;
+}
+.credits-pill span {
+  font-weight: 900;
+}
+
+/* =========================
+   APP SHELL (HOME MOBILE)
+   ========================= */
+.app-shell main {
+  padding-top: calc(var(--app-header-height) + env(safe-area-inset-top) + 0.75rem);
+  padding-bottom: calc(var(--app-bottom-height) + env(safe-area-inset-bottom) + 1rem);
+  max-width: 680px;
+}
+.app-shell .topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  max-width: none;
+  padding-top: calc(0.75rem + env(safe-area-inset-top));
+}
+.app-shell .nav-links .nav-item,
+.app-shell #nav-auth,
+.app-shell #nav-logged {
+  display: none;
+}
+
+.app-views {
+  display: grid;
+  gap: 1rem;
+}
+.view {
+  display: none;
+  animation: slideUp 0.2s ease-out;
+}
+.view.active {
+  display: block;
+}
+.app-view-header h1,
+.app-view-header h2 {
+  font-size: 1.4rem;
+  margin-bottom: 0.35rem;
+}
+.app-sub {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.app-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 1rem;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.06);
+  display: grid;
+  gap: 0.75rem;
+}
+.app-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.app-tag {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: #1d4ed8;
+}
+.app-card-title {
+  font-weight: 700;
+  color: #0f172a;
+}
+.app-shortcuts .duo-btn {
+  width: 100%;
+}
+.app-list {
+  display: grid;
+  gap: 0.6rem;
+}
+.app-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: #0f172a;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+.app-list-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.app-empty {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+.app-toggle {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+.app-toggle-tab {
+  flex: 1;
+  border: 1px solid var(--border);
+  background: #f8fafc;
+  border-radius: 999px;
+  padding: 0.5rem;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+}
+.app-toggle-tab.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+.app-panel {
+  display: none;
+}
+.app-panel.active {
+  display: block;
+}
+.app-input,
+.app-panel textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0.7rem 0.85rem;
+  font-family: inherit;
+  margin-bottom: 0.7rem;
+  background: #f8fafc;
+}
+.app-panel textarea {
+  resize: none;
+}
+.app-row {
+  display: grid;
+  gap: 0.6rem;
+}
+.app-count {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 600;
+}
+.app-upload {
+  display: grid;
+  place-items: center;
+  gap: 0.4rem;
+  border: 1px dashed #cbd5f5;
+  border-radius: 16px;
+  padding: 1.4rem;
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+}
+.app-upload input {
+  display: none;
+}
+.app-result-score {
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: #2563eb;
+  text-align: center;
+}
+.app-result-competencias {
+  display: grid;
+  gap: 0.5rem;
+}
+.app-result-pill {
+  display: flex;
+  justify-content: space-between;
+  background: #f1f5f9;
+  border-radius: 12px;
+  padding: 0.5rem 0.7rem;
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 0.85rem;
+}
+.app-profile-label {
+  font-weight: 700;
+  color: #475569;
+  font-size: 0.85rem;
+}
+
+.app-bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0.5rem 0.75rem calc(0.75rem + env(safe-area-inset-bottom));
+  gap: 0.5rem;
+  z-index: 1000;
+}
+.app-cta {
+  font-family: inherit;
+}
+.app-bottom-bar .app-tab {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+}
+.app-bottom-bar .app-tab.active {
+  color: #2563eb;
+}
+.app-cta {
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.65rem 1.1rem;
+  font-weight: 800;
+  font-size: 0.9rem;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
+  cursor: pointer;
+}
+
+.credits-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 10002;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.credits-sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+}
+.credits-sheet-card {
+  position: relative;
+  background: #ffffff;
+  width: min(520px, 100%);
+  border-radius: 24px 24px 0 0;
+  padding: 1.5rem;
+  box-shadow: 0 -20px 50px rgba(15, 23, 42, 0.2);
+  display: grid;
+  gap: 0.75rem;
+  z-index: 1;
+}
+
+@media (min-width: 900px) {
+  .app-shell .nav-links .nav-item,
+  .app-shell #nav-auth,
+  .app-shell #nav-logged {
+    display: flex;
+  }
+  .app-shell main {
+    padding-top: calc(var(--app-header-height) + 1.5rem);
+  }
+}
+
+@media (max-width: 900px) {
+  .app-shell .footer {
+    display: none;
+  }
 }
 
 /* Botão "Entrar" do topo: compacto, sem ocupar a largura inteira */

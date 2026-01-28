@@ -65,6 +65,15 @@ function showSection(id) {
   document.querySelectorAll(".section").forEach(s => s.classList.remove("visible"));
   const el = document.getElementById(id);
   if (el) el.classList.add("visible");
+  const isLanding = id === "section-landing";
+  document.body.classList.toggle("app-shell", isLanding);
+  const appBar = document.getElementById("app-bottom-bar");
+  if (appBar) appBar.classList.toggle("hidden", !isLanding);
+  const creditsSheet = document.getElementById("credits-sheet");
+  if (creditsSheet) creditsSheet.classList.add("hidden");
+  if (isLanding && typeof renderAppView === "function") {
+    renderAppView(currentAppView || "home");
+  }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -77,6 +86,8 @@ function getAuthHeaders(extra={}) {
 }
 
 let updateTopbarUser = () => {};
+let renderAppView = () => {};
+let currentAppView = "home";
 let loadHistoricoFn = null;
 let chartInstance = null;
 let currentCredits = null;
@@ -91,6 +102,7 @@ let paywallShownInSession = false;
 let currentReferralCode = "";
 let currentReferralLink = "";
 let toastTimer = null;
+const WEEK_THEME_TEXT = "Os impactos do uso excessivo das redes sociais na saúde mental dos jovens no Brasil";
 
 function normalizeCredits(value) {
   if (typeof value === "number" && Number.isFinite(value)) return value;
@@ -203,6 +215,16 @@ function setCreditsUI(value) {
   updateCreditCardCopy(value);
   updateCreditLockState(value);
   updateOffensivaMonetization(value);
+}
+
+function resetCreditsUI() {
+  currentCredits = null;
+  document.querySelectorAll("[data-credit-balance]").forEach(el => {
+    el.textContent = "2";
+  });
+  updateCreditCardCopy(null);
+  updateCreditLockState(null);
+  updateOffensivaMonetization(null);
 }
 
 function setReferralLoading(isLoading) {
@@ -355,6 +377,58 @@ function updateSummaryScores(avg, best) {
   const bestValue = normalizeScore(best) ?? 0;
   if (avgEl) avgEl.textContent = avgValue ? avgValue.toFixed(0) : "0";
   if (bestEl) bestEl.textContent = bestValue ? bestValue.toFixed(0) : "0";
+}
+
+function renderAppHistory(items = []) {
+  const list = document.getElementById("app-history-list");
+  const latest = document.getElementById("app-latest-list");
+  if (!list && !latest) return;
+  const ordered = [...items].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  const toItem = (item) => {
+    const tema = item.tema || "Sem tema";
+    const score = Number(item.nota_final);
+    const scoreText = Number.isFinite(score) ? Math.round(score).toString() : "—";
+    return `<div class="app-list-item"><span>${tema}</span><strong>${scoreText}</strong></div>`;
+  };
+  if (list) {
+    if (!ordered.length) {
+      list.innerHTML = '<span class="app-empty">Sem histórico.</span>';
+    } else {
+      list.innerHTML = ordered.map(toItem).join("");
+    }
+  }
+  if (latest) {
+    if (!ordered.length) {
+      latest.innerHTML = '<span class="app-empty">Sem correções ainda.</span>';
+    } else {
+      latest.innerHTML = ordered.slice(0, 3).map(toItem).join("");
+    }
+  }
+}
+
+function updateAppResult(res) {
+  const scoreEl = document.querySelector("[data-app-score]");
+  const listEl = document.querySelector("[data-app-competencias]");
+  const emptyEl = document.querySelector("[data-app-result-empty]");
+  if (!scoreEl || !listEl) return;
+  if (!res) {
+    if (emptyEl) emptyEl.classList.remove("hidden");
+    scoreEl.textContent = "—";
+    listEl.innerHTML = "";
+    return;
+  }
+  const score = normalizeScore(res.nota_final);
+  scoreEl.textContent = score !== null ? Math.round(score).toString() : "—";
+  const comps = (res.competencias || []).map(c => {
+    return `<div class="app-result-pill"><span>C${c.id}</span><span>${c.nota} / 200</span></div>`;
+  }).join("");
+  listEl.innerHTML = comps;
+  if (emptyEl) emptyEl.classList.add("hidden");
+}
+
+function resetAppData() {
+  renderAppHistory([]);
+  updateAppResult(null);
 }
 
 function updateOffensivaCTA(credits) {
@@ -1024,6 +1098,8 @@ async function fetchMe() {
   } catch(e) {
     setToken(null);
     updateTopbarUser(null);
+    resetCreditsUI();
+    resetAppData();
     showSection("section-landing"); // ou auth
   }
 }
@@ -1054,12 +1130,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const formForgot = document.getElementById("form-forgot-password");
   const formCorrigir = document.getElementById("form-corrigir");
   const formCorrigirArquivo = document.getElementById("form-corrigir-arquivo");
+  const formAppText = document.getElementById("form-app-text");
+  const formAppFile = document.getElementById("form-app-file");
 
   const msgLogin = document.getElementById("msg-login");
   const msgRegister = document.getElementById("msg-register");
   const msgForgot = document.getElementById("msg-forgot");
   const msgCorrigir = document.getElementById("msg-corrigir");
   const msgCorrigirArquivo = document.getElementById("msg-corrigir-arquivo");
+  const msgAppText = document.getElementById("msg-app-text");
+  const msgAppFile = document.getElementById("msg-app-file");
+  const appTextArea = document.getElementById("app-textarea");
+  const appLoginBtn = document.getElementById("btn-app-login");
+  const appLogoutBtn = document.getElementById("btn-app-logout");
 
   updateTopbarUser = (data) => {
     const navAuth = document.getElementById("nav-auth");
@@ -1070,11 +1153,87 @@ document.addEventListener("DOMContentLoaded", () => {
       navAuth.classList.add("hidden");
       navLogged.classList.remove("hidden");
       if(nameEl) nameEl.textContent = data.full_name?.split(" ")[0] || "Aluno";
+      if (appLoginBtn) appLoginBtn.classList.add("hidden");
+      if (appLogoutBtn) appLogoutBtn.classList.remove("hidden");
     } else {
       navAuth.classList.remove("hidden");
       navLogged.classList.add("hidden");
+      if (appLoginBtn) appLoginBtn.classList.remove("hidden");
+      if (appLogoutBtn) appLogoutBtn.classList.add("hidden");
     }
   };
+
+  const viewEls = document.querySelectorAll("[data-view]");
+  const viewTriggers = document.querySelectorAll("[data-view-target]");
+  const appTabs = document.querySelectorAll(".app-bottom-bar .app-tab");
+
+  renderAppView = (view) => {
+    if (!viewEls.length) return;
+    const available = Array.from(viewEls).map(el => el.dataset.view);
+    const target = available.includes(view) ? view : "home";
+    currentAppView = target;
+    viewEls.forEach(el => {
+      el.classList.toggle("active", el.dataset.view === target);
+    });
+    appTabs.forEach(tab => {
+      tab.classList.toggle("active", tab.dataset.viewTarget === target);
+    });
+  };
+
+  viewTriggers.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const target = btn.dataset.viewTarget;
+      if (target) renderAppView(target);
+    });
+  });
+
+  const appTabButtons = document.querySelectorAll("[data-app-tab]");
+  const appPanels = document.querySelectorAll("[data-app-panel]");
+  appTabButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const target = btn.dataset.appTab;
+      if (!target) return;
+      appTabButtons.forEach(tab => tab.classList.toggle("active", tab === btn));
+      appPanels.forEach(panel => panel.classList.toggle("active", panel.dataset.appPanel === target));
+    });
+  });
+
+  if (appTextArea) {
+    const countEl = document.querySelector("[data-char-count]");
+    const updateCount = () => {
+      const length = appTextArea.value.length;
+      if (countEl) countEl.textContent = `${length}`;
+    };
+    appTextArea.addEventListener("input", updateCount);
+    updateCount();
+  }
+
+  const themeBtn = document.querySelector("[data-app-use-theme]");
+  themeBtn?.addEventListener("click", () => {
+    renderAppView("new");
+    const input = document.querySelector('input[name="tema_app"]');
+    if (input) {
+      input.value = WEEK_THEME_TEXT;
+      input.focus();
+    }
+  });
+
+  const creditsSheet = document.getElementById("credits-sheet");
+  const showCreditsSheet = () => creditsSheet?.classList.remove("hidden");
+  const hideCreditsSheet = () => creditsSheet?.classList.add("hidden");
+  document.querySelectorAll("[data-credits-open]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      showCreditsSheet();
+    });
+  });
+  document.querySelectorAll("[data-credits-sheet-close]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      hideCreditsSheet();
+    });
+  });
 
   function goToAuth(mode='login') {
     const authSection = document.getElementById("section-auth");
@@ -1105,10 +1264,16 @@ document.addEventListener("DOMContentLoaded", () => {
     applyReferralCode(storedRef);
   }
   if (!getToken()) {
+    let shouldShowLanding = true;
     if (loginParam) {
       goToAuth("login");
+      shouldShowLanding = false;
     } else if (urlRef || startParam || window.location.pathname.includes("/register")) {
       goToAuth("register");
+      shouldShowLanding = false;
+    }
+    if (shouldShowLanding && document.getElementById("section-landing")) {
+      showSection("section-landing");
     }
   }
 
@@ -1228,6 +1393,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") hideCreditsModal();
     if (e.key === "Escape") hideReviewPopup();
+    if (e.key === "Escape") hideCreditsSheet();
   });
 
   document.addEventListener("click", (e) => {
@@ -1260,9 +1426,29 @@ document.addEventListener("DOMContentLoaded", () => {
   if(btnCtaStart) btnCtaStart.addEventListener("click", () => goToAuth('register'));
   if(btnCtaLogin) btnCtaLogin.addEventListener("click", () => goToAuth('login'));
   if(btnPromoStart) btnPromoStart.addEventListener("click", () => goToAuth('register'));
+  if(appLoginBtn) appLoginBtn.addEventListener("click", () => goToAuth('login'));
+  if(appLogoutBtn) appLogoutBtn.addEventListener("click", () => {
+    setToken(null);
+    updateTopbarUser(null);
+    resetCreditsUI();
+    resetAppData();
+    showSection("section-landing");
+  });
   
-  if(btnLogout) btnLogout.addEventListener("click", () => { setToken(null); updateTopbarUser(null); showSection("section-landing"); });
-  if(btnLogoutTopbar) btnLogoutTopbar.addEventListener("click", () => { setToken(null); updateTopbarUser(null); showSection("section-landing"); });
+  if(btnLogout) btnLogout.addEventListener("click", () => {
+    setToken(null);
+    updateTopbarUser(null);
+    resetCreditsUI();
+    resetAppData();
+    showSection("section-landing");
+  });
+  if(btnLogoutTopbar) btnLogoutTopbar.addEventListener("click", () => {
+    setToken(null);
+    updateTopbarUser(null);
+    resetCreditsUI();
+    resetAppData();
+    showSection("section-landing");
+  });
 
   // Auth Internal
   if(btnGoRegister) btnGoRegister.addEventListener("click", (e)=>{ e.preventDefault(); cardLogin.classList.add("hidden"); cardRegister.classList.remove("hidden"); });
@@ -1352,7 +1538,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (currentCredits !== null && currentCredits <= 0) {
       msgEl.textContent = "Para enviar, você precisa de créditos.";
       msgEl.className = "form-message error";
-      showCreditsModal();
+      if (document.body.classList.contains("app-shell")) {
+        document.getElementById("credits-sheet")?.classList.remove("hidden");
+      } else {
+        showCreditsModal();
+      }
       return;
     }
     showLoading();
@@ -1374,19 +1564,24 @@ document.addEventListener("DOMContentLoaded", () => {
       const progressScore = normalizeScore(resultado?.nota_final);
       if (progressScore !== null) setProgressTo800(progressScore);
       updateResultadoReview(lastEssayId, lastReview);
+      updateAppResult(resultado);
       const credits = extractCredits(d);
       const prevCredits = currentCredits;
       if (credits !== null) setCreditsUI(credits);
       loadHistoricoFn();
       msgEl.textContent = "Corrigido com sucesso!";
       msgEl.className = "form-message success";
-      const resultadoCard = document.getElementById("card-resultado");
-      if (resultadoCard) {
-        resultadoCard.classList.add("highlight");
-        resultadoCard.scrollIntoView({ behavior: "smooth" });
-        setTimeout(() => resultadoCard.classList.remove("highlight"), 2000);
+      if (document.body.classList.contains("app-shell")) {
+        renderAppView("result");
       } else {
-        document.getElementById("resultado-wrapper")?.scrollIntoView({ behavior: "smooth" });
+        const resultadoCard = document.getElementById("card-resultado");
+        if (resultadoCard) {
+          resultadoCard.classList.add("highlight");
+          resultadoCard.scrollIntoView({ behavior: "smooth" });
+          setTimeout(() => resultadoCard.classList.remove("highlight"), 2000);
+        } else {
+          document.getElementById("resultado-wrapper")?.scrollIntoView({ behavior: "smooth" });
+        }
       }
       if (shouldShowPaywallAfterFree(prevCredits, credits)) {
         const correctionsCount = prevCredits !== null ? Number(prevCredits) + 1 : 2;
@@ -1401,6 +1596,36 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } finally { hideLoading(); }
   }
+
+  formAppText?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (msgAppText) msgAppText.textContent = "";
+    if (!msgAppText) return;
+    if (!getToken()) {
+      goToAuth("register");
+      return;
+    }
+    lastTema = formAppText.tema_app?.value || "";
+    sendCorrection(
+      "/app/enem/corrigir-texto",
+      JSON.stringify({ tema: formAppText.tema_app.value, texto: formAppText.texto_app.value }),
+      msgAppText
+    );
+  });
+
+  formAppFile?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (msgAppFile) msgAppFile.textContent = "";
+    if (!msgAppFile) return;
+    if (!getToken()) {
+      goToAuth("register");
+      return;
+    }
+    lastTema = formAppFile.tema_app_file?.value || "";
+    const fd = new FormData(formAppFile);
+    fd.append("tema", formAppFile.tema_app_file.value);
+    sendCorrection("/app/enem/corrigir-arquivo", fd, msgAppFile, true);
+  });
 
   formCorrigir?.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -1439,6 +1664,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ${comps}
       <div id="resultado-end-sentinel" style="height:1px;"></div>
     `;
+    updateAppResult(res);
     updateShareCard(res);
     setupReviewPopup(res);
   }
@@ -1516,6 +1742,8 @@ document.addEventListener("DOMContentLoaded", () => {
           hydrateReviewWidgets(list);
         }
       }
+
+      renderAppHistory(items);
 
       setPaywallCorrections(items.length);
       updateWeeklyStreak(items);
