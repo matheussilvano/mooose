@@ -118,6 +118,7 @@ let lastResult = null;
 let lastTema = "";
 let reviewPopupTimer = null;
 let reviewPopupShown = false;
+let checkoutInProgress = false;
 let reviewPopupObserver = null;
 let paywallShownInSession = false;
 let currentReferralCode = "";
@@ -1115,7 +1116,42 @@ async function submitReview(widget) {
   }
 }
 
-async function startCheckout() {
+function normalizePlanSlug(plan) {
+  const allowed = ["individual", "padrao", "intensivao"];
+  if (allowed.includes(plan)) return plan;
+  return "padrao";
+}
+
+function setCheckoutButtonLoading(button, isLoading) {
+  if (!button) return;
+  if (isLoading) {
+    if (!button.dataset.originalText) {
+      button.dataset.originalText = button.textContent.trim();
+    }
+    button.textContent = "Carregando...";
+    button.disabled = true;
+    button.classList.add("is-disabled");
+    button.setAttribute("aria-busy", "true");
+  } else {
+    if (button.dataset.originalText) {
+      button.textContent = button.dataset.originalText;
+      delete button.dataset.originalText;
+    }
+    button.disabled = false;
+    button.classList.remove("is-disabled");
+    button.removeAttribute("aria-busy");
+  }
+}
+
+function showCheckoutError() {
+  if (typeof showToast === "function") {
+    showToast("Não foi possível iniciar o pagamento. Tente novamente.", "error");
+  } else {
+    alert("Não foi possível iniciar o pagamento. Tente novamente.");
+  }
+}
+
+async function startCheckout(plan = "padrao", triggerButton) {
   if (!getToken()) {
     if (typeof window.goToAuth === "function") {
       window.goToAuth("login");
@@ -1124,24 +1160,29 @@ async function startCheckout() {
     }
     return;
   }
+  if (checkoutInProgress) return;
+  checkoutInProgress = true;
+  setCheckoutButtonLoading(triggerButton, true);
   showLoading("Abrindo checkout...");
   try {
-    const res = await fetch(`${API_BASE}/payments/create`, {
+    const planSlug = normalizePlanSlug(plan);
+    const res = await fetch(`${API_BASE}/payments/create/${planSlug}`, {
       method: "POST",
       headers: getAuthHeaders()
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-      const msg = data?.detail || data?.message || "Falha ao iniciar o pagamento.";
-      throw new Error(msg);
+      throw new Error(data?.detail || data?.message || "Falha ao iniciar o pagamento.");
     }
     if (!data?.checkout_url) {
-      throw new Error("Checkout indisponível. Tente novamente.");
+      throw new Error("Checkout indisponível.");
     }
     window.location.href = data.checkout_url;
   } catch (err) {
-    alert(err.message || "Erro ao iniciar pagamento.");
+    showCheckoutError();
   } finally {
+    checkoutInProgress = false;
+    setCheckoutButtonLoading(triggerButton, false);
     hideLoading();
   }
 }
@@ -1372,10 +1413,26 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("app-bottom-bar")?.classList.toggle("hidden", !shouldShell);
   }
 
+  const openBuyView = () => {
+    if (!getToken()) {
+      goToAuth("register");
+      return;
+    }
+    showSection("section-landing");
+    renderAppView("buy");
+  };
+
   document.querySelectorAll("[data-buy-credits]").forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
-      startCheckout();
+      openBuyView();
+    });
+  });
+
+  document.querySelectorAll("[data-buy-plan]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      startCheckout(btn.dataset.buyPlan, btn);
     });
   });
 
@@ -1458,7 +1515,7 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     const action = offensivaCta.dataset.action || "send";
     if (action === "buy") {
-      startCheckout();
+      startCheckout("padrao", offensivaCta);
       return;
     }
     hideOffensivaModal();
@@ -1551,12 +1608,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("[data-buy-open]").forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
-      if (!getToken()) {
-        goToAuth("register");
-        return;
-      }
-      showSection("section-landing");
-      renderAppView("buy");
+      openBuyView();
     });
   });
 

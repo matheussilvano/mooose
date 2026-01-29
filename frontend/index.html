@@ -362,47 +362,100 @@
 
         <div class="view" data-view="buy">
           <div class="app-view-header">
-            <h2>Garanta suas próximas correções</h2>
-            <span class="app-sub">Cada correção equivale à análise completa de 1 redação no padrão ENEM, com nota e feedback detalhado.</span>
+            <h2>Escolha seu plano de correções ✍️</h2>
+            <span class="app-sub">Receba feedback completo em minutos e evolua a cada redação.</span>
           </div>
 
-          <div class="app-card buy-plan-card">
-            <h3>Plano Essencial — ENEM</h3>
-            <ul class="buy-plan-list">
-              <li>✔ 10 correções completas</li>
-              <li>✔ Nota por competência</li>
-              <li>✔ Análise detalhada</li>
-              <li>✔ Dicas personalizadas</li>
-              <li>✔ Histórico e evolução</li>
-            </ul>
-            <div class="buy-plan-price">
-              <strong>R$ 9,90</strong>
-              <span>(pagamento único)</span>
+          <div class="plan-grid" id="buy-plans">
+            <div class="app-card plan-card">
+              <span class="plan-tag">🟢 Plano Individual</span>
+              <h3>1 correção</h3>
+              <div class="plan-price">R$ 1,90</div>
+              <p class="plan-sub">Para quem precisa corrigir agora.</p>
+              <ul class="plan-list">
+                <li>✔ Correção completa por competência</li>
+                <li>✔ Nota + comentários detalhados</li>
+                <li>✔ Entrega rápida</li>
+              </ul>
+              <button type="button" class="duo-btn btn-secondary full" data-buy-plan="individual">
+                Corrigir agora
+              </button>
+              <p class="plan-tip">💡 Dica: Com o plano de 10, cada correção sai por menos da metade do preço.</p>
             </div>
-            <span class="buy-plan-note">Menos de R$1 por redação</span>
-            <span class="buy-plan-highlight">🔥 Mais escolhido pelos alunos</span>
-            <button type="button" class="duo-btn btn-primary full" data-buy-credits>
-              Garantir 10 correções por R$ 9,90
-            </button>
-            <div class="buy-plan-security">
-              <span>Pagamento seguro via Mercado Pago</span>
-              <span>Liberação imediata após confirmação</span>
+
+            <div class="app-card plan-card highlight">
+              <div class="plan-badges">
+                <span>🔵 Plano Padrão ⭐ Mais vendido</span>
+              </div>
+              <h3>10 correções</h3>
+              <div class="plan-price">R$ 9,90</div>
+              <p class="plan-sub">O melhor custo-benefício para estudar com constância.</p>
+              <ul class="plan-list">
+                <li>✔ Todas as vantagens do Individual</li>
+                <li>✔ Histórico de evolução</li>
+                <li>✔ Ideal para treinar toda semana</li>
+                <li>✔ Economia garantida</li>
+              </ul>
+              <div class="plan-price-note">R$ 0,99 por correção</div>
+              <button type="button" class="duo-btn btn-primary full" data-buy-plan="padrao">
+                Quero esse plano
+              </button>
+              <span class="plan-highlight">🔥 Mais escolhido por quem vai bem no ENEM</span>
+            </div>
+
+            <div class="app-card plan-card highlight-alt">
+              <div class="plan-badges">
+                <span>🔴 Plano Intensivão 💎 Melhor valor</span>
+              </div>
+              <h3>25 correções</h3>
+              <div class="plan-price">R$ 19,90</div>
+              <p class="plan-sub">Para quem quer nota alta de verdade.</p>
+              <ul class="plan-list">
+                <li>✔ Todas as vantagens do Padrão</li>
+                <li>✔ Prática intensiva</li>
+                <li>✔ Preparação completa</li>
+                <li>✔ Prioridade nos estudos</li>
+              </ul>
+              <div class="plan-price-note">R$ 0,79 por correção</div>
+              <button type="button" class="duo-btn btn-primary full" data-buy-plan="intensivao">
+                Começar intensivão
+              </button>
+              <span class="plan-highlight">🚀 Economize mais de 20% por correção</span>
             </div>
           </div>
 
-          <div class="app-card buy-plan-proof">
+          <div class="app-card plan-urgency">
+            <strong>⏰ Promoção por tempo limitado</strong>
+            <p>Garanta suas correções pelo menor preço antes do reajuste.</p>
+            <span>👉 A partir de R$ 1,90 por correção.</span>
+          </div>
+
+          <div class="app-card plan-trust">
+            <span>✅ Pagamento seguro</span>
+            <span>✅ Liberação imediata</span>
+            <span>✅ Sem mensalidade</span>
+            <span>✅ Sem fidelidade</span>
+            <strong>Você compra, usa quando quiser.</strong>
+          </div>
+
+          <div class="app-card plan-proof">
             Mais de 700 redações corrigidas na Mooose
           </div>
 
-          <div class="app-card buy-plan-faq">
-            <div class="buy-plan-faq-item">
+          <div class="app-card plan-faq">
+            <div class="plan-faq-item">
               <strong>❓ Como funciona?</strong>
               <p>Você compra correções e usa quando quiser. Cada correção = 1 redação analisada.</p>
             </div>
-            <div class="buy-plan-faq-item">
+            <div class="plan-faq-item">
               <strong>❓ Expira?</strong>
               <p>Não. Suas correções ficam disponíveis na sua conta.</p>
             </div>
+          </div>
+
+          <div class="app-card plan-cta">
+            <p>Comece agora a melhorar sua redação. Cada correção é um passo mais perto da nota 1000.</p>
+            <a class="duo-btn btn-primary full" href="#buy-plans">Escolher meu plano</a>
           </div>
         </div>
 
@@ -841,15 +894,77 @@
   <div id="credits-sheet" class="credits-sheet hidden">
     <div class="credits-sheet-backdrop" data-credits-sheet-close></div>
     <div class="credits-sheet-card">
-      <h3>Você ficou sem correções ⚠️</h3>
-      <p class="card-sub">Cada correção libera a análise completa de uma redação com feedback personalizado.</p>
-      <div class="no-credits-offer">
-        <strong>🚀 Oferta especial agora:</strong>
-        <span class="no-credits-price">10 correções por R$ 9,90</span>
-        <span class="no-credits-note">Preço promocional por tempo limitado.</span>
+      <h3>Escolha seu plano de correções ✍️</h3>
+      <p class="card-sub">Receba feedback completo em minutos e evolua a cada redação.</p>
+      <div class="plan-grid">
+        <div class="app-card plan-card">
+          <span class="plan-tag">🟢 Plano Individual</span>
+          <h3>1 correção</h3>
+          <div class="plan-price">R$ 1,90</div>
+          <p class="plan-sub">Para quem precisa corrigir agora.</p>
+          <ul class="plan-list">
+            <li>✔ Correção completa por competência</li>
+            <li>✔ Nota + comentários detalhados</li>
+            <li>✔ Entrega rápida</li>
+          </ul>
+          <button type="button" class="duo-btn btn-secondary full" data-buy-plan="individual">
+            Corrigir agora
+          </button>
+          <p class="plan-tip">💡 Dica: Com o plano de 10, cada correção sai por menos da metade do preço.</p>
+        </div>
+
+        <div class="app-card plan-card highlight">
+          <div class="plan-badges">
+            <span>🔵 Plano Padrão ⭐ Mais vendido</span>
+          </div>
+          <h3>10 correções</h3>
+          <div class="plan-price">R$ 9,90</div>
+          <p class="plan-sub">O melhor custo-benefício para estudar com constância.</p>
+          <ul class="plan-list">
+            <li>✔ Todas as vantagens do Individual</li>
+            <li>✔ Histórico de evolução</li>
+            <li>✔ Ideal para treinar toda semana</li>
+            <li>✔ Economia garantida</li>
+          </ul>
+          <div class="plan-price-note">R$ 0,99 por correção</div>
+          <button type="button" class="duo-btn btn-primary full" data-buy-plan="padrao">
+            Quero esse plano
+          </button>
+          <span class="plan-highlight">🔥 Mais escolhido por quem vai bem no ENEM</span>
+        </div>
+
+        <div class="app-card plan-card highlight-alt">
+          <div class="plan-badges">
+            <span>🔴 Plano Intensivão 💎 Melhor valor</span>
+          </div>
+          <h3>25 correções</h3>
+          <div class="plan-price">R$ 19,90</div>
+          <p class="plan-sub">Para quem quer nota alta de verdade.</p>
+          <ul class="plan-list">
+            <li>✔ Todas as vantagens do Padrão</li>
+            <li>✔ Prática intensiva</li>
+            <li>✔ Preparação completa</li>
+            <li>✔ Prioridade nos estudos</li>
+          </ul>
+          <div class="plan-price-note">R$ 0,79 por correção</div>
+          <button type="button" class="duo-btn btn-primary full" data-buy-plan="intensivao">
+            Começar intensivão
+          </button>
+          <span class="plan-highlight">🚀 Economize mais de 20% por correção</span>
+        </div>
       </div>
-      <p class="no-credits-reminder">Não perca a chance de continuar treinando hoje.</p>
-      <button class="duo-btn btn-primary full" data-buy-credits>Comprar agora — R$ 9,90</button>
+      <div class="app-card plan-urgency">
+        <strong>⏰ Promoção por tempo limitado</strong>
+        <p>Garanta suas correções pelo menor preço antes do reajuste.</p>
+        <span>👉 A partir de R$ 1,90 por correção.</span>
+      </div>
+      <div class="app-card plan-trust">
+        <span>✅ Pagamento seguro</span>
+        <span>✅ Liberação imediata</span>
+        <span>✅ Sem mensalidade</span>
+        <span>✅ Sem fidelidade</span>
+        <strong>Você compra, usa quando quiser.</strong>
+      </div>
       <button class="link-btn" type="button" data-credits-sheet-close>Fechar</button>
     </div>
   </div>
@@ -859,15 +974,77 @@
     <div class="credits-modal-card paywall-card">
       <button class="credits-modal-close" type="button" data-credits-close>✕</button>
       <div class="no-credits-modal">
-        <h3>Você ficou sem correções ⚠️</h3>
-        <p class="card-sub">Cada correção libera a análise completa de uma redação com feedback personalizado.</p>
-        <div class="no-credits-offer">
-          <strong>🚀 Oferta especial agora:</strong>
-          <span class="no-credits-price">10 correções por R$ 9,90</span>
-          <span class="no-credits-note">Preço promocional por tempo limitado.</span>
+        <h3>Escolha seu plano de correções ✍️</h3>
+        <p class="card-sub">Receba feedback completo em minutos e evolua a cada redação.</p>
+        <div class="plan-grid">
+          <div class="app-card plan-card">
+            <span class="plan-tag">🟢 Plano Individual</span>
+            <h3>1 correção</h3>
+            <div class="plan-price">R$ 1,90</div>
+            <p class="plan-sub">Para quem precisa corrigir agora.</p>
+            <ul class="plan-list">
+              <li>✔ Correção completa por competência</li>
+              <li>✔ Nota + comentários detalhados</li>
+              <li>✔ Entrega rápida</li>
+            </ul>
+            <button type="button" class="duo-btn btn-secondary full" data-buy-plan="individual">
+              Corrigir agora
+            </button>
+            <p class="plan-tip">💡 Dica: Com o plano de 10, cada correção sai por menos da metade do preço.</p>
+          </div>
+
+          <div class="app-card plan-card highlight">
+            <div class="plan-badges">
+              <span>🔵 Plano Padrão ⭐ Mais vendido</span>
+            </div>
+            <h3>10 correções</h3>
+            <div class="plan-price">R$ 9,90</div>
+            <p class="plan-sub">O melhor custo-benefício para estudar com constância.</p>
+            <ul class="plan-list">
+              <li>✔ Todas as vantagens do Individual</li>
+              <li>✔ Histórico de evolução</li>
+              <li>✔ Ideal para treinar toda semana</li>
+              <li>✔ Economia garantida</li>
+            </ul>
+            <div class="plan-price-note">R$ 0,99 por correção</div>
+            <button type="button" class="duo-btn btn-primary full" data-buy-plan="padrao">
+              Quero esse plano
+            </button>
+            <span class="plan-highlight">🔥 Mais escolhido por quem vai bem no ENEM</span>
+          </div>
+
+          <div class="app-card plan-card highlight-alt">
+            <div class="plan-badges">
+              <span>🔴 Plano Intensivão 💎 Melhor valor</span>
+            </div>
+            <h3>25 correções</h3>
+            <div class="plan-price">R$ 19,90</div>
+            <p class="plan-sub">Para quem quer nota alta de verdade.</p>
+            <ul class="plan-list">
+              <li>✔ Todas as vantagens do Padrão</li>
+              <li>✔ Prática intensiva</li>
+              <li>✔ Preparação completa</li>
+              <li>✔ Prioridade nos estudos</li>
+            </ul>
+            <div class="plan-price-note">R$ 0,79 por correção</div>
+            <button type="button" class="duo-btn btn-primary full" data-buy-plan="intensivao">
+              Começar intensivão
+            </button>
+            <span class="plan-highlight">🚀 Economize mais de 20% por correção</span>
+          </div>
         </div>
-        <p class="no-credits-reminder">Não perca a chance de continuar treinando hoje.</p>
-        <button class="duo-btn btn-primary full" data-buy-credits>Comprar agora — R$ 9,90</button>
+        <div class="app-card plan-urgency">
+          <strong>⏰ Promoção por tempo limitado</strong>
+          <p>Garanta suas correções pelo menor preço antes do reajuste.</p>
+          <span>👉 A partir de R$ 1,90 por correção.</span>
+        </div>
+        <div class="app-card plan-trust">
+          <span>✅ Pagamento seguro</span>
+          <span>✅ Liberação imediata</span>
+          <span>✅ Sem mensalidade</span>
+          <span>✅ Sem fidelidade</span>
+          <strong>Você compra, usa quando quiser.</strong>
+        </div>
         <button class="duo-btn btn-secondary paywall-dismiss" type="button" data-credits-close>Agora não</button>
       </div>
     </div>

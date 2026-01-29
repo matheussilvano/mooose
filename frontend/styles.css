@@ -376,13 +376,112 @@ body {
   justify-content: space-between;
   gap: 0.5rem;
 }
-.buy-plan-card h3 {
+.plan-grid {
+  display: grid;
+  gap: 1rem;
+}
+.plan-card {
+  align-items: flex-start;
+}
+.plan-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 800;
+  font-size: 0.75rem;
+}
+.plan-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.plan-badges span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 800;
+  font-size: 0.75rem;
+}
+.plan-sub {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.plan-tip {
+  margin: 0;
+  padding: 0.6rem 0.8rem;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  color: #475569;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.plan-card.highlight {
+  border: 2px solid #bfdbfe;
+  background: #f8fbff;
+}
+.plan-card.highlight-alt {
+  border: 2px solid #fecaca;
+  background: #fff7f7;
+}
+.plan-urgency {
+  text-align: center;
+  border: 1px dashed #fde68a;
+  background: #fffbeb;
+  color: #92400e;
+}
+.plan-urgency p {
+  margin: 0;
+  color: #92400e;
+  font-weight: 600;
+}
+.plan-trust {
+  text-align: center;
+  color: #334155;
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: grid;
+  gap: 0.35rem;
+}
+.plan-proof {
+  text-align: center;
+  font-weight: 700;
+  color: #0f172a;
+}
+.plan-cta {
+  text-align: center;
+}
+.plan-cta p {
+  margin: 0;
+}
+@media (min-width: 900px) {
+  .plan-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .credits-sheet-card .plan-grid,
+  .credits-modal-card .plan-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.buy-plan-card h3,
+.plan-card h3 {
   margin: 0;
   font-size: 1.1rem;
   font-weight: 800;
   color: #0f172a;
 }
-.buy-plan-list {
+.buy-plan-list,
+.plan-list {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -392,7 +491,8 @@ body {
   font-weight: 600;
   font-size: 0.9rem;
 }
-.buy-plan-price {
+.buy-plan-price,
+.plan-price {
   display: flex;
   align-items: baseline;
   gap: 0.4rem;
@@ -400,17 +500,20 @@ body {
   font-weight: 900;
   color: #1d4ed8;
 }
-.buy-plan-price span {
+.buy-plan-price span,
+.plan-price span {
   font-size: 0.85rem;
   font-weight: 600;
   color: #64748b;
 }
-.buy-plan-note {
+.buy-plan-note,
+.plan-price-note {
   font-size: 0.9rem;
   font-weight: 700;
   color: #0f172a;
 }
-.buy-plan-highlight {
+.buy-plan-highlight,
+.plan-highlight {
   font-size: 0.85rem;
   font-weight: 800;
   color: #9a3412;
@@ -430,16 +533,19 @@ body {
   font-weight: 600;
   text-align: center;
 }
-.buy-plan-proof {
+.buy-plan-proof,
+.plan-proof {
   font-weight: 700;
   color: #0f172a;
   text-align: center;
 }
-.buy-plan-faq {
+.buy-plan-faq,
+.plan-faq {
   display: grid;
   gap: 0.75rem;
 }
-.buy-plan-faq-item p {
+.buy-plan-faq-item p,
+.plan-faq-item p {
   margin: 0.3rem 0 0;
   color: #64748b;
   font-size: 0.9rem;
@@ -737,6 +843,9 @@ body {
   display: grid;
   gap: 0.75rem;
   z-index: 1;
+  max-height: 90vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 @media (min-width: 900px) {
@@ -2127,6 +2236,8 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   width: min(92vw, 980px);
   padding: 2rem;
   z-index: 1;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 .no-credits-modal {
   display: grid;
