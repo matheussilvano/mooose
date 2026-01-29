@@ -1221,26 +1221,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   updateTopbarUser = (data) => {
     const navAuth = document.getElementById("nav-auth");
-    const navLogged = document.getElementById("nav-logged");
-    const nameEl = document.getElementById("topbar-user-name");
     const topbarSecondary = document.querySelector(".topbar-secondary");
-    const buyBtn = document.querySelector(".buy-pill");
-    
+    const greetingEl = document.querySelector("[data-greeting]");
+    const firstName = data?.full_name?.split(" ")[0];
+
     if (data) {
-      navAuth.classList.add("hidden");
-      navLogged.classList.remove("hidden");
-      if(nameEl) nameEl.textContent = data.full_name?.split(" ")[0] || "Aluno";
+      navAuth?.classList.add("hidden");
       if (appLoginBtn) appLoginBtn.classList.add("hidden");
       if (appLogoutBtn) appLogoutBtn.classList.remove("hidden");
       if (topbarSecondary) topbarSecondary.classList.remove("hidden");
-      if (buyBtn) buyBtn.classList.remove("hidden");
+      if (greetingEl) greetingEl.textContent = `e aí ${firstName || "Aluno"}, pronto para corrigir?`;
     } else {
-      navAuth.classList.remove("hidden");
-      navLogged.classList.add("hidden");
+      navAuth?.classList.remove("hidden");
       if (appLoginBtn) appLoginBtn.classList.remove("hidden");
       if (appLogoutBtn) appLogoutBtn.classList.add("hidden");
       if (topbarSecondary) topbarSecondary.classList.add("hidden");
-      if (buyBtn) buyBtn.classList.add("hidden");
+      if (greetingEl) greetingEl.textContent = "e aí, pronto para corrigir?";
     }
     requestAnimationFrame(updateAppHeaderHeight);
   };

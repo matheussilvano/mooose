@@ -99,9 +99,6 @@
         <span class="logo-word">MOOOSE</span>
       </a>
       <div class="topbar-actions">
-        <button type="button" class="buy-pill hidden" data-buy-open>
-          Comprar correções
-        </button>
         <div id="nav-auth">
           <button id="btn-nav-register" class="duo-btn btn-primary" style="padding: 0.5rem 1rem;">
             Cadastrar-se
@@ -125,12 +122,10 @@
           aria-label="Ofensiva: 0 semanas seguidas"
         >
           🔥<span data-week-streak-mini>0</span>
-      </button>
-      <a href="/blog/" class="nav-item" style="margin-right: 1rem; text-decoration: none; color: #64748b; font-weight: 600; font-size: 0.9rem;">Dicas & Blog</a>
-
-      <div id="nav-logged" class="hidden" style="align-items: center; display: flex; gap: 1rem;">
-        <span id="topbar-user-name" style="font-weight: 700;"></span>
-      </div>
+        </button>
+        <button type="button" class="buy-pill" data-buy-open aria-label="Comprar correções">
+          🛒
+        </button>
     </nav>
   </div>
   </header>
@@ -242,7 +237,7 @@
       <div class="app-views landing-app hidden" data-landing-app>
         <div class="view active" data-view="home">
           <div class="app-view-header">
-            <h1>Pronto para corrigir?</h1>
+            <h1 data-greeting>e aí, pronto para corrigir?</h1>
             <span class="app-sub">Correção de redação do ENEM em minutos, com tema livre ou da semana.</span>
           </div>
 
