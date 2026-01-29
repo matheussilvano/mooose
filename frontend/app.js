@@ -1852,6 +1852,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.goToAuth = goToAuth;
 
   const urlParams = new URLSearchParams(window.location.search);
+  const hashParams = new URLSearchParams(window.location.hash ? window.location.hash.slice(1) : "");
   const urlRef = (urlParams.get("ref") || "").trim();
   const startParam = (urlParams.get("start") || "").trim();
   const loginParam = (urlParams.get("login") || "").trim();
@@ -1859,7 +1860,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const editorParam = (urlParams.get("editor") || "").trim();
   const paywallParam = (urlParams.get("paywall") || "").trim();
   const confirmParam = (urlParams.get("confirm") || "").trim();
-  const tokenParam = (urlParams.get("token") || urlParams.get("access_token") || "").trim();
+  const tokenParam = (urlParams.get("token") || urlParams.get("access_token") || hashParams.get("token") || hashParams.get("access_token") || "").trim();
   if (isConfirmRoute() || confirmParam === "1") {
     handleConfirmRoute();
     return;

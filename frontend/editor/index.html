@@ -4,11 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mooose · Redirecionando...</title>
-  <meta http-equiv="refresh" content="0;url=/" />
+  <meta http-equiv="refresh" content="0;url=/?editor=1" />
 </head>
 <body>
   <script>
     (function () {
+      var params = new URLSearchParams(window.location.search);
+      var hash = window.location.hash ? window.location.hash.slice(1) : "";
+      var hashParams = new URLSearchParams(hash);
+      var token = params.get("token") || params.get("access_token") || hashParams.get("token") || hashParams.get("access_token");
+      var next = params.get("next") || hashParams.get("next") || "/editor";
+      if (token) {
+        window.location.replace("/auth/confirmed?token=" + encodeURIComponent(token) + "&next=" + encodeURIComponent(next));
+        return;
+      }
       window.location.replace("/?editor=1");
     })();
   </script>
