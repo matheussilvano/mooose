@@ -79,7 +79,7 @@ body {
   width: 100%;
 }
 .topbar-secondary {
-  justify-content: center;
+  justify-content: flex-start;
 }
 .topbar-actions {
   display: flex;
@@ -93,7 +93,7 @@ body {
 }
 .topbar-secondary .nav-links {
   margin-left: 0;
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: nowrap;
   overflow-x: auto;
   width: 100%;
@@ -117,33 +117,40 @@ body {
   color: #1d4ed8;
   font-weight: 800;
   border-radius: 999px;
-  padding: 0.4rem 0.9rem;
+  padding: 0.35rem 0.55rem 0.35rem 0.9rem;
   cursor: pointer;
   font-size: 0.85rem;
   appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
 }
 .credits-pill span {
   font-weight: 900;
-}
-.buy-pill {
-  border: 1px solid #1d4ed8;
   background: #2563eb;
   color: #ffffff;
-  font-weight: 800;
   border-radius: 999px;
-  padding: 0.3rem 0.6rem;
+  padding: 0.1rem 0.45rem;
+  min-width: 2ch;
+  text-align: center;
+}
+.credits-plus {
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 900;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 1rem;
   appearance: none;
-  min-width: 40px;
-  min-height: 40px;
+  min-width: 34px;
+  min-height: 34px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
-.buy-pill:hover {
-  filter: brightness(1.05);
-}
+/* buy-pill removido da barra superior logada */
 .streak-mini {
   border: 1px solid #fed7aa;
   background: #fff7ed;
@@ -2567,8 +2574,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
     flex-wrap: nowrap;
     gap: 0.4rem;
   }
-  .app-shell .credits-pill,
-  .app-shell .buy-pill {
+  .app-shell .credits-pill {
     font-size: 0.75rem;
     padding: 0.3rem 0.55rem;
     white-space: nowrap;
