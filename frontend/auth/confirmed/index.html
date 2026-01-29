@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mooose · Confirmando...</title>
+  <meta http-equiv="refresh" content="0;url=/" />
+</head>
+<body>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var token = params.get("token") || params.get("access_token") || "";
+      var next = params.get("next") || "/editor";
+      var url = "/?confirm=1";
+      if (token) {
+        url += "&token=" + encodeURIComponent(token);
+      }
+      if (next) {
+        url += "&next=" + encodeURIComponent(next);
+      }
+      window.location.replace(url);
+    })();
+  </script>
+</body>
+</html>

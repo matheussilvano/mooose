@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mooose · Redirecionando...</title>
+  <meta http-equiv="refresh" content="0;url=/" />
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; }
+  </style>
+</head>
+<body>
+  <p>Redirecionando...</p>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var token = params.get("token") || params.get("access_token");
+      var next = params.get("next") || "/editor";
+      if (token) {
+        window.location.replace("/auth/confirmed?token=" + encodeURIComponent(token) + "&next=" + encodeURIComponent(next));
+        return;
+      }
+      window.location.replace(next);
+    })();
+  </script>
+</body>
+</html>

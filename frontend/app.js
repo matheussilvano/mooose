@@ -282,16 +282,24 @@ function shouldUseAppShell() {
 
 function isEditorRoute() {
   const params = new URLSearchParams(window.location.search);
-  return window.location.pathname.startsWith(EDITOR_ROUTE) || params.get("editor") === "1";
+  return (
+    window.location.pathname.startsWith(EDITOR_ROUTE) ||
+    window.location.pathname.startsWith("/app/editor") ||
+    params.get("editor") === "1"
+  );
 }
 
 function isPaywallRoute() {
   const params = new URLSearchParams(window.location.search);
-  return window.location.pathname.startsWith(PAYWALL_ROUTE) || params.get("paywall") === "1";
+  return (
+    window.location.pathname.startsWith(PAYWALL_ROUTE) ||
+    window.location.pathname.startsWith("/app/paywall") ||
+    params.get("paywall") === "1"
+  );
 }
 
 function isConfirmRoute() {
-  return window.location.pathname.startsWith(CONFIRM_ROUTE);
+  return window.location.pathname.startsWith(CONFIRM_ROUTE) || window.location.pathname.startsWith("/auth/confirmed");
 }
 
 function shouldShowAppShell() {
@@ -1817,11 +1825,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   window.goToAuth = goToAuth;
 
-  if (isConfirmRoute()) {
-    handleConfirmRoute();
-    return;
-  }
-
   const urlParams = new URLSearchParams(window.location.search);
   const urlRef = (urlParams.get("ref") || "").trim();
   const startParam = (urlParams.get("start") || "").trim();
@@ -1829,6 +1832,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const signupParam = (urlParams.get("signup") || "").trim();
   const editorParam = (urlParams.get("editor") || "").trim();
   const paywallParam = (urlParams.get("paywall") || "").trim();
+  const confirmParam = (urlParams.get("confirm") || "").trim();
+  const tokenParam = (urlParams.get("token") || urlParams.get("access_token") || "").trim();
+  if (isConfirmRoute() || confirmParam === "1") {
+    handleConfirmRoute();
+    return;
+  }
+  if (tokenParam && (isEditorRoute() || isPaywallRoute())) {
+    handleConfirmRoute();
+    return;
+  }
   const wantsEditor = editorParam === "1" || startParam === "1" || isEditorRoute();
   const wantsPaywall = paywallParam === "1" || isPaywallRoute();
   const storedRef = getStoredReferralCode();
