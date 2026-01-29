@@ -31,17 +31,17 @@
   </script>
 
   <!-- SEO básico -->
-  <meta name="description" content="Corrija sua redação no padrão ENEM em poucos minutos com nota por competência e feedback claro. Comece grátis com 2 correções e acompanhe sua evolução.">
+  <meta name="description" content="Corrija sua redação no padrão ENEM em poucos minutos com nota por competência e feedback claro. Comece grátis com 1 correção e acompanhe sua evolução.">
 
   <meta property="og:type" content="website">
   <meta property="og:title" content="Corrija sua redação no padrão ENEM em poucos minutos">
-  <meta property="og:description" content="Nota por competência + feedback claro do que melhorar. Comece grátis com 2 correções e acompanhe sua evolução.">
+  <meta property="og:description" content="Nota por competência + feedback claro do que melhorar. Comece grátis com 1 correção e acompanhe sua evolução.">
   <meta property="og:url" content="https://www.mooose.com.br/">
   <meta property="og:image" content="https://www.mooose.com.br/logo.png">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Corrija sua redação no padrão ENEM em poucos minutos">
-  <meta name="twitter:description" content="Nota por competência + feedback claro do que melhorar. Comece grátis com 2 correções e acompanhe sua evolução.">
+  <meta name="twitter:description" content="Nota por competência + feedback claro do que melhorar. Comece grátis com 1 correção e acompanhe sua evolução.">
 
   <!-- FAQ em JSON-LD para rich snippet -->
   <script type="application/ld+json">
@@ -54,7 +54,7 @@
         "name": "É gratuito?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Você começa com 2 correções grátis. Depois, pode comprar correções para continuar."
+          "text": "Você começa com 1 correção grátis. Depois, pode comprar correções para continuar."
         }
       },
       {
@@ -112,7 +112,7 @@
     <div class="topbar-row topbar-secondary hidden">
       <nav class="nav-links">
         <button type="button" class="credits-pill" data-credits-open>
-          Correções disponíveis <span data-credit-balance>2</span>
+          Correções disponíveis <span data-credit-balance>1</span>
         </button>
         <button
           type="button"
@@ -142,8 +142,8 @@
           <div class="landing-hero-text">
             <h1>Corrija sua redação no padrão ENEM em poucos minutos</h1>
             <p class="landing-sub">Nota por competência + feedback claro do que melhorar</p>
-            <a class="duo-btn btn-primary full landing-cta" href="/?start=1">Começar grátis</a>
-            <p class="landing-microcopy">2 correções grátis • Pagamento seguro via Mercado Pago (quando quiser continuar)</p>
+            <a class="duo-btn btn-primary full landing-cta" href="/editor" data-editor-open>Corrigir grátis</a>
+            <p class="landing-microcopy">1 correção grátis • Pagamento seguro via Mercado Pago (quando quiser continuar)</p>
           </div>
           <div class="landing-hero-media">
             <img src="nossa-missao.png" alt="Mooose feliz" />
@@ -161,7 +161,7 @@
               <span class="landing-stat-label">redações corrigidas</span>
             </div>
           </div>
-          <p class="landing-proof-note">Depois das 2 correções grátis, você pode comprar mais correções quando quiser — 10 por R$ 9,90.</p>
+          <p class="landing-proof-note">Depois da correção grátis, você pode comprar mais correções quando quiser — 10 por R$ 9,90.</p>
         </section>
 
         <section class="landing-section">
@@ -213,7 +213,7 @@
                 <span class="faq-icon">+</span>
               </button>
               <div class="faq-answer" hidden>
-                Você começa com 2 correções grátis. Depois, pode comprar correções para continuar.
+                Você começa com 1 correção grátis. Depois, pode comprar correções para continuar.
               </div>
             </div>
             <div class="faq-item">
@@ -249,7 +249,7 @@
         <section class="landing-section landing-cta-block">
           <h2>Comece seu treino hoje</h2>
           <p class="landing-sub">Leva menos de 1 minuto para enviar.</p>
-          <a class="duo-btn btn-primary full landing-cta" href="/?start=1">Começar grátis</a>
+          <a class="duo-btn btn-primary full landing-cta" href="/editor" data-editor-open>Corrigir grátis</a>
         </section>
       </div>
 
@@ -298,7 +298,10 @@
 
         <div class="view" data-view="new">
           <div class="app-view-header">
-            <h2>Nova correção</h2>
+            <div class="app-title-row">
+              <h2>Nova correção</h2>
+              <span class="free-badge hidden" data-free-badge>1 grátis disponível</span>
+            </div>
             <span class="app-sub">Texto ou foto.</span>
           </div>
 
@@ -350,6 +353,16 @@
           <div class="app-view-header">
             <h2>Resultado</h2>
             <span class="app-sub">Sua nota aparece aqui.</span>
+          </div>
+          <div class="app-card auth-nudge hidden" data-post-result-auth>
+            <div class="auth-nudge-text">
+              <h3>Salve seu histórico</h3>
+              <p>Para continuar corrigindo, faça login com Google ou e-mail.</p>
+            </div>
+            <div class="auth-nudge-actions">
+              <button type="button" class="duo-btn btn-primary full" data-auth-google>Continuar com Google</button>
+              <button type="button" class="duo-btn btn-secondary full" data-auth-email>Continuar com e-mail</button>
+            </div>
           </div>
           <div class="app-card app-result-card">
             <div class="app-result-score" data-app-score>—</div>
@@ -498,6 +511,8 @@
           <div id="card-login">
             <h3>Login</h3>
             <p class="card-sub">Entre para corrigir suas redações com a Mooose.</p>
+            <button type="button" class="duo-btn btn-primary full auth-google" data-auth-google>Continuar com Google</button>
+            <div class="auth-divider"><span>ou</span></div>
             <form id="form-login">
               <div class="input-group">
                 <label>E-mail</label>
@@ -525,7 +540,9 @@
 
           <div id="card-register" class="hidden">
             <h3>Criar perfil</h3>
-            <p class="card-sub">Crie sua conta e ganhe 2 correções grátis para começar a corrigir.</p>
+            <p class="card-sub">Crie sua conta para continuar corrigindo suas redações.</p>
+            <button type="button" class="duo-btn btn-primary full auth-google" data-auth-google>Continuar com Google</button>
+            <div class="auth-divider"><span>ou</span></div>
             <form id="form-register">
               <div class="input-group">
                 <label>Nome completo</label>
@@ -567,6 +584,13 @@
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section id="section-confirm" class="section">
+      <div class="card confirm-card">
+        <h2>Confirmando seu acesso...</h2>
+        <p class="card-sub">Só um segundo enquanto liberamos sua conta.</p>
       </div>
     </section>
 
@@ -1061,6 +1085,16 @@
         </div>
         <button class="duo-btn btn-secondary paywall-dismiss" type="button" data-credits-close>Agora não</button>
       </div>
+    </div>
+  </div>
+
+  <div id="auth-gate" class="credits-sheet hidden auth-gate">
+    <div class="credits-sheet-backdrop" data-auth-gate-close></div>
+    <div class="credits-sheet-card auth-gate-card" role="dialog" aria-modal="true" aria-labelledby="auth-gate-title">
+      <h3 id="auth-gate-title">Sua correção grátis já foi usada</h3>
+      <p class="card-sub">Entre para continuar.</p>
+      <button type="button" class="duo-btn btn-primary full" data-auth-google>Continuar com Google</button>
+      <button type="button" class="duo-btn btn-secondary full" data-auth-email>Continuar com e-mail</button>
     </div>
   </div>
 

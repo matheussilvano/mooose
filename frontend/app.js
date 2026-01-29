@@ -12,8 +12,67 @@ const funnyMessages = [
 const PAYWALL_STORAGE_KEY = "mooose_paywall_after_free_shown";
 const REFERRAL_STORAGE_KEY = "mooose_referral_code";
 const DEVICE_FP_KEY = "mooose_device_fingerprint";
+const ANON_ID_KEY = "mooose_anon_id";
+const AUTH_RETURN_KEY = "mooose_auth_return";
+const EDITOR_ROUTE = "/editor";
+const PAYWALL_ROUTE = "/paywall";
+const CONFIRM_ROUTE = "/auth/confirmed";
+const DRAFT_TEXT_KEY = "mooose_draft_text";
+const DRAFT_TEMA_KEY = "mooose_draft_tema";
+const DRAFT_TEMA_FILE_KEY = "mooose_draft_tema_file";
+const FREE_REMAINING_KEY = "mooose_free_remaining";
 const PROGRESS_TARGET_SCORE = 1000;
 const WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000;
+
+function generateAnonId() {
+  if (window.crypto && typeof window.crypto.randomUUID === "function") {
+    return window.crypto.randomUUID();
+  }
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+function setAnonCookie(id) {
+  try {
+    document.cookie = `mooose_anon_id=${encodeURIComponent(id)}; path=/; max-age=31536000; SameSite=Lax`;
+  } catch (err) {
+    // ignore cookie errors
+  }
+}
+
+function getAnonCookie() {
+  if (typeof document === "undefined") return "";
+  const match = document.cookie.match(/(?:^|; )mooose_anon_id=([^;]+)/);
+  return match ? decodeURIComponent(match[1]) : "";
+}
+
+function ensureAnonSession() {
+  let anonId = null;
+  try {
+    anonId = localStorage.getItem(ANON_ID_KEY);
+  } catch (err) {
+    anonId = null;
+  }
+  if (!anonId) {
+    const cookieId = getAnonCookie();
+    if (cookieId) anonId = cookieId;
+  }
+  if (!anonId) {
+    anonId = generateAnonId();
+    try {
+      localStorage.setItem(ANON_ID_KEY, anonId);
+    } catch (err) {
+      // ignore storage errors
+    }
+  }
+  setAnonCookie(anonId);
+  return anonId;
+}
+
+function getAnonId() {
+  return ensureAnonSession();
+}
+
+ensureAnonSession();
 
 function showLoading(msg) {
   const overlay = document.getElementById("loading-overlay");
@@ -89,12 +148,68 @@ async function loadPublicCorrectionsCount() {
   }
 }
 
+function setAuthReturnPath(path) {
+  if (!path) return;
+  try {
+    localStorage.setItem(AUTH_RETURN_KEY, path);
+  } catch (err) {
+    // ignore storage errors
+  }
+}
+
+function peekAuthReturnPath() {
+  try {
+    return localStorage.getItem(AUTH_RETURN_KEY);
+  } catch (err) {
+    return "";
+  }
+}
+
+function consumeAuthReturnPath() {
+  try {
+    const value = localStorage.getItem(AUTH_RETURN_KEY);
+    localStorage.removeItem(AUTH_RETURN_KEY);
+    return value;
+  } catch (err) {
+    return "";
+  }
+}
+
+function setAppRoute(path, replace = false) {
+  if (!path) return;
+  if (window.history && typeof window.history.replaceState === "function") {
+    const method = replace ? "replaceState" : "pushState";
+    window.history[method]({}, "", path);
+  }
+}
+
+function openEditorView(options = {}) {
+  setAppRoute(EDITOR_ROUTE, options.replace);
+  showSection("section-landing");
+  setLandingMode();
+  if (typeof renderAppView === "function") {
+    renderAppView("new");
+  }
+  updateFreeBadge();
+  requestAnimationFrame(updateAppHeaderHeight);
+}
+
+function openPaywallView(options = {}) {
+  setAppRoute(PAYWALL_ROUTE, options.replace);
+  showSection("section-landing");
+  setLandingMode();
+  if (typeof renderAppView === "function") {
+    renderAppView("buy");
+  }
+  requestAnimationFrame(updateAppHeaderHeight);
+}
+
 function showSection(id) {
   document.querySelectorAll(".section").forEach(s => s.classList.remove("visible"));
   const el = document.getElementById(id);
   if (el) el.classList.add("visible");
   const isLanding = id === "section-landing";
-  const shouldShell = isLanding && shouldUseAppShell() && Boolean(getToken());
+  const shouldShell = isLanding && shouldShowAppShell();
   document.body.classList.toggle("app-shell", shouldShell);
   const appBar = document.getElementById("app-bottom-bar");
   if (appBar) appBar.classList.toggle("hidden", !shouldShell);
@@ -121,7 +236,7 @@ function setLandingMode() {
   const landingPublic = document.querySelector("[data-landing-public]");
   const landingApp = document.querySelector("[data-landing-app]");
   if (!landingPublic && !landingApp) return;
-  const shouldShowApp = Boolean(getToken()) && shouldUseAppShell();
+  const shouldShowApp = shouldShowAppShell();
   if (landingPublic) landingPublic.classList.toggle("hidden", shouldShowApp);
   if (landingApp) landingApp.classList.toggle("hidden", !shouldShowApp);
 }
@@ -129,9 +244,14 @@ function setLandingMode() {
 /* AUTH & TOKEN */
 function getToken() { return localStorage.getItem("token"); }
 function setToken(t) { t ? localStorage.setItem("token", t) : localStorage.removeItem("token"); }
-function getAuthHeaders(extra={}) {
+function getAuthHeaders(extra = {}, options = {}) {
   const t = getToken();
-  return { "Content-Type": "application/json", ...(t ? { Authorization: `Bearer ${t}` } : {}), ...extra };
+  const headers = {
+    ...(options.skipContentType ? {} : { "Content-Type": "application/json" }),
+    "X-ANON-ID": getAnonId(),
+    ...(t ? { Authorization: `Bearer ${t}` } : {})
+  };
+  return { ...headers, ...extra };
 }
 
 let updateTopbarUser = () => {};
@@ -140,6 +260,8 @@ let currentAppView = "home";
 let loadHistoricoFn = null;
 let chartInstance = null;
 let currentCredits = null;
+let freeRemaining = null;
+let pendingNextRoute = "";
 let lastEssayId = null;
 let lastReview = null;
 let lastResult = null;
@@ -156,6 +278,24 @@ const WEEK_THEME_TEXT = "Os impactos do uso excessivo das redes sociais na saúd
 
 function shouldUseAppShell() {
   return Boolean(document.querySelector(".app-views") && document.getElementById("app-bottom-bar"));
+}
+
+function isEditorRoute() {
+  const params = new URLSearchParams(window.location.search);
+  return window.location.pathname.startsWith(EDITOR_ROUTE) || params.get("editor") === "1";
+}
+
+function isPaywallRoute() {
+  const params = new URLSearchParams(window.location.search);
+  return window.location.pathname.startsWith(PAYWALL_ROUTE) || params.get("paywall") === "1";
+}
+
+function isConfirmRoute() {
+  return window.location.pathname.startsWith(CONFIRM_ROUTE);
+}
+
+function shouldShowAppShell() {
+  return shouldUseAppShell() && (Boolean(getToken()) || isEditorRoute() || isPaywallRoute());
 }
 
 function normalizeCredits(value) {
@@ -240,6 +380,96 @@ function extractCredits(data) {
   return null;
 }
 
+function extractFreeRemaining(data) {
+  if (!data) return null;
+  const sources = [data, data.user, data.account, data.profile];
+  const keys = [
+    "free_remaining",
+    "freeRemaining",
+    "free_left",
+    "free_corrections_left"
+  ];
+  for (const src of sources) {
+    if (!src) continue;
+    for (const key of keys) {
+      const raw = src[key];
+      if (raw === null || raw === undefined) continue;
+      const value = Number(raw);
+      if (Number.isFinite(value)) return value;
+    }
+  }
+  return null;
+}
+
+function updateFreeRemaining(value) {
+  if (value === null || value === undefined) return;
+  freeRemaining = Math.max(0, Math.round(Number(value) || 0));
+  try {
+    localStorage.setItem(FREE_REMAINING_KEY, String(freeRemaining));
+  } catch (err) {
+    // ignore storage errors
+  }
+  updateFreeBadge();
+}
+
+function updateFreeBadge() {
+  const badge = document.querySelector("[data-free-badge]");
+  if (!badge) return;
+  if (getToken()) {
+    badge.classList.add("hidden");
+    return;
+  }
+  const value = freeRemaining !== null ? freeRemaining : 1;
+  badge.textContent = value > 0 ? `${value} grátis disponível` : "Grátis usado";
+  badge.classList.remove("hidden");
+}
+
+function loadStoredFreeRemaining() {
+  try {
+    const stored = localStorage.getItem(FREE_REMAINING_KEY);
+    if (stored === null) return;
+    const value = Number(stored);
+    if (Number.isFinite(value)) {
+      freeRemaining = Math.max(0, Math.round(value));
+    }
+  } catch (err) {
+    // ignore storage errors
+  }
+}
+
+function saveDraftText(text, tema) {
+  try {
+    if (typeof text === "string") localStorage.setItem(DRAFT_TEXT_KEY, text);
+    if (typeof tema === "string") localStorage.setItem(DRAFT_TEMA_KEY, tema);
+  } catch (err) {
+    // ignore storage errors
+  }
+}
+
+function saveDraftFileTema(tema) {
+  try {
+    if (typeof tema === "string") localStorage.setItem(DRAFT_TEMA_FILE_KEY, tema);
+  } catch (err) {
+    // ignore storage errors
+  }
+}
+
+function restoreDrafts() {
+  try {
+    const text = localStorage.getItem(DRAFT_TEXT_KEY) || "";
+    const tema = localStorage.getItem(DRAFT_TEMA_KEY) || "";
+    const temaFile = localStorage.getItem(DRAFT_TEMA_FILE_KEY) || "";
+    const textArea = document.querySelector("textarea[name='texto_app']");
+    const temaInput = document.querySelector("input[name='tema_app']");
+    const temaFileInput = document.querySelector("input[name='tema_app_file']");
+    if (textArea && !textArea.value) textArea.value = text;
+    if (temaInput && !temaInput.value) temaInput.value = tema;
+    if (temaFileInput && !temaFileInput.value) temaFileInput.value = temaFile;
+  } catch (err) {
+    // ignore storage errors
+  }
+}
+
 function updateCreditCardCopy(credits) {
   const infoEl = document.querySelector("[data-credit-info]");
   if (!infoEl) return;
@@ -269,13 +499,17 @@ function setCreditsUI(value) {
   updateCreditCardCopy(value);
   updateCreditLockState(value);
   updateOffensivaMonetization(value);
+  updateFreeBadge();
 }
 
 function resetCreditsUI() {
   currentCredits = null;
   document.querySelectorAll("[data-credit-balance]").forEach(el => {
-    el.textContent = "2";
+    el.textContent = "1";
   });
+  freeRemaining = null;
+  loadStoredFreeRemaining();
+  updateFreeBadge();
   updateCreditCardCopy(null);
   updateCreditLockState(null);
   updateOffensivaMonetization(null);
@@ -925,6 +1159,30 @@ function hideCreditsModal() {
   modal.classList.add("hidden");
 }
 
+function showAuthGate() {
+  const modal = document.getElementById("auth-gate");
+  if (!modal) return;
+  modal.classList.remove("hidden");
+}
+
+function hideAuthGate() {
+  const modal = document.getElementById("auth-gate");
+  if (!modal) return;
+  modal.classList.add("hidden");
+}
+
+function showPostResultAuthNudge() {
+  const banner = document.querySelector("[data-post-result-auth]");
+  if (!banner) return;
+  banner.classList.remove("hidden");
+}
+
+function hidePostResultAuthNudge() {
+  const banner = document.querySelector("[data-post-result-auth]");
+  if (!banner) return;
+  banner.classList.add("hidden");
+}
+
 function showReviewPopup() {
   if (reviewPopupShown) return;
   const modal = document.getElementById("review-modal");
@@ -1181,6 +1439,8 @@ function showCheckoutError() {
 
 async function startCheckout(plan = "padrao", triggerButton) {
   if (!getToken()) {
+    pendingNextRoute = PAYWALL_ROUTE;
+    setAuthReturnPath(PAYWALL_ROUTE);
     if (typeof window.goToAuth === "function") {
       window.goToAuth("login");
     } else {
@@ -1215,6 +1475,55 @@ async function startCheckout(plan = "padrao", triggerButton) {
   }
 }
 
+async function linkAnonSession() {
+  if (!getToken()) return;
+  try {
+    await fetch(`${API_BASE}/auth/link-anon`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ anon_id: getAnonId() })
+    });
+  } catch (err) {
+    // ignore link errors
+  }
+}
+
+function resolveAuthReturnPath() {
+  if (pendingNextRoute) return pendingNextRoute;
+  if (isPaywallRoute()) return PAYWALL_ROUTE;
+  if (isEditorRoute()) return EDITOR_ROUTE;
+  if (freeRemaining === 0 && currentCredits !== null && Number(currentCredits) <= 0) {
+    return PAYWALL_ROUTE;
+  }
+  return EDITOR_ROUTE;
+}
+
+function handlePostAuthRedirect() {
+  const stored = consumeAuthReturnPath();
+  const next = stored || resolveAuthReturnPath();
+  pendingNextRoute = "";
+  if (next === PAYWALL_ROUTE) {
+    openPaywallView({ replace: true });
+  } else if (next === EDITOR_ROUTE) {
+    openEditorView({ replace: true });
+  }
+}
+
+function startGoogleAuth() {
+  setAuthReturnPath(resolveAuthReturnPath());
+  window.location.href = `${API_BASE}/auth/google/start`;
+}
+
+function openEmailAuth() {
+  setAuthReturnPath(resolveAuthReturnPath());
+  hideAuthGate();
+  if (typeof window.goToAuth === "function") {
+    window.goToAuth("register");
+  } else {
+    showSection("section-auth");
+  }
+}
+
 async function fetchMe() {
   const t = getToken();
   if (!t) return;
@@ -1229,6 +1538,8 @@ async function fetchMe() {
     updateTopbarUser(data);
     const credits = extractCredits(data);
     setCreditsUI(credits);
+    const freeLeft = extractFreeRemaining(data);
+    if (freeLeft !== null) updateFreeRemaining(freeLeft);
     if (shouldUseAppShell()) {
       showSection("section-landing");
     } else {
@@ -1236,12 +1547,35 @@ async function fetchMe() {
     }
     if (loadHistoricoFn) loadHistoricoFn();
     loadReferral();
+    if (peekAuthReturnPath() || pendingNextRoute) {
+      handlePostAuthRedirect();
+    }
   } catch(e) {
     setToken(null);
     updateTopbarUser(null);
     resetCreditsUI();
     resetAppData();
     showSection("section-landing"); // ou auth
+  }
+}
+
+async function handleConfirmRoute() {
+  showSection("section-confirm");
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("token") || params.get("access_token");
+  const next = params.get("next");
+  if (token) {
+    setToken(token);
+  }
+  await linkAnonSession();
+  if (token) {
+    await fetchMe();
+  }
+  const target = next || consumeAuthReturnPath() || resolveAuthReturnPath();
+  if (target === PAYWALL_ROUTE) {
+    openPaywallView({ replace: true });
+  } else {
+    openEditorView({ replace: true });
   }
 }
 
@@ -1287,6 +1621,7 @@ document.addEventListener("DOMContentLoaded", () => {
   updateAppHeaderHeight();
   window.addEventListener("resize", updateAppHeaderHeight);
   loadPublicCorrectionsCount();
+  loadStoredFreeRemaining();
   updateTopbarUser(getToken() ? {} : null);
 
   updateTopbarUser = (data) => {
@@ -1301,6 +1636,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (appLogoutBtn) appLogoutBtn.classList.remove("hidden");
       if (topbarSecondary) topbarSecondary.classList.remove("hidden");
       if (greetingEl) greetingEl.textContent = `E aí ${firstName || "Aluno"}, pronto para corrigir?`;
+      hidePostResultAuthNudge();
     } else {
       navAuth?.classList.remove("hidden");
       if (appLoginBtn) appLoginBtn.classList.remove("hidden");
@@ -1326,6 +1662,9 @@ document.addEventListener("DOMContentLoaded", () => {
     appTabs.forEach(tab => {
       tab.classList.toggle("active", tab.dataset.viewTarget === target);
     });
+    if (target === "new") {
+      updateFreeBadge();
+    }
   };
 
   viewTriggers.forEach(btn => {
@@ -1356,6 +1695,21 @@ document.addEventListener("DOMContentLoaded", () => {
     appTextArea.addEventListener("input", updateCount);
     updateCount();
   }
+
+  restoreDrafts();
+  const appTemaInput = document.querySelector("input[name='tema_app']");
+  const appTemaFileInput = document.querySelector("input[name='tema_app_file']");
+  if (appTextArea) {
+    appTextArea.addEventListener("input", () => {
+      saveDraftText(appTextArea.value, appTemaInput?.value || "");
+    });
+  }
+  appTemaInput?.addEventListener("input", () => {
+    saveDraftText(appTextArea?.value || "", appTemaInput.value);
+  });
+  appTemaFileInput?.addEventListener("input", () => {
+    saveDraftFileTema(appTemaFileInput.value);
+  });
 
   const applyAppTheme = () => {
     const inputs = document.querySelectorAll('input[name="tema_app"], input[name="tema_app_file"]');
@@ -1397,7 +1751,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function goToAuth(mode='login') {
     const authSection = document.getElementById("section-auth");
     if (!authSection) {
-      const param = mode === "login" ? "login=1" : "start=1";
+      const param = mode === "login" ? "login=1" : "signup=1";
       window.location.href = `/?${param}`;
       return;
     }
@@ -1412,10 +1766,20 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   window.goToAuth = goToAuth;
 
+  if (isConfirmRoute()) {
+    handleConfirmRoute();
+    return;
+  }
+
   const urlParams = new URLSearchParams(window.location.search);
   const urlRef = (urlParams.get("ref") || "").trim();
   const startParam = (urlParams.get("start") || "").trim();
   const loginParam = (urlParams.get("login") || "").trim();
+  const signupParam = (urlParams.get("signup") || "").trim();
+  const editorParam = (urlParams.get("editor") || "").trim();
+  const paywallParam = (urlParams.get("paywall") || "").trim();
+  const wantsEditor = editorParam === "1" || startParam === "1" || isEditorRoute();
+  const wantsPaywall = paywallParam === "1" || isPaywallRoute();
   const storedRef = getStoredReferralCode();
   if (urlRef) {
     applyReferralCode(urlRef);
@@ -1427,28 +1791,37 @@ document.addEventListener("DOMContentLoaded", () => {
     if (loginParam) {
       goToAuth("login");
       shouldShowLanding = false;
-    } else if (urlRef || startParam || window.location.pathname.includes("/register")) {
+    } else if (urlRef || signupParam || window.location.pathname.includes("/register")) {
       goToAuth("register");
+      shouldShowLanding = false;
+    } else if (wantsEditor) {
+      openEditorView({ replace: true });
+      shouldShowLanding = false;
+    } else if (wantsPaywall) {
+      openPaywallView({ replace: true });
       shouldShowLanding = false;
     }
     if (shouldShowLanding && document.getElementById("section-landing")) {
       showSection("section-landing");
     }
+  } else if (wantsEditor || wantsPaywall) {
+    pendingNextRoute = wantsPaywall ? PAYWALL_ROUTE : EDITOR_ROUTE;
   }
   if (document.getElementById("section-landing")?.classList.contains("visible")) {
     setLandingMode();
-    const shouldShell = Boolean(getToken()) && shouldUseAppShell();
+    const shouldShell = shouldShowAppShell();
     document.body.classList.toggle("app-shell", shouldShell);
     document.getElementById("app-bottom-bar")?.classList.toggle("hidden", !shouldShell);
+    updateFreeBadge();
   }
 
   const openBuyView = () => {
     if (!getToken()) {
-      goToAuth("register");
+      pendingNextRoute = PAYWALL_ROUTE;
+      showAuthGate();
       return;
     }
-    showSection("section-landing");
-    renderAppView("buy");
+    openPaywallView();
   };
 
   document.querySelectorAll("[data-buy-credits]").forEach(btn => {
@@ -1474,6 +1847,26 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("[data-review-close]").forEach(btn => {
     btn.addEventListener("click", () => {
       hideReviewPopup();
+    });
+  });
+
+  document.querySelectorAll("[data-auth-google]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      startGoogleAuth();
+    });
+  });
+
+  document.querySelectorAll("[data-auth-email]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      openEmailAuth();
+    });
+  });
+
+  document.querySelectorAll("[data-auth-gate-close]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      hideAuthGate();
     });
   });
 
@@ -1536,7 +1929,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!btn.classList.contains("is-disabled")) return;
       e.preventDefault();
       e.stopPropagation();
-      showCreditsModal();
+      pendingNextRoute = PAYWALL_ROUTE;
+      openPaywallView();
     });
   });
 
@@ -1583,6 +1977,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Escape") hideReviewPopup();
     if (e.key === "Escape") hideCreditsSheet();
     if (e.key === "Escape") hideOffensivaModal();
+    if (e.key === "Escape") hideAuthGate();
   });
 
   document.addEventListener("click", (e) => {
@@ -1641,6 +2036,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  document.querySelectorAll("[data-editor-open]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      openEditorView();
+    });
+  });
+
   document.querySelectorAll('input[type="file"]').forEach(input => {
     input.addEventListener("change", () => {
       const file = input.files && input.files[0];
@@ -1658,12 +2060,24 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Listeners Nav
-  if(btnNavLogin) btnNavLogin.addEventListener("click", () => goToAuth('login'));
-  if(btnNavRegister) btnNavRegister.addEventListener("click", () => goToAuth('register'));
-  if(btnCtaStart) btnCtaStart.addEventListener("click", () => goToAuth('register'));
-  if(btnCtaLogin) btnCtaLogin.addEventListener("click", () => goToAuth('login'));
-  if(btnPromoStart) btnPromoStart.addEventListener("click", () => goToAuth('register'));
-  if(appLoginBtn) appLoginBtn.addEventListener("click", () => goToAuth('login'));
+  if(btnNavLogin) btnNavLogin.addEventListener("click", () => {
+    setAuthReturnPath(resolveAuthReturnPath());
+    goToAuth('login');
+  });
+  if(btnNavRegister) btnNavRegister.addEventListener("click", () => {
+    setAuthReturnPath(resolveAuthReturnPath());
+    goToAuth('register');
+  });
+  if(btnCtaStart) btnCtaStart.addEventListener("click", () => openEditorView());
+  if(btnCtaLogin) btnCtaLogin.addEventListener("click", () => {
+    setAuthReturnPath(resolveAuthReturnPath());
+    goToAuth('login');
+  });
+  if(btnPromoStart) btnPromoStart.addEventListener("click", () => openEditorView());
+  if(appLoginBtn) appLoginBtn.addEventListener("click", () => {
+    setAuthReturnPath(resolveAuthReturnPath());
+    goToAuth('login');
+  });
   if(appLogoutBtn) appLogoutBtn.addEventListener("click", () => {
     setToken(null);
     updateTopbarUser(null);
@@ -1698,7 +2112,9 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       if(!res.ok) throw new Error("E-mail ou senha incorretos");
       const d = await res.json();
-      setToken(d.access_token);
+      const token = d?.access_token || d?.token || d?.accessToken;
+      if (token) setToken(token);
+      await linkAnonSession();
       await fetchMe();
     } catch(err) {
       msgLogin.textContent = err.message;
@@ -1723,7 +2139,7 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify(payload)
       });
       if(!res.ok) throw new Error("Erro ao criar conta");
-      msgRegister.textContent = "Conta criada! Verifique seu e-mail.";
+      msgRegister.textContent = "Conta criada! Verifique seu e-mail para confirmar o acesso.";
       msgRegister.className = "form-message success";
       if (currentReferralCode) {
         trackEvent("register_with_ref", { ref: currentReferralCode });
@@ -1764,29 +2180,44 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  async function sendCorrection(url, body, msgEl, isFile=false) {
-    if (currentCredits !== null && currentCredits <= 0) {
+  async function sendCorrection(body, msgEl, isFile = false) {
+    hidePostResultAuthNudge();
+    if (getToken() && currentCredits !== null && currentCredits <= 0) {
       msgEl.textContent = "Você ficou sem correções ⚠️";
       msgEl.className = "form-message error";
-      if (document.body.classList.contains("app-shell")) {
-        document.getElementById("credits-sheet")?.classList.remove("hidden");
-      } else {
-        showCreditsModal();
-      }
+      openPaywallView();
       return;
     }
     showLoading();
     msgEl.textContent = "";
     try {
-      const token = getToken();
-      const headers = isFile ? { Authorization: `Bearer ${token}` } : getAuthHeaders();
-      const res = await fetch(`${API_BASE}${url}`, { method: "POST", headers, body });
+      const headers = getAuthHeaders({}, { skipContentType: isFile });
+      const res = await fetch(`${API_BASE}/corrections`, { method: "POST", headers, body });
       let d = null;
       try { d = await res.json(); } catch (err) { d = null; }
-      if(!res.ok) {
+
+      const nextAction = String(d?.next_action || "").toUpperCase();
+      const requiresAuth = Boolean(d?.requires_auth) || nextAction === "PROMPT_SIGNUP";
+      const requiresPayment = Boolean(d?.requires_payment) || nextAction === "PROMPT_PAYWALL";
+      const freeLeft = extractFreeRemaining(d);
+      if (freeLeft !== null) updateFreeRemaining(freeLeft);
+
+      if (requiresAuth) {
+        pendingNextRoute = EDITOR_ROUTE;
+        setAuthReturnPath(EDITOR_ROUTE);
+        showAuthGate();
+        return;
+      }
+      if (requiresPayment) {
+        pendingNextRoute = PAYWALL_ROUTE;
+        openPaywallView();
+        return;
+      }
+      if (!res.ok) {
         const serverMsg = d?.detail || d?.message || d?.error || "Falha na correção.";
         throw new Error(serverMsg);
       }
+
       lastEssayId = d?.essay_id || d?.id || d?.resultado?.essay_id || d?.resultado?.id || null;
       lastReview = d?.review || d?.resultado?.review || null;
       const resultado = d?.resultado || d;
@@ -1796,9 +2227,8 @@ document.addEventListener("DOMContentLoaded", () => {
       updateResultadoReview(lastEssayId, lastReview);
       updateAppResult(resultado);
       const credits = extractCredits(d);
-      const prevCredits = currentCredits;
       if (credits !== null) setCreditsUI(credits);
-      loadHistoricoFn();
+      if (loadHistoricoFn) loadHistoricoFn();
       msgEl.textContent = "Corrigido com sucesso!";
       msgEl.className = "form-message success";
       if (document.body.classList.contains("app-shell")) {
@@ -1813,17 +2243,12 @@ document.addEventListener("DOMContentLoaded", () => {
           document.getElementById("resultado-wrapper")?.scrollIntoView({ behavior: "smooth" });
         }
       }
-      if (shouldShowPaywallAfterFree(prevCredits, credits)) {
-        const correctionsCount = prevCredits !== null ? Number(prevCredits) + 1 : 2;
-        if (Number.isFinite(correctionsCount)) setPaywallCorrections(correctionsCount);
-        showCreditsModal({ markShown: true });
+      if (!getToken() && freeRemaining === 0) {
+        showPostResultAuthNudge();
       }
     } catch(err) {
       msgEl.textContent = err.message;
       msgEl.className = "form-message error";
-      if (/cr[eé]dito|credits?/i.test(err.message || "")) {
-        showCreditsModal();
-      }
     } finally { hideLoading(); }
   }
 
@@ -1831,13 +2256,8 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     if (msgAppText) msgAppText.textContent = "";
     if (!msgAppText) return;
-    if (!getToken()) {
-      goToAuth("register");
-      return;
-    }
     lastTema = formAppText.tema_app?.value || "";
     sendCorrection(
-      "/app/enem/corrigir-texto",
       JSON.stringify({ tema: formAppText.tema_app.value, texto: formAppText.texto_app.value }),
       msgAppText
     );
@@ -1847,20 +2267,16 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     if (msgAppFile) msgAppFile.textContent = "";
     if (!msgAppFile) return;
-    if (!getToken()) {
-      goToAuth("register");
-      return;
-    }
     lastTema = formAppFile.tema_app_file?.value || "";
     const fd = new FormData(formAppFile);
     fd.append("tema", formAppFile.tema_app_file.value);
-    sendCorrection("/app/enem/corrigir-arquivo", fd, msgAppFile, true);
+    sendCorrection(fd, msgAppFile, true);
   });
 
   formCorrigir?.addEventListener("submit", (e) => {
     e.preventDefault();
     lastTema = formCorrigir.tema.value || "";
-    sendCorrection("/app/enem/corrigir-texto", JSON.stringify({ tema: formCorrigir.tema.value, texto: formCorrigir.texto.value }), msgCorrigir);
+    sendCorrection(JSON.stringify({ tema: formCorrigir.tema.value, texto: formCorrigir.texto.value }), msgCorrigir);
   });
 
   formCorrigirArquivo?.addEventListener("submit", (e) => {
@@ -1868,7 +2284,7 @@ document.addEventListener("DOMContentLoaded", () => {
     lastTema = formCorrigirArquivo.tema_arquivo.value || "";
     const fd = new FormData(formCorrigirArquivo);
     fd.append("tema", formCorrigirArquivo.tema_arquivo.value);
-    sendCorrection("/app/enem/corrigir-arquivo", fd, msgCorrigirArquivo, true);
+    sendCorrection(fd, msgCorrigirArquivo, true);
   });
 
   function renderResultado(res) {
