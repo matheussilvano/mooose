@@ -470,6 +470,42 @@ function restoreDrafts() {
   }
 }
 
+function buildTextPayload(tema, texto) {
+  return JSON.stringify({
+    tema,
+    texto,
+    theme: tema,
+    text: texto,
+    tema_app: tema,
+    texto_app: texto
+  });
+}
+
+function buildFilePayload(form) {
+  const fileInput = form?.querySelector('input[type="file"]');
+  const temaInput = form?.querySelector('input[name*="tema"]');
+  const file = fileInput?.files?.[0] || null;
+  const tema = temaInput?.value || "";
+  const fd = new FormData();
+  if (file) {
+    fd.append("arquivo", file);
+    fd.append("file", file);
+    const inputName = fileInput?.name;
+    if (inputName && !["arquivo", "file"].includes(inputName)) {
+      fd.append(inputName, file);
+    }
+  }
+  if (tema) {
+    fd.append("tema", tema);
+    fd.append("theme", tema);
+    const temaName = temaInput?.name;
+    if (temaName && !["tema", "theme"].includes(temaName)) {
+      fd.append(temaName, tema);
+    }
+  }
+  return fd;
+}
+
 function updateCreditCardCopy(credits) {
   const infoEl = document.querySelector("[data-credit-info]");
   if (!infoEl) return;
@@ -2214,6 +2250,9 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       if (!res.ok) {
+        if (res.status >= 500) {
+          throw new Error("Serviço indisponível. Tente novamente em instantes.");
+        }
         const serverMsg = d?.detail || d?.message || d?.error || "Falha na correção.";
         throw new Error(serverMsg);
       }
@@ -2258,7 +2297,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!msgAppText) return;
     lastTema = formAppText.tema_app?.value || "";
     sendCorrection(
-      JSON.stringify({ tema: formAppText.tema_app.value, texto: formAppText.texto_app.value }),
+      buildTextPayload(formAppText.tema_app.value, formAppText.texto_app.value),
       msgAppText
     );
   });
@@ -2268,22 +2307,20 @@ document.addEventListener("DOMContentLoaded", () => {
     if (msgAppFile) msgAppFile.textContent = "";
     if (!msgAppFile) return;
     lastTema = formAppFile.tema_app_file?.value || "";
-    const fd = new FormData(formAppFile);
-    fd.append("tema", formAppFile.tema_app_file.value);
+    const fd = buildFilePayload(formAppFile);
     sendCorrection(fd, msgAppFile, true);
   });
 
   formCorrigir?.addEventListener("submit", (e) => {
     e.preventDefault();
     lastTema = formCorrigir.tema.value || "";
-    sendCorrection(JSON.stringify({ tema: formCorrigir.tema.value, texto: formCorrigir.texto.value }), msgCorrigir);
+    sendCorrection(buildTextPayload(formCorrigir.tema.value, formCorrigir.texto.value), msgCorrigir);
   });
 
   formCorrigirArquivo?.addEventListener("submit", (e) => {
     e.preventDefault();
     lastTema = formCorrigirArquivo.tema_arquivo.value || "";
-    const fd = new FormData(formCorrigirArquivo);
-    fd.append("tema", formCorrigirArquivo.tema_arquivo.value);
+    const fd = buildFilePayload(formCorrigirArquivo);
     sendCorrection(fd, msgCorrigirArquivo, true);
   });
 
