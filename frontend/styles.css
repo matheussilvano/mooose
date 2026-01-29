@@ -905,6 +905,7 @@ body {
   padding: 0.5rem 1.3rem;
   font-size: 0.85rem;
   border-radius: 999px;
+  white-space: nowrap;
 }
 
 /* Quando logado, deixa o nome alinhado sem esticar nada */
@@ -2821,6 +2822,12 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   .input-text-area { font-size: 0.95rem; }
 
   .footer { padding: 2.5rem 1rem; }
+}
+
+@media (max-width: 420px) {
+  .topbar-actions { gap: 0.4rem; }
+  .topbar-actions #nav-auth { gap: 0.35rem; }
+  #nav-auth .duo-btn { padding: 0.4rem 0.75rem; font-size: 0.72rem; }
 }
 
 @media (max-width: 480px) {
