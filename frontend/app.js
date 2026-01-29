@@ -1300,7 +1300,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (appLoginBtn) appLoginBtn.classList.add("hidden");
       if (appLogoutBtn) appLogoutBtn.classList.remove("hidden");
       if (topbarSecondary) topbarSecondary.classList.remove("hidden");
-      if (greetingEl) greetingEl.textContent = `e aí ${firstName || "Aluno"}, pronto para corrigir?`;
+      if (greetingEl) greetingEl.textContent = `E aí ${firstName || "Aluno"}, pronto para corrigir?`;
     } else {
       navAuth?.classList.remove("hidden");
       if (appLoginBtn) appLoginBtn.classList.remove("hidden");
