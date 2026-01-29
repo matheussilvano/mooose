@@ -242,6 +242,40 @@ body {
   max-width: 260px;
   height: auto;
 }
+.landing-proof {
+  display: grid;
+  gap: 1rem;
+}
+.landing-stats {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+.landing-stat {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 0.9rem 1rem;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+  display: grid;
+  gap: 0.2rem;
+}
+.landing-stat-value {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #1d4ed8;
+}
+.landing-stat-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.landing-proof-note {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #334155;
+  font-weight: 600;
+}
 .landing-section h2 {
   font-size: 1.6rem;
   font-weight: 800;

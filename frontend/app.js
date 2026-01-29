@@ -61,6 +61,34 @@ function showToast(message, type = "success") {
   }, 2500);
 }
 
+async function loadPublicCorrectionsCount() {
+  const countEl = document.querySelector("[data-public-corrections]");
+  if (!countEl) return;
+  const fallbackText = (countEl.dataset.fallback || countEl.textContent || "").replace(/\D/g, "");
+  const fallback = Number(fallbackText) || 0;
+  const formatter = new Intl.NumberFormat("pt-BR");
+  try {
+    const res = await fetch(`${API_BASE}/admin/metrics/absolute`, { headers: getAuthHeaders() });
+    if (!res.ok) throw new Error("metrics_unavailable");
+    const data = await res.json().catch(() => ({}));
+    const total = Number(
+      data?.corrections ??
+      data?.total_corrections ??
+      data?.correcoes ??
+      data?.correcoes_realizadas ??
+      data?.corrections_total ??
+      data?.corrections_count ??
+      null
+    );
+    if (!Number.isFinite(total) || total <= 0) throw new Error("invalid_count");
+    countEl.textContent = formatter.format(total);
+  } catch (err) {
+    if (fallback > 0) {
+      countEl.textContent = formatter.format(fallback);
+    }
+  }
+}
+
 function showSection(id) {
   document.querySelectorAll(".section").forEach(s => s.classList.remove("visible"));
   const el = document.getElementById(id);
@@ -1258,6 +1286,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const appLogoutBtn = document.getElementById("btn-app-logout");
   updateAppHeaderHeight();
   window.addEventListener("resize", updateAppHeaderHeight);
+  loadPublicCorrectionsCount();
   updateTopbarUser(getToken() ? {} : null);
 
   updateTopbarUser = (data) => {
