@@ -1587,16 +1587,25 @@ function openEmailAuth() {
   }
 }
 
-async function fetchMe() {
+async function fetchMe(options = {}) {
+  const { allowCookie = false, preserveToken = false } = options;
   const t = getToken();
-  if (!t) return;
+  if (!t && !allowCookie) return;
   try {
-    const res = await fetch(`${API_BASE}/auth/me`, { headers: getAuthHeaders() });
+    const headers = t ? getAuthHeaders() : { "X-ANON-ID": getAnonId() };
+    const res = await fetch(`${API_BASE}/auth/me`, {
+      headers,
+      credentials: allowCookie ? "include" : "same-origin"
+    });
     if (!res.ok) throw new Error("Sessão inválida");
     const data = await res.json();
-    
+    if (!t) {
+      const newToken = data?.access_token || data?.token || data?.accessToken;
+      if (newToken) setToken(newToken);
+    }
+
     const emailEl = document.getElementById("user-email");
-    if(emailEl) emailEl.textContent = `${data.full_name || "Usuário"} (${data.email})`;
+    if (emailEl) emailEl.textContent = `${data.full_name || "Usuário"} (${data.email})`;
     
     updateTopbarUser(data);
     const credits = extractCredits(data);
@@ -1614,6 +1623,17 @@ async function fetchMe() {
       handlePostAuthRedirect();
     }
   } catch(e) {
+    if (preserveToken) {
+      if (getToken()) {
+        updateTopbarUser({});
+        if (shouldUseAppShell()) {
+          showSection("section-landing");
+        }
+      } else {
+        updateTopbarUser(null);
+      }
+      return;
+    }
     setToken(null);
     updateTopbarUser(null);
     resetCreditsUI();
@@ -1632,7 +1652,9 @@ async function handleConfirmRoute() {
   }
   await linkAnonSession();
   if (token) {
-    await fetchMe();
+    await fetchMe({ allowCookie: true, preserveToken: true });
+  } else {
+    await fetchMe({ allowCookie: true, preserveToken: true });
   }
   const target = next || consumeAuthReturnPath() || resolveAuthReturnPath();
   if (target === PAYWALL_ROUTE) {
@@ -2503,4 +2525,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   if(getToken()) fetchMe();
+  if (!getToken() && (isEditorRoute() || isPaywallRoute())) {
+    fetchMe({ allowCookie: true, preserveToken: true });
+  }
 });
