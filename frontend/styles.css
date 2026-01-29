@@ -448,6 +448,27 @@ body {
   gap: 0.5rem;
   margin-top: 0.75rem;
 }
+.app-result-feedback {
+  display: grid;
+  gap: 0.75rem;
+}
+.app-feedback-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0.85rem;
+  background: #ffffff;
+}
+.app-feedback-head {
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+}
+.app-feedback-text {
+  color: #475569;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
 .plan-grid {
   display: grid;
   gap: 1rem;

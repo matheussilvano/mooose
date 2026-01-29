@@ -719,12 +719,17 @@ function renderAppHistory(items = []) {
 function updateAppResult(res) {
   const scoreEl = document.querySelector("[data-app-score]");
   const listEl = document.querySelector("[data-app-competencias]");
+  const feedbackEl = document.querySelector("[data-app-feedback]");
   const emptyEl = document.querySelector("[data-app-result-empty]");
   if (!scoreEl || !listEl) return;
   if (!res) {
     if (emptyEl) emptyEl.classList.remove("hidden");
     scoreEl.textContent = "—";
     listEl.innerHTML = "";
+    if (feedbackEl) {
+      feedbackEl.innerHTML = "";
+      feedbackEl.classList.add("hidden");
+    }
     return;
   }
   const score = normalizeScore(res.nota_final);
@@ -733,6 +738,30 @@ function updateAppResult(res) {
     return `<div class="app-result-pill"><span>C${c.id}</span><span>${c.nota} / 200</span></div>`;
   }).join("");
   listEl.innerHTML = comps;
+  if (feedbackEl) {
+    const analysis = res.analise_geral || res.feedback_geral || res.feedback || "";
+    const compBlocks = (res.competencias || []).map(c => {
+      const feedback = c.feedback || "";
+      if (!feedback) return "";
+      return `
+        <div class="app-feedback-card">
+          <div class="app-feedback-head">Competência ${c.id} • ${c.nota} / 200</div>
+          <div class="app-feedback-text">${marked.parse(feedback)}</div>
+        </div>
+      `;
+    }).join("");
+    const hasCompFeedback = (res.competencias || []).some(c => Boolean(c.feedback));
+    if (analysis || hasCompFeedback) {
+      feedbackEl.innerHTML = `
+        ${analysis ? `<div class="app-feedback-text">${marked.parse(analysis)}</div>` : ""}
+        ${compBlocks}
+      `;
+      feedbackEl.classList.remove("hidden");
+    } else {
+      feedbackEl.innerHTML = "";
+      feedbackEl.classList.add("hidden");
+    }
+  }
   if (emptyEl) emptyEl.classList.add("hidden");
 }
 
