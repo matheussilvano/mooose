@@ -473,11 +473,7 @@ function restoreDrafts() {
 function buildTextPayload(tema, texto) {
   return JSON.stringify({
     tema,
-    texto,
-    theme: tema,
-    text: texto,
-    tema_app: tema,
-    texto_app: texto
+    texto
   });
 }
 
@@ -489,19 +485,9 @@ function buildFilePayload(form) {
   const fd = new FormData();
   if (file) {
     fd.append("arquivo", file);
-    fd.append("file", file);
-    const inputName = fileInput?.name;
-    if (inputName && !["arquivo", "file"].includes(inputName)) {
-      fd.append(inputName, file);
-    }
   }
   if (tema) {
     fd.append("tema", tema);
-    fd.append("theme", tema);
-    const temaName = temaInput?.name;
-    if (temaName && !["tema", "theme"].includes(temaName)) {
-      fd.append(temaName, tema);
-    }
   }
   return fd;
 }
@@ -2228,7 +2214,8 @@ document.addEventListener("DOMContentLoaded", () => {
     msgEl.textContent = "";
     try {
       const headers = getAuthHeaders({}, { skipContentType: isFile });
-      const res = await fetch(`${API_BASE}/corrections`, { method: "POST", headers, body });
+      const endpoint = isFile ? "/corrections/file" : "/corrections";
+      const res = await fetch(`${API_BASE}${endpoint}`, { method: "POST", headers, body });
       let d = null;
       try { d = await res.json(); } catch (err) { d = null; }
 
