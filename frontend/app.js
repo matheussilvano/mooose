@@ -121,9 +121,9 @@ function showToast(message, type = "success") {
 }
 
 async function loadPublicCorrectionsCount() {
-  const countEl = document.querySelector("[data-public-corrections]");
-  if (!countEl) return;
-  const fallbackText = (countEl.dataset.fallback || countEl.textContent || "").replace(/\D/g, "");
+  const countEls = Array.from(document.querySelectorAll("[data-public-corrections]"));
+  if (!countEls.length) return;
+  const fallbackText = (countEls[0].dataset.fallback || countEls[0].textContent || "").replace(/\D/g, "");
   const fallback = Number(fallbackText) || 0;
   const formatter = new Intl.NumberFormat("pt-BR");
   try {
@@ -140,10 +140,14 @@ async function loadPublicCorrectionsCount() {
       null
     );
     if (!Number.isFinite(total) || total <= 0) throw new Error("invalid_count");
-    countEl.textContent = formatter.format(total);
+    countEls.forEach(el => {
+      el.textContent = formatter.format(total);
+    });
   } catch (err) {
     if (fallback > 0) {
-      countEl.textContent = formatter.format(fallback);
+      countEls.forEach(el => {
+        el.textContent = formatter.format(fallback);
+      });
     }
   }
 }

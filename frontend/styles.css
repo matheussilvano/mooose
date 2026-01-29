@@ -243,6 +243,12 @@ body {
   max-width: 260px;
   height: auto;
 }
+.preauth-hero {
+  margin-bottom: 2rem;
+}
+.preauth-proof {
+  margin-bottom: 2.5rem;
+}
 .landing-proof {
   display: grid;
   gap: 1rem;
