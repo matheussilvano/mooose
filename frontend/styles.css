@@ -2217,7 +2217,11 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 200;
+  z-index: 10010;
+}
+.app-shell .history-modal {
+  align-items: flex-start;
+  padding-top: calc(var(--app-header-height, 0px) + 12px);
 }
 .history-modal.hidden {
   display: none;
@@ -2239,9 +2243,6 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   z-index: 1;
 }
 .history-modal-close {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
   border: 1px solid var(--border);
   background: #ffffff;
   border-radius: 999px;
@@ -2256,6 +2257,11 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   align-items: flex-start;
   gap: 1.5rem;
   margin-bottom: 1rem;
+  position: sticky;
+  top: 0;
+  background: #ffffff;
+  padding-bottom: 0.8rem;
+  z-index: 2;
 }
 .history-modal-sub {
   color: #64748b;
@@ -2268,6 +2274,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   border-radius: 999px;
   padding: 0.4rem 0.9rem;
   font-size: 0.95rem;
+  margin-left: auto;
 }
 .history-modal-body {
   display: grid;
@@ -2299,6 +2306,10 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
 }
 @media (max-width: 768px) {
   .history-modal { align-items: flex-end; }
+  .app-shell .history-modal {
+    align-items: flex-start;
+    padding-top: calc(var(--app-header-height, 0px) + 8px);
+  }
   .history-modal-card {
     width: 100%;
     border-radius: 20px 20px 0 0;

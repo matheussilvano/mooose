@@ -280,6 +280,7 @@ let currentReferralCode = "";
 let currentReferralLink = "";
 let toastTimer = null;
 let historyCache = new Map();
+let historyEndObserver = null;
 const WEEK_THEME_TEXT = "Os impactos do uso excessivo das redes sociais na saúde mental dos jovens no Brasil";
 
 function shouldUseAppShell() {
@@ -826,6 +827,7 @@ function renderHistoryModalContent(item) {
     `;
   }).join("");
   const hasCompFeedback = (resultado?.competencias || []).some(c => Boolean(c.feedback));
+  const review = item?.review || null;
   body.innerHTML = `
     <div class="history-section">
       <h4>Texto da redação</h4>
@@ -840,6 +842,29 @@ function renderHistoryModalContent(item) {
         `
         : `<div class="history-empty">Feedback completo não disponível neste histórico.</div>`}
     </div>
+    <div class="history-section hidden" id="history-modal-review">
+      <h4>Avalie esta correção</h4>
+      <div class="review-widget" data-review-widget data-essay-id="${item?.id || ""}" data-initial-stars="${review?.stars || 0}" data-initial-comment="${encodeAttr(review?.comment || "")}" data-initial-created-at="${encodeAttr(review?.created_at || "")}" data-initial-updated-at="${encodeAttr(review?.updated_at || "")}">
+        <div class="review-summary" data-review-summary>
+          <span class="review-summary-stars" data-review-summary-stars>Sem avaliação</span>
+          <span class="review-badge hidden" data-review-badge></span>
+          <button type="button" class="link-btn review-toggle" data-review-toggle>Avaliar</button>
+        </div>
+        <div class="review-body">
+          <div class="review-intro">
+            <div class="review-header">Avalie esta correção</div>
+            <p class="review-invite">Leva menos de 1 minuto.</p>
+          </div>
+          <div class="review-row">
+            <div class="review-stars" data-review-stars></div>
+            <button type="button" class="duo-btn btn-secondary small" data-review-save>Salvar avaliação</button>
+          </div>
+          <textarea class="review-input" rows="2" placeholder="Comentário (opcional)" data-review-comment></textarea>
+          <p class="form-message" data-review-msg></p>
+        </div>
+      </div>
+    </div>
+    <div id="history-modal-end" style="height: 1px;"></div>
   `;
 }
 
@@ -856,6 +881,22 @@ function openHistoryModal(item) {
   if (subEl) subEl.textContent = `Enviada em ${date}`;
   if (scoreEl) scoreEl.textContent = score !== null ? Math.round(score).toString() : "—";
   renderHistoryModalContent(item);
+  const reviewSection = document.getElementById("history-modal-review");
+  if (reviewSection) reviewSection.classList.add("hidden");
+  const reviewWidget = reviewSection?.querySelector("[data-review-widget]") || null;
+  if (reviewWidget) initReviewWidget(reviewWidget);
+  const sentinel = document.getElementById("history-modal-end");
+  const card = modal.querySelector(".history-modal-card");
+  if (historyEndObserver) historyEndObserver.disconnect();
+  if (sentinel && reviewSection && card) {
+    historyEndObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) reviewSection.classList.remove("hidden");
+      },
+      { root: card, threshold: 0.4 }
+    );
+    historyEndObserver.observe(sentinel);
+  }
   modal.classList.remove("hidden");
   modal.setAttribute("aria-hidden", "false");
 }
@@ -865,6 +906,7 @@ function closeHistoryModal() {
   if (!modal) return;
   modal.classList.add("hidden");
   modal.setAttribute("aria-hidden", "true");
+  if (historyEndObserver) historyEndObserver.disconnect();
 }
 
 function updateAppResult(res) {
