@@ -1045,12 +1045,12 @@ a.logo-row:active {
 /* M, S e E em azul claro */
 .logo-m,
 .logo-rest {
-  color: var(--brand);
+  color: #93c5fd;
 }
 
 /* 3 Os em azul escuro */
 .logo-o {
-  color: var(--brand-dark);
+  color: var(--brand);
 }
 
 .logo-o-1,
