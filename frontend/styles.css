@@ -830,10 +830,22 @@ body {
   padding-bottom: 0.4rem;
   border-bottom: 1px solid #e2e8f0;
   cursor: pointer;
+  padding-right: 0.4rem;
+  position: relative;
 }
 .app-list-item:last-child {
   border-bottom: none;
   padding-bottom: 0;
+}
+.app-list-item::after {
+  content: "›";
+  color: #94a3b8;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.app-list-item:hover {
+  background: rgba(127, 182, 255, 0.12);
+  border-radius: 10px;
 }
 .app-list-item:focus-visible {
   outline: 2px solid #5aa1f2;
@@ -2272,12 +2284,28 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   padding: 0.8rem 0;
   border-bottom: 1px solid #e2e8f0;
   cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+  border-radius: 12px;
 }
 .historico-main {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+  padding: 0.25rem 0.5rem;
+}
+.historico-main::after {
+  content: "›";
+  color: #94a3b8;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-left: 0.5rem;
+}
+.historico-item:hover {
+  background: rgba(127, 182, 255, 0.12);
+}
+.historico-item:active {
+  transform: translateY(1px);
 }
 .historico-item:focus-visible {
   outline: 2px solid #5aa1f2;
@@ -2347,6 +2375,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   padding: 1.6rem;
   box-shadow: 0 20px 60px rgba(15, 23, 42, 0.25);
   z-index: 1;
+  scroll-padding-top: 90px;
 }
 .history-modal-close {
   border: 1px solid var(--border);
@@ -2368,6 +2397,8 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   background: #ffffff;
   padding-bottom: 0.8rem;
   z-index: 2;
+  padding-right: 3rem;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
 }
 .history-modal-sub {
   color: #64748b;
@@ -2385,6 +2416,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
 .history-modal-body {
   display: grid;
   gap: 1.25rem;
+  padding-top: 0.5rem;
 }
 .history-section {
   background: #f8fafc;
