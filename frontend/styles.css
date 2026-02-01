@@ -16,9 +16,9 @@
   --text-muted: #64748b;
 
   /* Azul Principal */
-  --brand: #2563eb;       
-  --brand-light: #60a5fa;
-  --brand-dark: #1d4ed8;  /* Sombra 3D */
+  --brand: #5aa1f2;       
+  --brand-light: #7fb6ff;
+  --brand-dark: #5aa1f2;  /* Sombra 3D */
   
   /* Cores de Apoio */
   --accent: #facc15;      /* Amarelo */
@@ -113,9 +113,9 @@ body {
 }
 
 .credits-pill {
-  border: 1px solid #bfdbfe;
-  background: #eff6ff;
-  color: #1d4ed8;
+  border: 1px solid #7fb6ff;
+  background: rgba(127, 182, 255, 0.16);
+  color: #5aa1f2;
   font-weight: 800;
   border-radius: 999px;
   padding: 0.35rem 0.55rem 0.35rem 0.9rem;
@@ -128,7 +128,7 @@ body {
 }
 .credits-pill span {
   font-weight: 900;
-  background: #2563eb;
+  background: #5aa1f2;
   color: #ffffff;
   border-radius: 999px;
   padding: 0.1rem 0.45rem;
@@ -136,9 +136,9 @@ body {
   text-align: center;
 }
 .credits-plus {
-  border: 1px solid #bfdbfe;
-  background: #eff6ff;
-  color: #1d4ed8;
+  border: 1px solid #7fb6ff;
+  background: rgba(127, 182, 255, 0.16);
+  color: #5aa1f2;
   font-weight: 900;
   border-radius: 999px;
   padding: 0.2rem 0.55rem;
@@ -270,7 +270,7 @@ body {
 .landing-stat-value {
   font-size: 1.4rem;
   font-weight: 800;
-  color: #1d4ed8;
+  color: #5aa1f2;
 }
 .landing-stat-label {
   font-size: 0.85rem;
@@ -335,7 +335,7 @@ body {
   text-align: center;
   padding: 1.5rem 1rem;
   border-radius: 18px;
-  border: 1px dashed #bfdbfe;
+  border: 1px dashed #7fb6ff;
   background: #f8fafc;
 }
 .landing-cta-block .landing-sub {
@@ -433,7 +433,7 @@ body {
   font-weight: 800;
 }
 .auth-nudge {
-  border: 1px dashed #bfdbfe;
+  border: 1px dashed #7fb6ff;
   background: #f8fafc;
   text-align: left;
 }
@@ -504,8 +504,8 @@ body {
   gap: 0.35rem;
   padding: 0.3rem 0.75rem;
   border-radius: 999px;
-  background: #dbeafe;
-  color: #1d4ed8;
+  background: rgba(127, 182, 255, 0.28);
+  color: #5aa1f2;
   font-weight: 800;
   font-size: 0.75rem;
 }
@@ -526,7 +526,7 @@ body {
   font-weight: 600;
 }
 .plan-card.highlight {
-  border: 2px solid #bfdbfe;
+  border: 2px solid #7fb6ff;
   background: #f8fbff;
 }
 .plan-card.highlight-alt {
@@ -597,7 +597,7 @@ body {
   gap: 0.4rem;
   font-size: 1.4rem;
   font-weight: 900;
-  color: #1d4ed8;
+  color: #5aa1f2;
 }
 .buy-plan-price span,
 .plan-price span {
@@ -655,7 +655,7 @@ body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-weight: 800;
-  color: #1d4ed8;
+  color: #5aa1f2;
 }
 .app-card-title {
   font-weight: 700;
@@ -746,7 +746,7 @@ body {
   padding-bottom: 0;
 }
 .app-list-item:focus-visible {
-  outline: 2px solid #2563eb;
+  outline: 2px solid #5aa1f2;
   outline-offset: 3px;
   border-radius: 10px;
 }
@@ -771,9 +771,9 @@ body {
   cursor: pointer;
 }
 .app-toggle-tab.active {
-  background: #2563eb;
+  background: #5aa1f2;
   color: #ffffff;
-  border-color: #2563eb;
+  border-color: #5aa1f2;
 }
 .app-panel {
   display: none;
@@ -820,20 +820,20 @@ body {
 }
 .app-upload-status {
   font-size: 0.8rem;
-  color: #1e3a8a;
+  color: #5aa1f2;
   font-weight: 700;
 }
 .file-status {
   display: block;
   margin-top: 0.5rem;
   font-size: 0.85rem;
-  color: #1e3a8a;
+  color: #5aa1f2;
   font-weight: 700;
 }
 .app-result-score {
   font-size: 2.4rem;
   font-weight: 900;
-  color: #2563eb;
+  color: #5aa1f2;
   text-align: center;
 }
 .app-result-competencias {
@@ -888,14 +888,14 @@ body {
   justify-content: center;
 }
 .app-bottom-bar .app-tab.active {
-  color: #2563eb;
-  background: #eff6ff;
+  color: #5aa1f2;
+  background: rgba(127, 182, 255, 0.16);
   border-radius: 999px;
 }
 .app-cta {
-  background: #eff6ff;
-  color: #2563eb;
-  border: 1px solid #bfdbfe;
+  background: rgba(127, 182, 255, 0.16);
+  color: #5aa1f2;
+  border: 1px solid #7fb6ff;
   border-radius: 999px;
   padding: 0.65rem 1.1rem;
   font-weight: 800;
@@ -909,12 +909,12 @@ body {
   justify-content: center;
 }
 .app-cta.active {
-  background: #2563eb;
+  background: #5aa1f2;
   color: #ffffff;
   box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
 }
 .app-bottom-bar .app-cta.active {
-  background: #2563eb;
+  background: #5aa1f2;
   color: #ffffff;
 }
 .app-cta .app-tab-icon {
@@ -1259,7 +1259,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #2563eb;
+  color: #5aa1f2;
   margin-bottom: 0.6rem;
 }
 .weekly-guidance ul {
@@ -1279,7 +1279,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   align-self: flex-start;
   padding: 0.2rem 0.6rem;
   border-radius: 999px;
-  background: #e0f2fe;
+  background: rgba(127, 182, 255, 0.22);
   color: #0369a1;
   font-size: 0.7rem;
   font-weight: 800;
@@ -1287,9 +1287,9 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   text-transform: uppercase;
 }
 .tema-week-btn {
-  border: 2px dashed #93c5fd;
-  background: #eff6ff;
-  color: #1e3a8a;
+  border: 2px dashed #7fb6ff;
+  background: rgba(127, 182, 255, 0.16);
+  color: #5aa1f2;
   padding: 0.7rem 0.9rem;
   border-radius: 14px;
   font-weight: 700;
@@ -1392,7 +1392,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
 .blog-card { background: white; border: 2px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; transition: transform 0.2s; display: flex; flex-direction: column; }
 .blog-card:hover { transform: translateY(-5px); border-color: var(--brand-light); }
 .blog-content { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
-.blog-tag { background: #e0f2fe; color: #0284c7; padding: 0.3rem 0.8rem; border-radius: 99px; font-size: 0.75rem; font-weight: 700; align-self: flex-start; margin-bottom: 1rem; }
+.blog-tag { background: rgba(127, 182, 255, 0.22); color: #5aa1f2; padding: 0.3rem 0.8rem; border-radius: 99px; font-size: 0.75rem; font-weight: 700; align-self: flex-start; margin-bottom: 1rem; }
 .blog-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.8rem; line-height: 1.3; color: var(--text); }
 .blog-excerpt { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6; }
 
@@ -1496,8 +1496,8 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   justify-content: space-between;
 }
 .credit-balance {
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
+  background: rgba(127, 182, 255, 0.16);
+  border: 1px solid #7fb6ff;
   border-radius: 16px;
   padding: 0.8rem 1.2rem;
   text-align: center;
@@ -1564,7 +1564,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   pointer-events: auto;
 }
 .card.highlight {
-  border-color: #93c5fd;
+  border-color: #7fb6ff;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
@@ -1986,8 +1986,8 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   top: 1rem;
   right: 1rem;
   border: none;
-  background: #eff6ff;
-  color: #1d4ed8;
+  background: rgba(127, 182, 255, 0.16);
+  color: #5aa1f2;
   font-weight: 800;
   border-radius: 999px;
   width: 36px;
@@ -2114,7 +2114,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
 .offensiva-progress-label {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #1e3a8a;
+  color: #5aa1f2;
 }
 .offensiva-helper {
   margin: 0.4rem 0 0;
@@ -2136,7 +2136,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   margin: 0;
   font-size: 0.8rem;
   font-weight: 700;
-  color: #1e3a8a;
+  color: #5aa1f2;
 }
 .offensiva-monetization {
   background: #fff7ed;
@@ -2190,7 +2190,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   gap: 1rem;
 }
 .historico-item:focus-visible {
-  outline: 2px solid #2563eb;
+  outline: 2px solid #5aa1f2;
   outline-offset: 4px;
   border-radius: 12px;
 }
@@ -2213,7 +2213,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   color: #334155;
 }
 .review-badge {
-  background: #e0f2fe;
+  background: rgba(127, 182, 255, 0.22);
   color: #0369a1;
   padding: 0.2rem 0.6rem;
   border-radius: 999px;
@@ -2284,8 +2284,8 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   font-size: 0.9rem;
 }
 .history-modal-score {
-  background: #eff6ff;
-  color: #1d4ed8;
+  background: rgba(127, 182, 255, 0.16);
+  color: #5aa1f2;
   font-weight: 800;
   border-radius: 999px;
   padding: 0.4rem 0.9rem;
@@ -2402,10 +2402,10 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
    ========================= */
 .share-card {
   margin-top: 2rem;
-  border: 2px dashed #bfdbfe;
+  border: 2px dashed #7fb6ff;
   border-radius: 20px;
   padding: 1.5rem;
-  background: linear-gradient(135deg, #eff6ff, #e0f2fe);
+  background: linear-gradient(135deg, rgba(127, 182, 255, 0.16), rgba(127, 182, 255, 0.22));
 }
 .share-header h4 {
   margin-bottom: 0.4rem;
@@ -2461,18 +2461,18 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
 .input-text-area:focus { outline: none; border-color: var(--brand); background: #fff; }
 
 .file-drop-area { border: 2px dashed #cbd5e1; border-radius: 16px; padding: 2.5rem; text-align: center; background: #f8fafc; cursor: pointer; }
-.file-drop-area:hover { border-color: var(--brand); background: #eff6ff; }
+.file-drop-area:hover { border-color: var(--brand); background: rgba(127, 182, 255, 0.16); }
 
 /* Resultado */
 .resultado-score-pill {
   font-size: 2.5rem; font-weight: 900; color: var(--brand);
-  background: #eff6ff; padding: 0.5rem 1.5rem; border-radius: 99px; margin-top: 0.5rem; display: inline-block;
+  background: rgba(127, 182, 255, 0.16); padding: 0.5rem 1.5rem; border-radius: 99px; margin-top: 0.5rem; display: inline-block;
 }
 .competencia-card {
   background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 1.2rem; margin-bottom: 1rem;
 }
 .competencia-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-weight: 700; color: #334155; }
-.competencia-badge { background: #e0f2fe; color: #0284c7; padding: 0.2rem 0.6rem; border-radius: 99px; font-size: 0.85rem; }
+.competencia-badge { background: rgba(127, 182, 255, 0.22); color: #5aa1f2; padding: 0.2rem 0.6rem; border-radius: 99px; font-size: 0.85rem; }
 
 /* Footer */
 .footer { background: white; border-top: 2px solid var(--border); padding: 3rem 1.5rem; margin-top: auto; }
@@ -2503,7 +2503,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   position: relative;
   background: #ffffff;
   border-radius: 28px;
-  border: 2px solid #dbeafe;
+  border: 2px solid rgba(127, 182, 255, 0.28);
   box-shadow: 0 30px 80px rgba(15, 23, 42, 0.25);
   max-width: 980px;
   width: min(92vw, 980px);
@@ -2521,7 +2521,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   gap: 0.35rem;
   padding: 0.9rem;
   border-radius: 16px;
-  border: 1px dashed #bfdbfe;
+  border: 1px dashed #7fb6ff;
   background: #f8fafc;
   color: #0f172a;
   font-weight: 700;
@@ -2547,8 +2547,8 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   top: 1rem;
   right: 1rem;
   border: none;
-  background: #eff6ff;
-  color: #1d4ed8;
+  background: rgba(127, 182, 255, 0.16);
+  color: #5aa1f2;
   font-weight: 800;
   border-radius: 999px;
   width: 36px;
@@ -2621,8 +2621,8 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   gap: 0.4rem;
   padding: 0.35rem 0.9rem;
   border-radius: 999px;
-  background: #dbeafe;
-  color: #1d4ed8;
+  background: rgba(127, 182, 255, 0.28);
+  color: #5aa1f2;
   font-weight: 800;
   font-size: 0.8rem;
   letter-spacing: 0.02em;
@@ -2689,7 +2689,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
 .progress-fill {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, #2563eb, #22c55e);
+  background: linear-gradient(90deg, #5aa1f2, #22c55e);
   border-radius: 999px;
   transition: width 0.4s ease;
 }
@@ -2698,7 +2698,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   margin-top: 0.4rem;
   font-size: 0.85rem;
   font-weight: 700;
-  color: #1e3a8a;
+  color: #5aa1f2;
 }
 .paywall-promise {
   margin: 0 0 0.6rem;
@@ -2728,8 +2728,8 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   font-weight: 800;
 }
 .paywall-offer {
-  background: linear-gradient(135deg, #eff6ff 0%, #ffffff 55%, #fef9c3 100%);
-  border: 1px solid #dbeafe;
+  background: linear-gradient(135deg, rgba(127, 182, 255, 0.16) 0%, #ffffff 55%, #fef9c3 100%);
+  border: 1px solid rgba(127, 182, 255, 0.28);
   border-radius: 20px;
   padding: 1.4rem;
   box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
@@ -2744,7 +2744,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
 .paywall-offer-sub {
   margin: 0 0 0.9rem;
   font-weight: 700;
-  color: #1e3a8a;
+  color: #5aa1f2;
 }
 .paywall-offer-list {
   list-style: none;
@@ -2848,7 +2848,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   position: relative;
   background: #ffffff;
   border-radius: 28px;
-  border: 2px solid #dbeafe;
+  border: 2px solid rgba(127, 182, 255, 0.28);
   box-shadow: 0 30px 80px rgba(15, 23, 42, 0.25);
   max-width: 760px;
   width: min(92vw, 760px);
@@ -2860,8 +2860,8 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   top: 1rem;
   right: 1rem;
   border: none;
-  background: #eff6ff;
-  color: #1d4ed8;
+  background: rgba(127, 182, 255, 0.16);
+  color: #5aa1f2;
   font-weight: 800;
   border-radius: 999px;
   width: 36px;
@@ -3145,7 +3145,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   border: 0;
   height: 1px;
   width: 100%;
-  background: linear-gradient(to right, transparent, #bfdbfe, transparent);
+  background: linear-gradient(to right, transparent, #7fb6ff, transparent);
   margin: 2rem 0;
 }
 
@@ -3155,8 +3155,8 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   margin-top: 2.5rem;
   padding: 1.8rem 1.6rem;
   border-radius: var(--radius-lg);
-  border: 2px dashed #bfdbfe;
-  background: linear-gradient(135deg, #eff6ff, #e0f2fe);
+  border: 2px dashed #7fb6ff;
+  background: linear-gradient(135deg, rgba(127, 182, 255, 0.16), rgba(127, 182, 255, 0.22));
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -3374,7 +3374,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #e0f2fe;
+  background: rgba(127, 182, 255, 0.22);
   color: #0369a1;
   font-size: 0.7rem;
   font-weight: 800;
@@ -3472,7 +3472,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   border: 1px solid var(--border);
 }
 .admin-table-head {
-  background: #e0f2fe;
+  background: rgba(127, 182, 255, 0.22);
   font-weight: 700;
   color: #0369a1;
 }

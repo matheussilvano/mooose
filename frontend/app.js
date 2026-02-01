@@ -738,7 +738,7 @@ function renderHistoryCharts(items = [], avgScore = null, bestScore = null) {
         datasets: [{
           label: "Nota",
           data: values,
-          borderColor: "#2563eb",
+          borderColor: "#5aa1f2",
           backgroundColor: "rgba(37, 99, 235, 0.1)",
           tension: 0.3,
           fill: true
@@ -1217,8 +1217,8 @@ async function buildShareImage(scoreText, temaText = "") {
   const ctx = canvas.getContext("2d");
 
   const gradient = ctx.createLinearGradient(0, 0, width, height);
-  gradient.addColorStop(0, "#dbeafe");
-  gradient.addColorStop(0.5, "#eff6ff");
+  gradient.addColorStop(0, "rgba(127, 182, 255, 0.28)");
+  gradient.addColorStop(0.5, "rgba(127, 182, 255, 0.16)");
   gradient.addColorStop(1, "#fef9c3");
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, width, height);
@@ -1242,14 +1242,14 @@ async function buildShareImage(scoreText, temaText = "") {
     ctx.stroke();
   }
 
-  ctx.fillStyle = "#1d4ed8";
+  ctx.fillStyle = "#5aa1f2";
   ctx.fillRect(0, 0, width, 140);
 
   ctx.textAlign = "center";
   ctx.font = "bold 64px Montserrat, sans-serif";
   ctx.fillStyle = "#0b2f8a";
   ctx.fillText("M", width / 2 - 140, 90);
-  ctx.fillStyle = "#93c5fd";
+  ctx.fillStyle = "#7fb6ff";
   ctx.fillText("O", width / 2 - 70, 90);
   ctx.fillText("O", width / 2, 90);
   ctx.fillText("O", width / 2 + 70, 90);
@@ -1258,7 +1258,7 @@ async function buildShareImage(scoreText, temaText = "") {
 
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(90, 220, width - 180, 1200);
-  ctx.strokeStyle = "#bfdbfe";
+  ctx.strokeStyle = "#7fb6ff";
   ctx.lineWidth = 6;
   ctx.strokeRect(90, 220, width - 180, 1200);
 
@@ -1267,7 +1267,7 @@ async function buildShareImage(scoreText, temaText = "") {
   ctx.textAlign = "center";
   ctx.fillText("Minha nota na Mooose", width / 2, 360);
 
-  ctx.fillStyle = "#2563eb";
+  ctx.fillStyle = "#5aa1f2";
   ctx.font = "900 180px Montserrat, sans-serif";
   ctx.fillText(scoreText, width / 2, 610);
 
@@ -1306,7 +1306,7 @@ async function buildShareImage(scoreText, temaText = "") {
     // segue sem logo se falhar
   }
 
-  ctx.fillStyle = "#1d4ed8";
+  ctx.fillStyle = "#5aa1f2";
   ctx.font = "700 42px Montserrat, sans-serif";
   ctx.fillText("www.mooose.com.br", width / 2, 1180);
 

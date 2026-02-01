@@ -658,7 +658,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (typeof Chart === "undefined") {
         setStatus("Charts indisponíveis: erro ao carregar a biblioteca.", "error");
       } else {
-        usersChart = buildChart(document.getElementById("usersChart"), "Usuários criados", usersSeries.labels, usersSeries.values, "#2563eb");
+        usersChart = buildChart(document.getElementById("usersChart"), "Usuários criados", usersSeries.labels, usersSeries.values, "#5aa1f2");
         correctionsChart = buildChart(document.getElementById("correctionsChart"), "Correções", correctionsSeries.labels, correctionsSeries.values, "#16a34a");
         salesChart = buildChart(document.getElementById("salesChart"), "Vendas (R$)", salesSeries.labels, salesSeries.values, "#f59e0b", "currency");
         if (!usersChart) showChartEmpty("usersChart", "Sem dados de usuários no período.");
