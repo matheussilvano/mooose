@@ -382,6 +382,12 @@
             🔥 Ofensiva atual: <span data-week-streak-line>0</span> semanas
           </button>
           <div class="app-card">
+            <div id="app-evolucao-resumo" class="evolucao-resumo"></div>
+            <div style="margin-top: 1rem; height: 180px;">
+              <canvas id="app-evolucaoChart"></canvas>
+            </div>
+          </div>
+          <div class="app-card">
             <div class="app-list" id="app-history-list">
               <span class="app-empty">Sem histórico.</span>
             </div>
@@ -1086,6 +1092,21 @@
         </div>
         <button class="duo-btn btn-secondary paywall-dismiss" type="button" data-credits-close>Agora não</button>
       </div>
+    </div>
+  </div>
+
+  <div class="history-modal hidden" id="history-modal" aria-hidden="true">
+    <div class="history-modal-backdrop" data-history-close></div>
+    <div class="history-modal-card" role="dialog" aria-modal="true" aria-labelledby="history-modal-title">
+      <button type="button" class="history-modal-close" data-history-close aria-label="Fechar">✕</button>
+      <div class="history-modal-header">
+        <div>
+          <h3 id="history-modal-title">Redação</h3>
+          <p class="history-modal-sub" id="history-modal-sub">—</p>
+        </div>
+        <div class="history-modal-score" id="history-modal-score">—</div>
+      </div>
+      <div class="history-modal-body" id="history-modal-body"></div>
     </div>
   </div>
 

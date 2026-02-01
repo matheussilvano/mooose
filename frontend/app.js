@@ -263,6 +263,7 @@ let renderAppView = () => {};
 let currentAppView = "home";
 let loadHistoricoFn = null;
 let chartInstance = null;
+let appChartInstance = null;
 let currentCredits = null;
 let freeRemaining = null;
 let pendingNextRoute = "";
@@ -278,6 +279,7 @@ let paywallShownInSession = false;
 let currentReferralCode = "";
 let currentReferralLink = "";
 let toastTimer = null;
+let historyCache = new Map();
 const WEEK_THEME_TEXT = "Os impactos do uso excessivo das redes sociais na saúde mental dos jovens no Brasil";
 
 function shouldUseAppShell() {
@@ -701,6 +703,65 @@ function updateSummaryScores(avg, best) {
   if (bestEl) bestEl.textContent = bestValue ? bestValue.toFixed(0) : "0";
 }
 
+function renderHistoryCharts(items = [], avgScore = null, bestScore = null) {
+  const resumo = document.getElementById("evolucao-resumo");
+  const resumoApp = document.getElementById("app-evolucao-resumo");
+  const avgValue = normalizeScore(avgScore) ?? 0;
+  const bestValue = normalizeScore(bestScore) ?? 0;
+  const summaryHtml = `
+    <div class="evolucao-metric">
+       <small>MÉDIA</small>
+       <div class="evolucao-value">${avgValue ? avgValue.toFixed(0) : "0"}</div>
+    </div>
+    <div class="evolucao-divider"></div>
+    <div class="evolucao-metric">
+       <small>MELHOR</small>
+       <div class="evolucao-value best">${bestValue ? bestValue.toFixed(0) : "0"}</div>
+    </div>
+  `;
+  if (resumo) resumo.innerHTML = summaryHtml;
+  if (resumoApp) resumoApp.innerHTML = summaryHtml;
+
+  const buildChart = (canvas, instanceRef, labels, values) => {
+    if (!canvas || typeof Chart === "undefined" || !labels.length) return instanceRef;
+    if (instanceRef) {
+      instanceRef.data.labels = labels;
+      instanceRef.data.datasets[0].data = values;
+      instanceRef.update();
+      return instanceRef;
+    }
+    return new Chart(canvas.getContext("2d"), {
+      type: "line",
+      data: {
+        labels,
+        datasets: [{
+          label: "Nota",
+          data: values,
+          borderColor: "#2563eb",
+          backgroundColor: "rgba(37, 99, 235, 0.1)",
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: { y: { min: 0, max: 1000 } }
+      }
+    });
+  };
+
+  const sorted = items
+    .filter(x => typeof x.nota_final === "number")
+    .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+  const labels = sorted.map(x => new Date(x.created_at).toLocaleDateString(undefined, { day: "2-digit", month: "2-digit" }));
+  const values = sorted.map(x => x.nota_final);
+
+  chartInstance = buildChart(document.getElementById("evolucaoChart"), chartInstance, labels, values);
+  appChartInstance = buildChart(document.getElementById("app-evolucaoChart"), appChartInstance, labels, values);
+}
+
 function renderAppHistory(items = []) {
   const list = document.getElementById("app-history-list");
   const latest = document.getElementById("app-latest-list");
@@ -710,7 +771,7 @@ function renderAppHistory(items = []) {
     const tema = item.tema || "Sem tema";
     const score = Number(item.nota_final);
     const scoreText = Number.isFinite(score) ? Math.round(score).toString() : "—";
-    return `<div class="app-list-item"><span>${tema}</span><strong>${scoreText}</strong></div>`;
+    return `<div class="app-list-item" role="button" tabindex="0" data-essay-id="${item.id}"><span>${tema}</span><strong>${scoreText}</strong></div>`;
   };
   if (list) {
     if (!ordered.length) {
@@ -726,6 +787,84 @@ function renderAppHistory(items = []) {
       latest.innerHTML = ordered.slice(0, 3).map(toItem).join("");
     }
   }
+}
+
+function extractHistoryEssayText(item) {
+  return (
+    item?.texto ||
+    item?.texto_ocr ||
+    item?.texto_original ||
+    item?.redacao ||
+    item?.conteudo ||
+    item?.transcricao ||
+    ""
+  );
+}
+
+function extractHistoryResult(item) {
+  if (item?.resultado) return item.resultado;
+  const hasCompetencias = Array.isArray(item?.competencias);
+  const hasAnalise = Boolean(item?.analise_geral || item?.feedback_geral || item?.feedback);
+  if (hasCompetencias || hasAnalise) return item;
+  return null;
+}
+
+function renderHistoryModalContent(item) {
+  const body = document.getElementById("history-modal-body");
+  if (!body) return;
+  const essayText = extractHistoryEssayText(item);
+  const resultado = extractHistoryResult(item);
+  const analysis = resultado?.analise_geral || resultado?.feedback_geral || resultado?.feedback || "";
+  const compBlocks = (resultado?.competencias || []).map(c => {
+    const feedback = c.feedback || "";
+    if (!feedback) return "";
+    return `
+      <div class="app-feedback-card">
+        <div class="app-feedback-head">Competência ${c.id} • ${c.nota} / 200</div>
+        <div class="app-feedback-text">${marked.parse(feedback)}</div>
+      </div>
+    `;
+  }).join("");
+  const hasCompFeedback = (resultado?.competencias || []).some(c => Boolean(c.feedback));
+  body.innerHTML = `
+    <div class="history-section">
+      <h4>Texto da redação</h4>
+      ${essayText ? `<div class="history-essay">${essayText}</div>` : `<div class="history-empty">Texto completo não disponível neste histórico.</div>`}
+    </div>
+    <div class="history-section history-feedback">
+      <h4>Feedback da correção</h4>
+      ${analysis || hasCompFeedback
+        ? `
+          ${analysis ? `<div class="app-feedback-text">${marked.parse(analysis)}</div>` : ""}
+          ${compBlocks}
+        `
+        : `<div class="history-empty">Feedback completo não disponível neste histórico.</div>`}
+    </div>
+  `;
+}
+
+function openHistoryModal(item) {
+  const modal = document.getElementById("history-modal");
+  if (!modal || !item) return;
+  const titleEl = document.getElementById("history-modal-title");
+  const subEl = document.getElementById("history-modal-sub");
+  const scoreEl = document.getElementById("history-modal-score");
+  const title = item.tema || "Redação";
+  const date = item.created_at ? new Date(item.created_at).toLocaleDateString() : "—";
+  const score = normalizeScore(item.nota_final);
+  if (titleEl) titleEl.textContent = title;
+  if (subEl) subEl.textContent = `Enviada em ${date}`;
+  if (scoreEl) scoreEl.textContent = score !== null ? Math.round(score).toString() : "—";
+  renderHistoryModalContent(item);
+  modal.classList.remove("hidden");
+  modal.setAttribute("aria-hidden", "false");
+}
+
+function closeHistoryModal() {
+  const modal = document.getElementById("history-modal");
+  if (!modal) return;
+  modal.classList.add("hidden");
+  modal.setAttribute("aria-hidden", "true");
 }
 
 function updateAppResult(res) {
@@ -2063,12 +2202,43 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  const openHistoryById = (essayId) => {
+    if (!essayId) return;
+    const item = historyCache.get(String(essayId));
+    if (item) openHistoryModal(item);
+  };
+
+  const handleHistoryActivate = (event) => {
+    if (event.target.closest(".review-widget")) return;
+    const itemEl = event.target.closest("[data-essay-id]");
+    if (!itemEl) return;
+    openHistoryById(itemEl.dataset.essayId);
+  };
+
+  const handleHistoryKeydown = (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    const itemEl = event.target.closest("[data-essay-id]");
+    if (!itemEl) return;
+    event.preventDefault();
+    openHistoryById(itemEl.dataset.essayId);
+  };
+
+  document.getElementById("historico-list")?.addEventListener("click", handleHistoryActivate);
+  document.getElementById("historico-list")?.addEventListener("keydown", handleHistoryKeydown);
+  document.getElementById("app-history-list")?.addEventListener("click", handleHistoryActivate);
+  document.getElementById("app-history-list")?.addEventListener("keydown", handleHistoryKeydown);
+
+  document.querySelectorAll("[data-history-close]").forEach(btn => {
+    btn.addEventListener("click", closeHistoryModal);
+  });
+
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") hideCreditsModal();
     if (e.key === "Escape") hideReviewPopup();
     if (e.key === "Escape") hideCreditsSheet();
     if (e.key === "Escape") hideOffensivaModal();
     if (e.key === "Escape") hideAuthGate();
+    if (e.key === "Escape") closeHistoryModal();
   });
 
   document.addEventListener("click", (e) => {
@@ -2414,6 +2584,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if(!res.ok) return;
       const data = await res.json();
       const items = (data.historico || []);
+      historyCache = new Map(items.map(item => [String(item.id), item]));
       
       // Update Resumo
       const stats = data.stats || {};
@@ -2421,25 +2592,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const avgScore = normalizeScore(stats.media_nota_final) ?? (scoreValues.length ? scoreValues.reduce((sum, v) => sum + v, 0) / scoreValues.length : null);
       const bestScore = normalizeScore(stats.melhor_nota) ?? (scoreValues.length ? Math.max(...scoreValues) : null);
 
-      const resumo = document.getElementById("evolucao-resumo");
-      if(resumo) {
-        resumo.innerHTML = `
-          <div class="evolucao-metric">
-             <small>MÉDIA</small>
-             <div class="evolucao-value">${avgScore !== null ? avgScore.toFixed(0) : "0"}</div>
-          </div>
-          <div class="evolucao-divider"></div>
-          <div class="evolucao-metric">
-             <small>MELHOR</small>
-             <div class="evolucao-value best">${bestScore !== null ? bestScore.toFixed(0) : "0"}</div>
-          </div>
-        `;
-      }
-
       updateSummaryScores(avgScore, bestScore);
       setOffensivaProgressStats(items.length, bestScore, avgScore);
       const progressBase = avgScore ?? normalizeScore(lastResult?.nota_final) ?? 0;
       setProgressTo800(progressBase);
+      renderHistoryCharts(items, avgScore, bestScore);
       
       const list = document.getElementById("historico-list");
       if(list) {
@@ -2448,7 +2605,7 @@ document.addEventListener("DOMContentLoaded", () => {
           list.innerHTML = items.map(i => {
             const review = i.review || null;
             return `
-              <div class="historico-item" data-essay-id="${i.id}">
+              <div class="historico-item" role="button" tabindex="0" data-essay-id="${i.id}">
                 <div class="historico-main">
                   <div>
                     <strong style="display:block; font-size:0.9rem; color:#334155;">${i.tema || "Sem tema"}</strong>
@@ -2486,41 +2643,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       setPaywallCorrections(items.length);
       updateWeeklyStreak(items);
-      
-      // Update Chart
-      const canvas = document.getElementById("evolucaoChart");
-      if(canvas && typeof Chart !== "undefined" && items.length > 0) {
-        const sorted = items.filter(x => typeof x.nota_final==='number').sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
-        const labels = sorted.map(x => new Date(x.created_at).toLocaleDateString(undefined, {day:'2-digit',month:'2-digit'}));
-        const values = sorted.map(x => x.nota_final);
-
-        if(chartInstance) {
-          chartInstance.data.labels = labels;
-          chartInstance.data.datasets[0].data = values;
-          chartInstance.update();
-        } else {
-          chartInstance = new Chart(canvas.getContext("2d"), {
-             type: 'line',
-             data: {
-               labels,
-               datasets: [{
-                 label: 'Nota',
-                 data: values,
-                 borderColor: '#2563eb',
-                 backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                 tension: 0.3,
-                 fill: true
-               }]
-             },
-             options: {
-               responsive: true,
-               maintainAspectRatio: false,
-               plugins: { legend: {display:false} },
-               scales: { y: { min: 0, max: 1000 } }
-             }
-          });
-        }
-      }
 
     } catch(e){console.error(e);}
   };
