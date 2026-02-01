@@ -482,13 +482,20 @@ body {
 .plan-card {
   align-items: flex-start;
 }
+.plan-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+}
 .plan-tag {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
   padding: 0.3rem 0.75rem;
   border-radius: 999px;
-  background: #f1f5f9;
+  background: rgba(127, 182, 255, 0.16);
   color: #0f172a;
   font-weight: 800;
   font-size: 0.75rem;
@@ -509,11 +516,32 @@ body {
   font-weight: 800;
   font-size: 0.75rem;
 }
+.plan-economy {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #0f172a;
+  background: rgba(127, 182, 255, 0.22);
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  white-space: nowrap;
+}
 .plan-sub {
   margin: 0;
   font-size: 0.9rem;
   color: var(--text-muted);
   font-weight: 600;
+}
+.plan-indicado {
+  font-size: 0.85rem;
+  color: #334155;
+  font-weight: 600;
+  margin-top: 0.4rem;
+}
+.plan-reco-note {
+  font-size: 0.85rem;
+  color: #475569;
+  font-weight: 600;
+  margin: 0.35rem 0 0;
 }
 .plan-tip {
   margin: 0;
@@ -530,38 +558,8 @@ body {
   background: #f8fbff;
 }
 .plan-card.highlight-alt {
-  border: 2px solid #fecaca;
-  background: #fff7f7;
-}
-.plan-urgency {
-  text-align: center;
-  border: 1px dashed #fde68a;
-  background: #fffbeb;
-  color: #92400e;
-}
-.plan-urgency p {
-  margin: 0;
-  color: #92400e;
-  font-weight: 600;
-}
-.plan-trust {
-  text-align: center;
-  color: #334155;
-  font-weight: 600;
-  font-size: 0.85rem;
-  display: grid;
-  gap: 0.35rem;
-}
-.plan-proof {
-  text-align: center;
-  font-weight: 700;
-  color: #0f172a;
-}
-.plan-cta {
-  text-align: center;
-}
-.plan-cta p {
-  margin: 0;
+  border: 2px solid #7fb6ff;
+  background: #f5faff;
 }
 @media (min-width: 900px) {
   .plan-grid {
@@ -647,6 +645,40 @@ body {
 .plan-faq-item p {
   margin: 0.3rem 0 0;
   color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.plan-accordion {
+  display: grid;
+  gap: 0.6rem;
+}
+.plan-accordion-item {
+  border: 1px solid #7fb6ff;
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+  background: #ffffff;
+}
+.plan-accordion-item summary {
+  font-weight: 800;
+  color: #0f172a;
+  cursor: pointer;
+  list-style: none;
+}
+.plan-accordion-item summary::-webkit-details-marker {
+  display: none;
+}
+.plan-accordion-item summary::after {
+  content: "+";
+  float: right;
+  font-weight: 900;
+  color: #5aa1f2;
+}
+.plan-accordion-item[open] summary::after {
+  content: "–";
+}
+.plan-accordion-item p {
+  margin: 0.5rem 0 0;
+  color: #475569;
   font-size: 0.9rem;
   line-height: 1.5;
 }
