@@ -2375,7 +2375,7 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   padding: 1.6rem;
   box-shadow: 0 20px 60px rgba(15, 23, 42, 0.25);
   z-index: 1;
-  scroll-padding-top: 90px;
+  scroll-padding-top: 140px;
 }
 .history-modal-close {
   border: 1px solid var(--border);
@@ -2385,20 +2385,36 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   height: 36px;
   cursor: pointer;
   font-weight: 800;
+  flex-shrink: 0;
 }
 .history-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  column-gap: 0.9rem;
+  row-gap: 0.35rem;
   margin-bottom: 1rem;
   position: sticky;
   top: 0;
   background: #ffffff;
-  padding-bottom: 0.8rem;
+  padding-bottom: 0.9rem;
   z-index: 2;
-  padding-right: 3rem;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+  padding-right: 0.2rem;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+}
+.history-modal-header > div:first-child {
+  grid-column: 1;
+}
+.history-modal-score {
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: start;
+  margin-top: 0.15rem;
+}
+.history-modal-close {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: start;
 }
 .history-modal-sub {
   color: #64748b;
@@ -2409,14 +2425,13 @@ main { flex: 1; max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem; width: 
   color: #5aa1f2;
   font-weight: 800;
   border-radius: 999px;
-  padding: 0.4rem 0.9rem;
+  padding: 0.35rem 0.85rem;
   font-size: 0.95rem;
-  margin-left: auto;
 }
 .history-modal-body {
   display: grid;
   gap: 1.25rem;
-  padding-top: 0.5rem;
+  padding-top: 1rem;
 }
 .history-section {
   background: #f8fafc;
