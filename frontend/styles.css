@@ -525,6 +525,28 @@ body {
   padding: 0.3rem 0.7rem;
   white-space: nowrap;
 }
+.plan-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.6rem;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #334155;
+}
+.plan-meta-pill {
+  background: rgba(127, 182, 255, 0.22);
+  color: #5aa1f2;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-weight: 800;
+  font-size: 0.78rem;
+}
+.plan-meta-ghost {
+  color: #475569;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
 .plan-sub {
   margin: 0;
   font-size: 0.9rem;
@@ -681,6 +703,42 @@ body {
   color: #475569;
   font-size: 0.9rem;
   line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .plan-grid {
+    gap: 0.6rem;
+  }
+  .plan-card {
+    padding: 0.85rem;
+  }
+  .plan-card .duo-btn {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.85rem;
+  }
+  .plan-card h3 {
+    font-size: 0.95rem;
+  }
+  .plan-price {
+    font-size: 1.1rem;
+  }
+  .plan-sub {
+    font-size: 0.8rem;
+  }
+  .plan-indicado,
+  .plan-reco-note {
+    display: none;
+  }
+  .plan-meta {
+    font-size: 0.78rem;
+  }
+  .plan-meta-pill,
+  .plan-meta-ghost {
+    font-size: 0.72rem;
+  }
+  .plan-accordion-item {
+    padding: 0.7rem 0.85rem;
+  }
 }
 .app-tag {
   font-size: 0.7rem;
