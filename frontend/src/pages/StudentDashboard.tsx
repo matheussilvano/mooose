@@ -21,6 +21,7 @@ import { useLoadingOverlay } from "../features/ui/useLoadingOverlay";
 import { ensureAnonSession } from "../lib/anon";
 import { parseAuthParams } from "../lib/authReturn";
 import { useToast } from "../components/ui/Toast";
+import { getToken } from "../lib/auth";
 
 export default function StudentDashboard() {
   const location = useLocation();
@@ -33,7 +34,7 @@ export default function StudentDashboard() {
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
   const [reviewPopupOpen, setReviewPopupOpen] = useState(false);
 
-  const { loading, error, result, history, stats, sendText, sendFile, saveReview, credits, freeRemaining, requiresAuth, requiresPayment, showAuthNudge, loadProfile, lastEssayId, lastReview } = useEditor();
+  const { loading, error, result, history, stats, sendText, sendFile, saveReview, credits, freeRemaining, requiresAuth, requiresPayment, showAuthNudge, loadProfile, refreshHistory, lastEssayId, lastReview } = useEditor();
   const { user, loadMe, logout } = useAuth();
   const loadingOverlay = useLoadingOverlay();
 
@@ -73,6 +74,13 @@ export default function StudentDashboard() {
   useEffect(() => {
     if (requiresPayment) window.location.href = "/paywall";
   }, [requiresPayment]);
+
+  useEffect(() => {
+    if (getToken()) {
+      loadProfile();
+      refreshHistory();
+    }
+  }, [loadProfile, refreshHistory, user]);
 
   useEffect(() => {
     if (!lastEssayId) return;

@@ -93,7 +93,11 @@ export default function PaywallPage() {
   }, [location.hash, location.pathname, location.search, navigate]);
 
   const handleClose = () => {
-    navigate("/", { replace: true });
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate("/editor", { replace: true });
+    }
   };
 
   const handleCheckout = async (plan: string) => {

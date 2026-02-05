@@ -11,14 +11,15 @@ export function useAuth() {
   const [user, setUser] = useState<UserInfo | null>(null);
 
   const loadMe = useCallback(async () => {
-    if (!getToken()) {
-      setUser(null);
-      return;
-    }
-    const { res, data } = await fetchMe();
+    const hasToken = Boolean(getToken());
+    const { res, data } = await fetchMe({ allowCookie: !hasToken });
     if (!res.ok) {
       setUser(null);
       return;
+    }
+    if (!hasToken) {
+      const newToken = data?.access_token || data?.token || data?.accessToken;
+      if (newToken) setToken(newToken);
     }
     setUser(data?.user || data || null);
   }, []);

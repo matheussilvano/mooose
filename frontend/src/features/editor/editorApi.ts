@@ -37,8 +37,12 @@ export async function submitReview(essayId: number, stars: number, comment?: str
   return { res, data };
 }
 
-export async function fetchMe() {
-  const res = await fetch(`${API_BASE}/auth/me`, { headers: getAuthHeaders() });
+export async function fetchMe(options: { allowCookie?: boolean } = {}) {
+  const { allowCookie = false } = options;
+  const res = await fetch(`${API_BASE}/auth/me`, {
+    headers: getAuthHeaders(),
+    credentials: allowCookie ? "include" : "same-origin"
+  });
   const data = await res.json().catch(() => ({}));
   return { res, data };
 }
