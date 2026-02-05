@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import LandingPage from "../pages/LandingPage";
 import EditorPage from "../pages/EditorPage";
 import PaywallPage from "../pages/PaywallPage";
+import PaywallSuccessPage from "../pages/PaywallSuccessPage";
 import ConfirmPage from "../pages/ConfirmPage";
 import LandingShell from "../pages/LandingShell";
 import SobrePage from "../pages/SobrePage";
@@ -25,6 +26,8 @@ export default function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/editor" element={<EditorPage />} />
           <Route path="/paywall" element={<PaywallPage />} />
+          <Route path="/paywall/sucesso" element={<PaywallSuccessPage />} />
+          <Route path="/paywall/sucesso.html" element={<PaywallSuccessPage />} />
           <Route path="/auth/confirmed" element={<ConfirmPage />} />
         </Route>
 
