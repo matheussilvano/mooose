@@ -26,10 +26,11 @@ export default function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/editor" element={<EditorPage />} />
           <Route path="/paywall" element={<PaywallPage />} />
-          <Route path="/paywall/sucesso" element={<PaywallSuccessPage />} />
-          <Route path="/paywall/sucesso.html" element={<PaywallSuccessPage />} />
           <Route path="/auth/confirmed" element={<ConfirmPage />} />
         </Route>
+
+        <Route path="/paywall/sucesso" element={<PaywallSuccessPage />} />
+        <Route path="/paywall/sucesso.html" element={<PaywallSuccessPage />} />
 
         <Route path="/sobre" element={<SobrePage />} />
         <Route path="/sobre.html" element={<SobrePage />} />
