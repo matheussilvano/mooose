@@ -57,10 +57,14 @@ export default function StudentDashboard() {
     const wantsSignup = params.get("signup") === "1";
     const wantsLogin = params.get("login") === "1";
     if (wantsSignup || wantsLogin) {
+      if (getToken()) {
+        navigate("/editor", { replace: true });
+        return;
+      }
       setAuthMode(wantsSignup ? "register" : "login");
       setAuthOpen(true);
     }
-  }, [location.search]);
+  }, [location.search, navigate]);
 
   useEffect(() => {
     if (loading) loadingOverlay.show();
@@ -280,6 +284,7 @@ export default function StudentDashboard() {
         onSuccess={async () => {
           await loadMe();
           await loadProfile();
+          navigate("/editor", { replace: true });
         }}
       />
 
