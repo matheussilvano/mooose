@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { parseHtmlDocument, ParsedHtml } from "../lib/blog";
-import { initApp } from "../legacy/app";
 
 const fallbackMeta: ParsedHtml = {
   title: "Mooose · Blog",
@@ -54,11 +53,6 @@ export default function BlogPostPage() {
     };
   }, [slug]);
 
-  useEffect(() => {
-    if (!isLoading && !notFound) {
-      initApp();
-    }
-  }, [isLoading, notFound, data.content]);
 
   return (
     <div className="blog-shell">

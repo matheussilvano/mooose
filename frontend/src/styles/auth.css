@@ -142,6 +142,21 @@
   color: var(--danger);
 }
 
+.logo-word {
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  font-size: 1.1rem;
+}
+
+.logo-m,
+.logo-rest {
+  color: var(--brand);
+}
+
+.logo-o {
+  color: var(--brand-dark);
+}
+
 .success-modal-overlay {
   position: fixed;
   inset: 0;

@@ -5,14 +5,14 @@
   --text: #0f172a;
   --text-muted: #64748b;
 
-  /* Azul Principal */
-  --brand: #5aa1f2;       
+  /* Azul petróleo (principal) */
+  --brand: #1d4ed8;
   --brand-light: #7fb6ff;
-  --brand-dark: #5aa1f2;  /* Sombra 3D */
+  --brand-dark: #1e3a8a;
   
-  /* Cores de Apoio */
-  --accent: #facc15;      /* Amarelo */
-  --accent-dark: #eab308;
+  /* Laranja pastel (apoio) */
+  --accent: #f3a261;
+  --accent-dark: #d9824f;
   
   --success: #22c55e;
   --success-dark: #16a34a;

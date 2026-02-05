@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { parseHtmlDocument, ParsedHtml } from "../lib/blog";
-import { initApp } from "../legacy/app";
 
 const fallbackMeta: ParsedHtml = {
   title: "Mooose · Blog",
@@ -42,11 +41,6 @@ export default function BlogIndexPage() {
     };
   }, []);
 
-  useEffect(() => {
-    if (!isLoading) {
-      initApp();
-    }
-  }, [isLoading, data.content]);
 
   return (
     <div className="blog-shell">
