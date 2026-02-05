@@ -1,0 +1,9 @@
+export const PAYWALL_STORAGE_KEY = "mooose_paywall_after_free_shown";
+export const REFERRAL_STORAGE_KEY = "mooose_referral_code";
+export const DEVICE_FP_KEY = "mooose_device_fingerprint";
+export const ANON_ID_KEY = "mooose_anon_id";
+export const AUTH_RETURN_KEY = "mooose_auth_return";
+export const DRAFT_TEXT_KEY = "mooose_draft_text";
+export const DRAFT_TEMA_KEY = "mooose_draft_tema";
+export const DRAFT_TEMA_FILE_KEY = "mooose_draft_tema_file";
+export const FREE_REMAINING_KEY = "mooose_free_remaining";

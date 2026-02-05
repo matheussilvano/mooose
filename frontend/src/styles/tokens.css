@@ -1,0 +1,31 @@
+:root {
+  /* Paleta Mooose Original + Lúdica */
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --text: #0f172a;
+  --text-muted: #64748b;
+
+  /* Azul Principal */
+  --brand: #5aa1f2;       
+  --brand-light: #7fb6ff;
+  --brand-dark: #5aa1f2;  /* Sombra 3D */
+  
+  /* Cores de Apoio */
+  --accent: #facc15;      /* Amarelo */
+  --accent-dark: #eab308;
+  
+  --success: #22c55e;
+  --success-dark: #16a34a;
+
+  --danger: #ef4444;
+  --danger-dark: #dc2626;
+
+  --border: #e2e8f0;
+  --radius-lg: 24px;      /* Arredondamento maior */
+  --radius-xl: 32px;
+  
+  --shadow-cartoon: 0 5px 0 rgba(148, 163, 184, 0.4); /* A sombra "sólida" */
+
+  --app-header-height: 64px;
+  --app-bottom-height: 74px;
+}

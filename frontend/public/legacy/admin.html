@@ -1,0 +1,147 @@
+<header class="topbar">
+    <a href="index.html" class="logo-row">
+      <img src="/logo.png" alt="Mooose" class="mooose-logo" />
+      <span class="logo-word"><span class="logo-m">M</span><span class="logo-o logo-o-1">O</span><span class="logo-o logo-o-2">O</span><span class="logo-o logo-o-3">O</span><span class="logo-rest">S</span><span class="logo-rest">E</span></span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-item">Voltar ao site</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="admin-login" class="admin-section visible">
+      <div class="card admin-card">
+        <h1 class="admin-title">Painel Admin</h1>
+        <p class="card-sub">Entre com seu e-mail e senha. O acesso é liberado apenas para admins.</p>
+        <form id="admin-login-form">
+          <div class="input-group">
+            <label>E-mail</label>
+            <input type="email" name="email" placeholder="admin@mooose.com.br" required />
+          </div>
+          <div class="input-group">
+            <label>Senha</label>
+            <input type="password" name="password" placeholder="Sua senha" required />
+          </div>
+          <button type="submit" class="duo-btn btn-primary full">Entrar</button>
+          <p class="form-message" id="admin-login-msg"></p>
+        </form>
+      </div>
+    </section>
+
+    <section id="admin-dashboard" class="admin-section">
+      <div class="admin-toolbar">
+        <div>
+          <h2>Resumo de métricas</h2>
+          <p class="admin-range" id="admin-range-label"></p>
+        </div>
+        <button id="admin-logout" class="duo-btn btn-secondary" style="width:auto;">Sair</button>
+      </div>
+
+      <div class="card admin-card">
+        <div class="admin-filters">
+          <div class="input-group">
+            <label>Início</label>
+            <input type="datetime-local" id="admin-start" />
+          </div>
+          <div class="input-group">
+            <label>Fim</label>
+            <input type="datetime-local" id="admin-end" />
+          </div>
+          <div class="input-group">
+            <label>Agrupar por</label>
+            <select id="admin-group-by" class="admin-select">
+              <option value="day">Dia</option>
+              <option value="week">Semana</option>
+              <option value="month">Mês</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Timezone (opcional)</label>
+            <input type="text" id="admin-timezone" placeholder="America/Sao_Paulo" />
+          </div>
+        </div>
+        <div class="admin-quick-filters">
+          <button type="button" class="duo-btn btn-secondary admin-filter-btn" id="admin-filter-today">Hoje</button>
+          <button type="button" class="duo-btn btn-secondary admin-filter-btn" id="admin-filter-week">Essa semana</button>
+          <button type="button" class="duo-btn btn-secondary admin-filter-btn" id="admin-filter-month">Esse mês</button>
+        </div>
+        <div class="admin-actions">
+          <button id="admin-refresh" class="duo-btn btn-success" type="button">Atualizar métricas</button>
+          <p class="form-message" id="admin-status"></p>
+        </div>
+      </div>
+
+      <div class="admin-section-title">
+        <h3>Totais desde o início</h3>
+        <p class="card-sub admin-card-sub">Visão absoluta das métricas acumuladas.</p>
+      </div>
+      <div id="absolute-cards" class="admin-card-grid"></div>
+
+      <div class="admin-section-title">
+        <h3>Totais do período</h3>
+        <p class="card-sub admin-card-sub">Métricas filtradas pelo intervalo selecionado.</p>
+      </div>
+      <div id="overview-cards" class="admin-card-grid"></div>
+
+      <div class="admin-grid-2">
+        <div class="card admin-card">
+          <div class="admin-chart-title">
+            <h3>Usuários criados</h3>
+            <span class="metric-info" data-tooltip="Total de novos cadastros ao longo do período.">ⓘ</span>
+          </div>
+          <p class="card-sub admin-card-sub">Evolução de novos cadastros no período.</p>
+          <div class="admin-chart">
+            <canvas id="usersChart"></canvas>
+          </div>
+        </div>
+        <div class="card admin-card">
+          <div class="admin-chart-title">
+            <h3>Correções realizadas</h3>
+            <span class="metric-info" data-tooltip="Quantidade de correções no período, agrupada por dia, semana ou mês.">ⓘ</span>
+          </div>
+          <p class="card-sub admin-card-sub">Total de correções feitas por dia/semana/mês.</p>
+          <div class="admin-chart">
+            <canvas id="correctionsChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-grid-2">
+        <div class="card admin-card">
+          <div class="admin-chart-title">
+            <h3>Vendas</h3>
+            <span class="metric-info" data-tooltip="Receita estimada com base em pagamentos aprovados.">ⓘ</span>
+          </div>
+          <p class="card-sub admin-card-sub">Receita estimada aprovada no período (R$).</p>
+          <div class="admin-chart">
+            <canvas id="salesChart"></canvas>
+          </div>
+        </div>
+        <div class="card admin-card">
+          <div class="admin-chart-title">
+            <h3>Avaliações</h3>
+            <span class="metric-info" data-tooltip="Média das avaliações e distribuição por estrelas no período.">ⓘ</span>
+          </div>
+          <p class="card-sub admin-card-sub">Resumo das avaliações das correções.</p>
+          <div id="reviews-summary" class="reviews-summary"></div>
+          <div class="admin-chart">
+            <canvas id="reviewsChart"></canvas>
+          </div>
+          <div id="reviews-distribution" class="reviews-distribution"></div>
+        </div>
+      </div>
+
+      <div class="admin-grid-2">
+        <div class="card admin-card">
+          <h3>Top 10 · Correções por usuário</h3>
+          <p class="card-sub admin-card-sub">Quem mais corrigiu no período.</p>
+          <div class="admin-table" id="corrections-by-user"></div>
+        </div>
+        <div class="card admin-card">
+          <h3>Comentários recentes</h3>
+          <p class="card-sub admin-card-sub">O que os alunos estão dizendo.</p>
+          <div id="reviews-comments" class="reviews-comments"></div>
+        </div>
+      </div>
+    </section>
+  </main>
