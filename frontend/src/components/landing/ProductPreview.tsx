@@ -24,83 +24,48 @@ export default function ProductPreview() {
           <motion.div
             animate={reduceMotion ? undefined : { y: [0, -6, 0] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="landing-preview-mock"
+            className="landing-preview-result"
           >
-            <div className="mock-sidebar">
-              <div className="mock-logo">M</div>
-              <div className="mock-dot" />
-              <div className="mock-dot" />
-              <div className="mock-dot" />
+            <div className="mock-result-header">
+              <div>
+                <p className="mock-label">Resultado da redação</p>
+                <h3>Desafios para a valorização de comunidades tradicionais</h3>
+                <p className="mock-meta">Hoje · Texto digitado</p>
+              </div>
+              <div className="mock-score-pill">
+                <span>860</span>
+                <small>Excelente</small>
+              </div>
             </div>
-            <div className="mock-main">
-              <div className="mock-topbar">
-                <div className="mock-search" />
-                <div className="mock-user" />
-              </div>
-              <div className="mock-score-card">
-                <div>
-                  <p className="mock-label">Nota final</p>
-                  <div className="mock-score">860</div>
-                </div>
-                <div className="mock-score-chip">+120 pts</div>
-              </div>
-              <div className="mock-competencias">
-                <div className="mock-competencia">
+
+            <div className="mock-competencias">
+              {[
+                { label: "C1", score: "180/200", width: "90%" },
+                { label: "C2", score: "160/200", width: "80%" },
+                { label: "C3", score: "170/200", width: "85%" },
+                { label: "C4", score: "170/200", width: "85%" },
+                { label: "C5", score: "180/200", width: "90%" }
+              ].map((item) => (
+                <div className="mock-competencia" key={item.label}>
                   <div className="mock-competencia-head">
-                    <span>Competência 1</span>
-                    <span>180/200</span>
+                    <span>{item.label}</span>
+                    <span>{item.score}</span>
                   </div>
                   <div className="mock-progress">
-                    <span style={{ width: "90%" }} />
+                    <span style={{ width: item.width }} />
                   </div>
                 </div>
-                <div className="mock-competencia">
-                  <div className="mock-competencia-head">
-                    <span>Competência 2</span>
-                    <span>160/200</span>
-                  </div>
-                  <div className="mock-progress">
-                    <span style={{ width: "80%" }} />
-                  </div>
-                </div>
-                <div className="mock-competencia">
-                  <div className="mock-competencia-head">
-                    <span>Competência 3</span>
-                    <span>170/200</span>
-                  </div>
-                  <div className="mock-progress">
-                    <span style={{ width: "85%" }} />
-                  </div>
-                </div>
+              ))}
+            </div>
+
+            <div className="mock-feedback">
+              <div className="mock-feedback-card">
+                <strong>Pontos fortes</strong>
+                <p>Argumentação clara e repertório bem aplicado.</p>
               </div>
-              <div className="mock-cards">
-                <div className="mock-card">
-                  <div className="mock-card-title" />
-                  <div className="mock-card-line" />
-                  <div className="mock-card-line short" />
-                </div>
-                <div className="mock-card">
-                  <div className="mock-card-title" />
-                  <div className="mock-card-line" />
-                  <div className="mock-card-line short" />
-                </div>
-              </div>
-              <div className="mock-chart">
-                <span />
-                <span />
-                <span />
-                <span />
-                <span />
-              </div>
-              <div className="mock-list">
-                <div className="mock-list-row">
-                  <div className="mock-pill" />
-                  <div className="mock-line" />
-                </div>
-                <div className="mock-list-row">
-                  <div className="mock-pill" />
-                  <div className="mock-line" />
-                </div>
+              <div className="mock-feedback-card">
+                <strong>Melhorias</strong>
+                <p>Reforce a proposta de intervenção com detalhamento.</p>
               </div>
             </div>
           </motion.div>

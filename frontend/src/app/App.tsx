@@ -13,6 +13,8 @@ import VerifyEmailPage from "../pages/VerifyEmailPage";
 import AdminPage from "../pages/AdminPage";
 import BlogIndexPage from "../pages/BlogIndexPage";
 import BlogPostPage from "../pages/BlogPostPage";
+import CorrectionsHistoryPage from "../pages/CorrectionsHistoryPage";
+import CorrectionDetailsPage from "../pages/CorrectionDetailsPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import ScrollToTop from "../components/ScrollToTop";
 
@@ -49,6 +51,8 @@ export default function App() {
         <Route path="/blog" element={<BlogIndexPage />} />
         <Route path="/blog/" element={<Navigate to="/blog" replace />} />
         <Route path="/blog/:slug" element={<BlogPostPage />} />
+        <Route path="/historico" element={<CorrectionsHistoryPage />} />
+        <Route path="/historico/:id" element={<CorrectionDetailsPage />} />
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

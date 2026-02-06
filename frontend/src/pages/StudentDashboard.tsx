@@ -22,6 +22,7 @@ import { ensureAnonSession } from "../lib/anon";
 import { parseAuthParams } from "../lib/authReturn";
 import { useToast } from "../components/ui/Toast";
 import { getToken } from "../lib/auth";
+import { sortHistorico } from "../services/enemHistorico";
 
 export default function StudentDashboard() {
   const location = useLocation();
@@ -34,7 +35,7 @@ export default function StudentDashboard() {
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
   const [reviewPopupOpen, setReviewPopupOpen] = useState(false);
 
-  const { loading, error, result, history, stats, sendText, sendFile, saveReview, credits, freeRemaining, requiresAuth, requiresPayment, showAuthNudge, loadProfile, refreshHistory, lastEssayId, lastReview } = useEditor();
+  const { loading, error, result, history, stats, sendText, sendFile, saveReview, credits, requiresAuth, requiresPayment, showAuthNudge, loadProfile, refreshHistory, lastEssayId, lastReview } = useEditor();
   const { user, loadMe, logout } = useAuth();
   const loadingOverlay = useLoadingOverlay();
 
@@ -107,7 +108,8 @@ export default function StudentDashboard() {
     await sendFile(formData);
   };
 
-  const latest = history[0];
+  const sortedHistory = useMemo(() => sortHistorico(history || []), [history]);
+  const latest = sortedHistory[0];
   const mainTitle = latest?.tema ? latest.tema : "Sua próxima redação";
   const mainSubtitle = latest?.nota_final ? `Última nota: ${latest.nota_final}` : "Envie uma redação e receba feedback completo.";
 
@@ -130,10 +132,10 @@ export default function StudentDashboard() {
             onPrimary={() => setActiveTab("new")}
           />
           <RecentCorrections
-            items={history}
+            items={sortedHistory}
             loading={loading && !history.length}
-            onOpen={setSelectedHistory}
-            onViewAll={() => setActiveTab("history")}
+            onOpen={(item) => navigate(`/historico/${item.id}`)}
+            onViewAll={() => navigate("/historico")}
           />
           <section className="dashboard-section">
             <div className="dashboard-section-header">
@@ -159,7 +161,7 @@ export default function StudentDashboard() {
         <section className="dashboard-section">
           <div className="dashboard-section-header">
             <h3>Nova correção</h3>
-            <button type="button" className="dashboard-link" onClick={() => setActiveTab("history")}>
+            <button type="button" className="dashboard-link" onClick={() => navigate("/historico")}>
               Ver histórico
             </button>
           </div>
@@ -218,10 +220,10 @@ export default function StudentDashboard() {
             </button>
           </div>
           <Card className="dashboard-card">
-            <HistoryChart items={history} />
+            <HistoryChart items={sortedHistory} />
           </Card>
           <div className="dashboard-list">
-            <HistoryList items={history} onOpen={setSelectedHistory} />
+            <HistoryList items={sortedHistory} onOpen={setSelectedHistory} />
           </div>
         </section>
       );
