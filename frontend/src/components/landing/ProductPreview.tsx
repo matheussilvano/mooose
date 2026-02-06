@@ -40,11 +40,11 @@ export default function ProductPreview() {
 
             <div className="mock-competencias">
               {[
-                { label: "C1", score: "180/200", width: "90%" },
-                { label: "C2", score: "160/200", width: "80%" },
-                { label: "C3", score: "170/200", width: "85%" },
-                { label: "C4", score: "170/200", width: "85%" },
-                { label: "C5", score: "180/200", width: "90%" }
+                { label: "Competência 1", score: "180/200", width: "90%" },
+                { label: "Competência 2", score: "160/200", width: "80%" },
+                { label: "Competência 3", score: "170/200", width: "85%" },
+                { label: "Competência 4", score: "170/200", width: "85%" },
+                { label: "Competência 5", score: "180/200", width: "90%" }
               ].map((item) => (
                 <div className="mock-competencia" key={item.label}>
                   <div className="mock-competencia-head">
@@ -64,8 +64,12 @@ export default function ProductPreview() {
                 <p>Argumentação clara e repertório bem aplicado.</p>
               </div>
               <div className="mock-feedback-card">
-                <strong>Melhorias</strong>
+                <strong>Pontos a melhorar</strong>
                 <p>Reforce a proposta de intervenção com detalhamento.</p>
+              </div>
+              <div className="mock-feedback-card accent">
+                <strong>Sugestão prática</strong>
+                <p>Inclua agentes, meios e finalidade na conclusão.</p>
               </div>
             </div>
           </motion.div>

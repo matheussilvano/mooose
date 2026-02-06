@@ -239,7 +239,7 @@ export default function StudentDashboard() {
           <p className="dashboard-profile-email">{user?.email || ""}</p>
           <div className="dashboard-profile-actions">
             <Button variant="secondary" onClick={() => window.location.href = "/paywall"}>Comprar créditos</Button>
-            <Button onClick={logout}>Sair</Button>
+            <Button onClick={() => { logout(); navigate("/"); }}>Sair</Button>
           </div>
         </Card>
       </section>
@@ -263,6 +263,7 @@ export default function StudentDashboard() {
         onCredits={() => (window.location.href = "/paywall")}
         onStreak={() => toast.push("Ofensiva em breve!")}
         onBonus={() => toast.push("Bônus em breve!")}
+        onRanking={() => toast.push("Ranking em breve!")}
       />
 
       <main className="dashboard-content">
