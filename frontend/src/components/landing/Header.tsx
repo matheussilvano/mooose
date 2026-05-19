@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import Logo from "../Logo";
@@ -17,89 +18,93 @@ interface LandingHeaderProps {
 
 export default function LandingHeader({ className }: LandingHeaderProps) {
   const [open, setOpen] = useState(false);
-
-  return (
-    <header className={cn("landing-header", className)}>
-      <div className="landing-header-inner">
-        <a href="/" aria-label="Mooose">
-          <Logo size="md" />
-        </a>
-
-        <nav className="landing-nav">
-          {navLinks.map((link) => (
-            <a key={link.href} href={link.href} className="landing-nav-link">
-              {link.label}
-            </a>
-          ))}
-        </nav>
-
-        <div className="landing-actions">
-          <a href="/paywall" className="landing-link">Planos</a>
-          <Button size="sm" onClick={() => (window.location.href = "/editor?login=1")}>
-            Fazer login
-          </Button>
-        </div>
-
-        <button
-          type="button"
-          className="landing-menu-btn"
-          aria-label="Abrir menu"
-          onClick={() => setOpen(true)}
+  const drawer = (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          className="landing-drawer"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => setOpen(false)}
         >
-          <Menu size={20} />
-        </button>
-      </div>
-
-      <AnimatePresence>
-        {open && (
           <motion.div
-            className="landing-drawer"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setOpen(false)}
+            className="landing-drawer-panel"
+            initial={{ x: 40, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: 40, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={(event) => event.stopPropagation()}
           >
-            <motion.div
-              className="landing-drawer-panel"
-              initial={{ x: 40, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: 40, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              onClick={(event) => event.stopPropagation()}
-            >
-              <div className="landing-drawer-header">
-                <Logo size="md" />
-                <button
-                  type="button"
-                  className="landing-drawer-close"
-                  aria-label="Fechar menu"
+            <div className="landing-drawer-header">
+              <Logo size="md" />
+              <button
+                type="button"
+                className="landing-drawer-close"
+                aria-label="Fechar menu"
+                onClick={() => setOpen(false)}
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="landing-drawer-links">
+              {navLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="landing-drawer-link"
                   onClick={() => setOpen(false)}
                 >
-                  <X size={18} />
-                </button>
-              </div>
-              <div className="landing-drawer-links">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    className="landing-drawer-link"
-                    onClick={() => setOpen(false)}
-                  >
-                    {link.label}
-                  </a>
-                ))}
-              </div>
-              <div className="landing-drawer-actions">
-                <a href="/paywall" className="landing-link">Planos</a>
-                <Button full onClick={() => (window.location.href = "/editor?login=1")}>
-                  Fazer login
-                </Button>
-              </div>
-            </motion.div>
+                  {link.label}
+                </a>
+              ))}
+            </div>
+            <div className="landing-drawer-actions">
+              <a href="/paywall" className="landing-link">Planos</a>
+              <Button full onClick={() => (window.location.href = "/editor?login=1")}>
+                Fazer login
+              </Button>
+            </div>
           </motion.div>
-        )}
-      </AnimatePresence>
-    </header>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
+  return (
+    <>
+      <header className={cn("landing-header", className)}>
+        <div className="landing-header-inner">
+          <a href="/" aria-label="Mooose">
+            <Logo size="md" />
+          </a>
+
+          <nav className="landing-nav">
+            {navLinks.map((link) => (
+              <a key={link.href} href={link.href} className="landing-nav-link">
+                {link.label}
+              </a>
+            ))}
+          </nav>
+
+          <div className="landing-actions">
+            <a href="/paywall" className="landing-link">Planos</a>
+            <Button size="sm" onClick={() => (window.location.href = "/editor?login=1")}>
+              Fazer login
+            </Button>
+          </div>
+
+          <button
+            type="button"
+            className="landing-menu-btn"
+            aria-label="Abrir menu"
+            onClick={() => setOpen(true)}
+          >
+            <Menu size={20} />
+          </button>
+        </div>
+      </header>
+      {typeof document !== "undefined" ? createPortal(drawer, document.body) : drawer}
+    </>
   );
 }
