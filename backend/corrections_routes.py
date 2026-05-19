@@ -31,6 +31,7 @@ from models import Essay, User
 from referrals_service import attempt_referral_activation
 from schemas import CorrectionResponse, CorrectionTextRequest
 from ocr_utils import build_ocr_error_payload, evaluate_ocr_quality
+from subscription_service import consume_correction_access, ensure_correction_access
 from utils import get_client_ip
 
 router = APIRouter(tags=["corrections"])
@@ -114,15 +115,7 @@ def _gate_response(
 def _debit_credit(db: Session, user: User) -> None:
     if object_session(user) is not db:
         user = db.merge(user)
-    if user.credits is None:
-        user.credits = 0
-    if user.credits <= 0:
-        raise HTTPException(
-            status_code=402,
-            detail="Créditos insuficientes. Compre mais créditos para continuar.",
-        )
-    user.credits -= 1
-    db.add(user)
+    consume_correction_access(db, user)
 
 
 def _ensure_user_attached(db: Session, user: Optional[User]) -> Optional[User]:
@@ -193,7 +186,9 @@ async def correction_text(
             requires_payment=False,
         )
     else:
-        if (current_user.credits or 0) <= 0:
+        try:
+            ensure_correction_access(db, current_user)
+        except HTTPException:
             return _gate_response(
                 remaining=remaining,
                 requires_auth=False,
@@ -289,7 +284,9 @@ async def correction_file(
             requires_payment=False,
         )
     else:
-        if (current_user.credits or 0) <= 0:
+        try:
+            ensure_correction_access(db, current_user)
+        except HTTPException:
             return _gate_response(
                 remaining=remaining,
                 requires_auth=False,

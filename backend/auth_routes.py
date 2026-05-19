@@ -23,6 +23,7 @@ from anon_service import (
 )
 from rate_limiter import enforce_rate_limit
 from referrals_service import apply_referral_on_signup, generate_referral_code
+from subscription_service import active_subscription
 from utils import get_client_ip
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -170,7 +171,12 @@ def _safe_redirect_path(path: Optional[str]) -> str:
 
 def _post_login_path(user: models.User) -> str:
     has_credits = (user.credits or 0) > 0
-    if has_credits:
+    db = SessionLocal()
+    try:
+        has_subscription = active_subscription(db, user) is not None
+    finally:
+        db.close()
+    if has_credits or has_subscription:
         return "/app/editor"
     return "/app/paywall"
 

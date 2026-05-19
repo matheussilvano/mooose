@@ -29,6 +29,7 @@ from corrige_redacao_enem import (
 )
 from schemas import EnemTextRequest, EssayReviewCreate
 from referrals_service import attempt_referral_activation
+from subscription_service import consume_correction_access, ensure_correction_access
 from cloudinary_utils import (
     build_signed_cloudinary_url,
     derive_cloudinary_public_id,
@@ -156,11 +157,7 @@ def _require_credits(user: User):
     """
     Verifica se o usuário tem créditos suficientes.
     """
-    if user.credits is None or user.credits <= 0:
-        raise HTTPException(
-            status_code=402,
-            detail="Créditos insuficientes. Compre mais créditos para continuar.",
-        )
+    raise HTTPException(status_code=500, detail="_require_credits obsoleto.")
 
 
 def _debitar_credito(db: Session, user: User) -> User:
@@ -170,16 +167,7 @@ def _debitar_credito(db: Session, user: User) -> User:
     user_db = db.get(User, user.id)
     if not user_db:
         raise HTTPException(status_code=404, detail="Usuário não encontrado.")
-    if user_db.credits is None:
-        user_db.credits = 0
-    if user_db.credits <= 0:
-        raise HTTPException(
-            status_code=402,
-            detail="Créditos insuficientes. Compre mais créditos para continuar.",
-        )
-    user_db.credits -= 1
-    db.add(user_db)
-    return user_db
+    return consume_correction_access(db, user_db)
 
 
 def _notas_por_competencia(resultado_json: Dict[str, Any]) -> Dict[int, int]:
@@ -253,7 +241,7 @@ async def app_corrigir_texto_enem(
     user_db = db.get(User, current_user.id)
     if not user_db:
         raise HTTPException(status_code=404, detail="Usuário não encontrado.")
-    _require_credits(user_db)
+    ensure_correction_access(db, user_db)
     essay = Essay(
         user_id=user_db.id,
         tema=payload.tema,
@@ -320,7 +308,7 @@ async def app_corrigir_arquivo_enem(
     user_db = db.get(User, current_user.id)
     if not user_db:
         raise HTTPException(status_code=404, detail="Usuário não encontrado.")
-    _require_credits(user_db)
+    ensure_correction_access(db, user_db)
     raw_bytes = await arquivo.read()
     if not raw_bytes:
         raise HTTPException(status_code=400, detail="Arquivo vazio.")

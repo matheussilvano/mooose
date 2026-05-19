@@ -63,6 +63,11 @@ class User(Base):
         back_populates="user",
         cascade="all, delete-orphan",
     )
+    abacate_events = relationship(
+        "AbacatePayEvent",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
 
 
 class Referral(Base):
@@ -108,9 +113,22 @@ class Subscription(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    plan_id = Column(Integer, ForeignKey("plans.id"), nullable=False)
+    plan_id = Column(Integer, ForeignKey("plans.id"), nullable=True)
+    plan_code = Column(String, nullable=True, index=True)
+    provider = Column(String, nullable=False, default="manual", server_default="manual")
+    provider_subscription_id = Column(String, unique=True, nullable=True, index=True)
+    provider_checkout_id = Column(String, nullable=True, index=True)
+    status = Column(String, nullable=False, default="active", server_default="active", index=True)
     active = Column(Boolean, default=True)
     started_at = Column(DateTime(timezone=True), server_default=func.now())
+    current_period_start = Column(DateTime(timezone=True), nullable=True)
+    current_period_end = Column(DateTime(timezone=True), nullable=True, index=True)
+    monthly_correction_limit = Column(Integer, nullable=True)
+    monthly_corrections_used = Column(Integer, nullable=False, default=0, server_default="0")
+    usage_month_start = Column(DateTime(timezone=True), nullable=True)
+    daily_corrections_used = Column(Integer, nullable=False, default=0, server_default="0")
+    usage_day = Column(String, nullable=True)
+    raw_json = Column(Text, nullable=True)
 
     user = relationship("User", back_populates="subscriptions")
 
@@ -206,6 +224,23 @@ class MercadoPagoPayment(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     user = relationship("User", back_populates="mp_payments")
+
+
+class AbacatePayEvent(Base):
+    __tablename__ = "abacatepay_events"
+
+    id = Column(Integer, primary_key=True, index=True)
+    event_id = Column(String, unique=True, nullable=False, index=True)
+    event_type = Column(String, nullable=False, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
+    plan_code = Column(String, nullable=True)
+    provider_checkout_id = Column(String, nullable=True, index=True)
+    provider_subscription_id = Column(String, nullable=True, index=True)
+    processed = Column(Boolean, nullable=False, default=False, server_default="false")
+    raw_json = Column(Text, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+
+    user = relationship("User", back_populates="abacate_events")
 
 class DemoKeyUsage(Base):
     __tablename__ = "demo_key_usage"

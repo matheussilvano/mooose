@@ -12,6 +12,7 @@ from auth_routes import router as auth_router
 from app_routes import router as app_router
 from demo_routes import router as demo_router
 from payments_routes import router as payments_router
+from abacatepay_routes import router as abacatepay_router
 from admin_routes import router as admin_router
 from referrals_routes import router as referrals_router
 from corrections_routes import router as corrections_router
@@ -132,6 +133,7 @@ app.include_router(auth_router)
 app.include_router(app_router)
 app.include_router(demo_router)
 app.include_router(payments_router)
+app.include_router(abacatepay_router)
 app.include_router(admin_router)
 app.include_router(referrals_router)
 app.include_router(corrections_router)
