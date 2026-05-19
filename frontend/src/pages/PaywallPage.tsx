@@ -11,7 +11,7 @@ import LoadingOverlay from "../components/ui/LoadingOverlay";
 import AuthModal from "../components/editor/AuthModal";
 
 interface Plan {
-  slug: "individual" | "padrao" | "intensivao";
+  slug: "individual" | "basic_monthly" | "basic_annual" | "full_monthly" | "full_annual";
   title: string;
   quantity: string;
   price: string;
@@ -28,46 +28,67 @@ interface Plan {
 const plans: Plan[] = [
   {
     slug: "individual",
-    title: "Pacote Individual",
+    title: "Avulso",
     quantity: "1 correção",
     price: "R$ 1,90",
     per: "R$ 1,90 por correção",
     label: "Para corrigir agora",
-    note: "Indicado para: quem precisa de uma correção pontual.",
+    note: "Pagamento único. Fica disponível na sua conta.",
     buttonTone: "secondary"
   },
   {
-    slug: "padrao",
-    title: "Pacote Padrão",
-    quantity: "10 correções",
+    slug: "basic_monthly",
+    title: "Básico Mensal",
+    quantity: "10 correções/mês",
     price: "R$ 9,90",
-    per: "R$ 0,99 por correção",
+    per: "Cobrança mensal",
     highlight: "highlight",
     badge: "Recomendado",
-    economy: "Economize 48%",
     label: "Para treinar toda semana",
-    note: "Melhor equilíbrio entre preço e constância.",
+    note: "10 correções renovadas a cada mês.",
     indicado: "Indicado para: quem quer constância sem gastar demais.",
     buttonTone: "primary"
   },
   {
-    slug: "intensivao",
-    title: "Pacote Intensivão",
-    quantity: "25 correções",
+    slug: "basic_annual",
+    title: "Básico Anual",
+    quantity: "10 correções/mês",
+    price: "R$ 99,00",
+    per: "2 meses grátis",
+    economy: "Pague 10 meses",
+    label: "Para estudar o ano todo",
+    note: "Mesmo limite mensal do Básico, com desconto anual.",
+    buttonTone: "secondary"
+  },
+  {
+    slug: "full_monthly",
+    title: "Full Mensal",
+    quantity: "Ilimitado",
     price: "R$ 19,90",
-    per: "R$ 0,79 por correção",
+    per: "Cobrança mensal",
     highlight: "highlight-alt",
-    badge: "Melhor valor",
-    economy: "Economize 58%",
+    badge: "Ilimitado",
     label: "Para evolução acelerada",
-    note: "Indicado para: quem quer avançar rápido e treinar muito.",
+    note: "Correções ilimitadas para uso individual, com política antiabuso.",
+    indicado: "Indicado para: quem quer treinar muito.",
     buttonTone: "primary"
+  },
+  {
+    slug: "full_annual",
+    title: "Full Anual",
+    quantity: "Ilimitado",
+    price: "R$ 199,00",
+    per: "2 meses grátis",
+    economy: "Pague 10 meses",
+    label: "Melhor custo para uso intenso",
+    note: "Full ilimitado anual para uso individual.",
+    buttonTone: "secondary"
   }
 ] as const;
 
 function normalizePlanSlug(plan: string) {
-  const allowed = ["individual", "padrao", "intensivao"];
-  return allowed.includes(plan) ? plan : "padrao";
+  const allowed = ["individual", "basic_monthly", "basic_annual", "full_monthly", "full_annual"];
+  return allowed.includes(plan) ? plan : "basic_monthly";
 }
 
 export default function PaywallPage() {
@@ -111,7 +132,7 @@ export default function PaywallPage() {
     loadingOverlay.show("Abrindo checkout...");
     try {
       const planSlug = normalizePlanSlug(plan);
-      const res = await fetch(`${API_BASE}/payments/create/${planSlug}`, {
+      const res = await fetch(`${API_BASE}/abacatepay/checkout/${planSlug}`, {
         method: "POST",
         headers: getAuthHeaders()
       });
@@ -140,7 +161,7 @@ export default function PaywallPage() {
           <button className="credits-modal-close" type="button" onClick={handleClose} aria-label="Fechar">✕</button>
           <div className="no-credits-modal">
             <h3>Escolha seu pacote de correções</h3>
-            <p className="card-sub">Receba feedback completo em minutos e evolua a cada redação.</p>
+            <p className="card-sub">Escolha créditos avulsos ou uma assinatura para treinar com constância.</p>
             <div className="plan-grid">
               {plans.map((plan) => {
                 const isLoading = loadingPlan === plan.slug;
@@ -184,12 +205,12 @@ export default function PaywallPage() {
             <div className="app-card plan-accordion">
               <details className="plan-accordion-item">
                 <summary>Como funciona</summary>
-                <p>Você compra um pacote e usa quando quiser.</p>
-                <p>Cada correção equivale a 1 redação analisada.</p>
+                <p>O avulso adiciona 1 crédito. As assinaturas liberam correções conforme o plano escolhido.</p>
+                <p>O plano Full é ilimitado para uso individual, com limite técnico antiabuso.</p>
               </details>
               <details className="plan-accordion-item">
-                <summary>As correções expiram?</summary>
-                <p>Não. Ficam disponíveis na sua conta.</p>
+                <summary>Como funciona o anual?</summary>
+                <p>Você paga 10 meses e usa por 12 meses na modalidade escolhida.</p>
               </details>
             </div>
             <button className="duo-btn btn-secondary paywall-dismiss" type="button" onClick={handleClose}>

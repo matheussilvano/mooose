@@ -91,11 +91,6 @@ export function useEditor() {
       setLoading(false);
       return null;
     }
-    if (getToken() && credits !== null && credits <= 0) {
-      setRequiresPayment(true);
-      setLoading(false);
-      return null;
-    }
     const { res, data } = await sendTextCorrection(JSON.stringify({ tema, texto }));
     const freeLeft = extractFreeRemaining(data);
     if (freeLeft !== null) updateFreeRemaining(freeLeft);
@@ -141,11 +136,6 @@ export function useEditor() {
     setRequiresAuth(false);
     setRequiresPayment(false);
     if (!getToken()) {
-      setRequiresPayment(true);
-      setLoading(false);
-      return null;
-    }
-    if (getToken() && credits !== null && credits <= 0) {
       setRequiresPayment(true);
       setLoading(false);
       return null;
