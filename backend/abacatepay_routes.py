@@ -18,7 +18,7 @@ from sqlalchemy.orm import Session
 from auth_routes import get_current_user
 from database import get_db
 from models import AbacatePayEvent, Subscription, User
-from subscription_service import BASIC_MONTHLY_LIMIT, add_cycle, utcnow
+from subscription_service import BASIC_MONTHLY_LIMIT, active_subscription, add_cycle, subscription_payload, utcnow
 
 logger = logging.getLogger(__name__)
 
@@ -204,14 +204,32 @@ def list_abacatepay_plans():
     return {"plans": PLANS}
 
 
+@router.get("/abacatepay/subscription/me")
+def current_abacatepay_subscription(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return {"subscription": subscription_payload(active_subscription(db, current_user))}
+
+
 @router.post("/abacatepay/checkout/{plan_code}")
 def create_abacatepay_checkout(
     plan_code: str,
+    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     if plan_code not in PLANS:
         raise HTTPException(status_code=400, detail="Plano inválido.")
     plan = PLANS[plan_code]
+    current_subscription = active_subscription(db, current_user)
+    if current_subscription and plan["checkout_type"] == "subscription":
+        if current_subscription.plan_code == plan_code:
+            raise HTTPException(status_code=409, detail="Você já está nesse plano.")
+        if plan_code != "individual":
+            raise HTTPException(
+                status_code=409,
+                detail="Você já tem uma assinatura ativa. Gerencie seu plano pelo perfil.",
+            )
     product_id = _ensure_product(plan_code)
     payload = {
         "items": [{"id": product_id, "quantity": 1}],

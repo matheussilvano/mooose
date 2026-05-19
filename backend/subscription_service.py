@@ -50,6 +50,26 @@ def active_subscription(db: Session, user: User) -> Optional[Subscription]:
     )
 
 
+def subscription_payload(subscription: Optional[Subscription]) -> Optional[dict]:
+    if not subscription:
+        return None
+    is_basic = (subscription.plan_code or "").startswith("basic_")
+    limit = subscription.monthly_correction_limit if is_basic else None
+    used = subscription.monthly_corrections_used if is_basic else subscription.daily_corrections_used
+    return {
+        "plan_code": subscription.plan_code,
+        "status": subscription.status,
+        "active": bool(subscription.active),
+        "current_period_end": subscription.current_period_end.isoformat() if subscription.current_period_end else None,
+        "monthly_correction_limit": subscription.monthly_correction_limit,
+        "monthly_corrections_used": subscription.monthly_corrections_used or 0,
+        "daily_corrections_used": subscription.daily_corrections_used or 0,
+        "usage_limit": limit,
+        "usage_used": used or 0,
+        "provider_subscription_id": subscription.provider_subscription_id,
+    }
+
+
 def _reset_usage_windows(subscription: Subscription) -> None:
     now = utcnow()
     month_start = current_month_start(now)

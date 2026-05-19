@@ -23,7 +23,7 @@ from anon_service import (
 )
 from rate_limiter import enforce_rate_limit
 from referrals_service import apply_referral_on_signup, generate_referral_code
-from subscription_service import active_subscription
+from subscription_service import active_subscription, subscription_payload
 from utils import get_client_ip
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -460,9 +460,14 @@ def google_callback(
     return RedirectResponse(url=redirect_url)
 
 
-@router.get("/me", response_model=schemas.UserRead)
-def read_me(current_user: models.User = Depends(get_current_user)):
-    return current_user
+@router.get("/me")
+def read_me(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    data = schemas.UserRead.model_validate(current_user).model_dump()
+    data["subscription"] = subscription_payload(active_subscription(db, current_user))
+    return data
 
 
 @router.patch("/me", response_model=schemas.UserRead)
