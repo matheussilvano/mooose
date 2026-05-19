@@ -34,6 +34,13 @@ const avatarOptions = [
   { id: "pink", label: "Rosa" }
 ] as const;
 
+const subscriptionLabels: Record<string, string> = {
+  basic_monthly: "Básico Mensal",
+  basic_annual: "Básico Anual",
+  full_monthly: "Full Mensal",
+  full_annual: "Full Anual"
+};
+
 type AvatarId = typeof avatarOptions[number]["id"];
 
 export default function StudentDashboard() {
@@ -305,6 +312,14 @@ export default function StudentDashboard() {
     const lastCorrectionDate = latest?.created_at
       ? new Date(latest.created_at).toLocaleDateString("pt-BR")
       : "Nenhuma ainda";
+    const subscription = user?.subscription;
+    const hasSubscription = Boolean(subscription?.active);
+    const subscriptionLabel = subscriptionLabels[subscription?.plan_code || ""] || "Sem assinatura";
+    const subscriptionUsage = hasSubscription
+      ? subscription?.usage_limit
+        ? `${subscription.usage_used || 0}/${subscription.usage_limit} usadas neste mês`
+        : `${subscription?.daily_corrections_used || 0} usadas hoje`
+      : "Escolha um plano para liberar correções mensais";
 
     return (
       <section className="dashboard-section">
@@ -326,8 +341,16 @@ export default function StudentDashboard() {
 
             <div className="profile-stats-grid">
               <div>
-                <span>Correções disponíveis</span>
+                <span>Créditos avulsos</span>
                 <strong>{credits ?? user?.credits ?? 0}</strong>
+              </div>
+              <div>
+                <span>Plano atual</span>
+                <strong>{subscriptionLabel}</strong>
+              </div>
+              <div>
+                <span>Uso do plano</span>
+                <strong>{subscriptionUsage}</strong>
               </div>
               <div>
                 <span>Redações corrigidas</span>
@@ -347,7 +370,7 @@ export default function StudentDashboard() {
               <Button variant="secondary" onClick={() => setProfileEditing(true)}>
                 <Pencil size={16} /> Editar perfil
               </Button>
-              <Button variant="secondary" onClick={() => window.location.href = "/paywall"}>Comprar créditos</Button>
+              <Button variant="secondary" onClick={() => window.location.href = "/paywall"}>Gerenciar plano</Button>
               <Button onClick={() => { logout(); navigate("/"); }}>Sair</Button>
             </div>
           </Card>
@@ -368,7 +391,7 @@ export default function StudentDashboard() {
               <div><span>Nome público</span><strong>{displayName}</strong></div>
               <div><span>E-mail</span><strong>{user?.email || ""}</strong></div>
               <div><span>Melhor nota</span><strong>{stats.best.toFixed(0)}</strong></div>
-              <div><span>Status</span><strong>{(credits ?? 0) > 0 ? "Pronto para corrigir" : "Sem créditos"}</strong></div>
+              <div><span>Status</span><strong>{hasSubscription || (credits ?? 0) > 0 ? "Pronto para corrigir" : "Sem acesso ativo"}</strong></div>
             </div>
             <button type="button" className="profile-danger-link" onClick={() => setDeleteAccountOpen(true)}>
               <Trash2 size={16} /> Excluir minha conta

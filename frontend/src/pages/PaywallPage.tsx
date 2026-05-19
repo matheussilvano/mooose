@@ -9,6 +9,7 @@ import { useToast } from "../components/ui/Toast";
 import { useLoadingOverlay } from "../features/ui/useLoadingOverlay";
 import LoadingOverlay from "../components/ui/LoadingOverlay";
 import AuthModal from "../components/editor/AuthModal";
+import { useAuth, SubscriptionInfo } from "../features/editor/useAuth";
 
 interface Plan {
   slug: "individual" | "basic_monthly" | "basic_annual" | "full_monthly" | "full_annual";
@@ -86,6 +87,13 @@ const plans: Plan[] = [
   }
 ] as const;
 
+const planLabels: Record<string, string> = {
+  basic_monthly: "Básico Mensal",
+  basic_annual: "Básico Anual",
+  full_monthly: "Full Mensal",
+  full_annual: "Full Anual"
+};
+
 function normalizePlanSlug(plan: string) {
   const allowed = ["individual", "basic_monthly", "basic_annual", "full_monthly", "full_annual"];
   return allowed.includes(plan) ? plan : "basic_monthly";
@@ -98,6 +106,8 @@ export default function PaywallPage() {
   const loadingOverlay = useLoadingOverlay();
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [authOpen, setAuthOpen] = useState(false);
+  const { user, loadMe } = useAuth();
+  const subscription = user?.subscription as SubscriptionInfo | null | undefined;
 
   useEffect(() => {
     ensureAnonSession();
@@ -162,10 +172,25 @@ export default function PaywallPage() {
           <div className="no-credits-modal">
             <h3>Escolha seu pacote de correções</h3>
             <p className="card-sub">Escolha créditos avulsos ou uma assinatura para treinar com constância.</p>
+            {subscription?.active && (
+              <div className="app-card plan-current">
+                <strong>Plano atual: {planLabels[subscription.plan_code || ""] || "Assinatura ativa"}</strong>
+                <span>
+                  {subscription.usage_limit
+                    ? `${subscription.usage_used || 0}/${subscription.usage_limit} correções usadas neste mês`
+                    : `${subscription.daily_corrections_used || 0} correções usadas hoje`}
+                </span>
+                {subscription.current_period_end && (
+                  <span>Renova em {new Date(subscription.current_period_end).toLocaleDateString("pt-BR")}</span>
+                )}
+              </div>
+            )}
             <div className="plan-grid">
               {plans.map((plan) => {
                 const isLoading = loadingPlan === plan.slug;
-                const buttonClass = `duo-btn btn-${plan.buttonTone} full${isLoading ? " is-disabled" : ""}`;
+                const isCurrentPlan = subscription?.active && subscription.plan_code === plan.slug;
+                const hasOtherSubscription = subscription?.active && plan.slug !== "individual" && subscription.plan_code !== plan.slug;
+                const buttonClass = `duo-btn btn-${plan.buttonTone} full${isLoading || isCurrentPlan || hasOtherSubscription ? " is-disabled" : ""}`;
                 return (
                   <div key={plan.slug} className={`app-card plan-card${plan.highlight ? ` ${plan.highlight}` : ""}`}>
                     {plan.badge && (
@@ -193,10 +218,10 @@ export default function PaywallPage() {
                       type="button"
                       className={buttonClass}
                       onClick={() => handleCheckout(plan.slug)}
-                      disabled={isLoading}
+                      disabled={isLoading || isCurrentPlan || Boolean(hasOtherSubscription)}
                       aria-busy={isLoading}
                     >
-                      {isLoading ? "Carregando..." : "Escolher pacote"}
+                      {isLoading ? "Carregando..." : isCurrentPlan ? "Plano atual" : hasOtherSubscription ? "Troca em breve" : "Escolher pacote"}
                     </button>
                   </div>
                 );
@@ -224,7 +249,7 @@ export default function PaywallPage() {
         open={authOpen}
         onClose={() => setAuthOpen(false)}
         returnPath="/paywall"
-        onSuccess={async () => Promise.resolve()}
+        onSuccess={async () => { await loadMe(); }}
       />
 
       <LoadingOverlay visible={loadingOverlay.visible} message={loadingOverlay.message} />

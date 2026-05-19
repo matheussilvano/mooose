@@ -9,6 +9,19 @@ export interface UserInfo {
   bio?: string | null;
   profile_avatar?: "green" | "blue" | "gray" | "black" | "pink" | null;
   credits?: number;
+  subscription?: SubscriptionInfo | null;
+}
+
+export interface SubscriptionInfo {
+  plan_code?: string;
+  status?: string;
+  active?: boolean;
+  current_period_end?: string | null;
+  monthly_correction_limit?: number | null;
+  monthly_corrections_used?: number;
+  daily_corrections_used?: number;
+  usage_limit?: number | null;
+  usage_used?: number;
 }
 
 export function useAuth() {

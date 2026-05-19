@@ -1862,6 +1862,22 @@ body {
   border: 2px solid #7fb6ff;
   background: #f5faff;
 }
+.plan-current {
+  display: grid;
+  gap: 0.25rem;
+  text-align: left;
+  background: #f8fbff;
+  border: 1px solid rgba(37, 99, 235, 0.18);
+}
+.plan-current strong {
+  color: #0f172a;
+  font-size: 1rem;
+}
+.plan-current span {
+  color: #475569;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
 @media (min-width: 900px) {
   .plan-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
