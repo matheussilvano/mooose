@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Mail, Pencil, Save, Trash2, UserRound, X } from "lucide-react";
 import DashboardHeader from "../components/dashboard/DashboardHeader";
 import MainCard from "../components/dashboard/MainCard";
 import RecentCorrections from "../components/dashboard/RecentCorrections";
@@ -25,6 +26,16 @@ import { getToken } from "../lib/auth";
 import { normalizeScore } from "../lib/normalize";
 import { isOcrError, sortHistorico } from "../services/enemHistorico";
 
+const avatarOptions = [
+  { id: "green", label: "Verde" },
+  { id: "blue", label: "Azul" },
+  { id: "gray", label: "Cinza" },
+  { id: "black", label: "Preto" },
+  { id: "pink", label: "Rosa" }
+] as const;
+
+type AvatarId = typeof avatarOptions[number]["id"];
+
 export default function StudentDashboard() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -35,9 +46,18 @@ export default function StudentDashboard() {
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
   const [reviewPopupOpen, setReviewPopupOpen] = useState(false);
+  const [profileEditing, setProfileEditing] = useState(false);
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
+  const [deleteAccountLoading, setDeleteAccountLoading] = useState(false);
+  const [profileForm, setProfileForm] = useState({
+    full_name: "",
+    bio: "",
+    profile_avatar: "green" as AvatarId
+  });
 
   const { loading, error, result, history, stats, sendText, sendFile, saveReview, credits, requiresAuth, requiresPayment, showAuthNudge, loadProfile, refreshHistory, lastEssayId, lastReview } = useEditor();
-  const { user, loadMe, logout } = useAuth();
+  const { user, loadMe, logout, updateProfile, deleteAccount } = useAuth();
   const loadingOverlay = useLoadingOverlay();
 
   useEffect(() => {
@@ -95,6 +115,14 @@ export default function StudentDashboard() {
     return () => window.clearTimeout(timer);
   }, [lastEssayId, lastReview]);
 
+  useEffect(() => {
+    setProfileForm({
+      full_name: user?.full_name || "",
+      bio: user?.bio || "",
+      profile_avatar: (user?.profile_avatar || "green") as AvatarId
+    });
+  }, [user]);
+
   const handleTextSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
@@ -107,6 +135,39 @@ export default function StudentDashboard() {
     const form = event.currentTarget;
     const formData = new FormData(form);
     await sendFile(formData);
+  };
+
+  const handleProfileSave = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setProfileSaving(true);
+    try {
+      await updateProfile({
+        full_name: profileForm.full_name,
+        bio: profileForm.bio,
+        profile_avatar: profileForm.profile_avatar
+      });
+      await loadMe();
+      setProfileEditing(false);
+      toast.push("Perfil atualizado!");
+    } catch (err) {
+      toast.push(err instanceof Error ? err.message : "Não foi possível atualizar o perfil.", "error");
+    } finally {
+      setProfileSaving(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeleteAccountLoading(true);
+    try {
+      await deleteAccount();
+      toast.push("Conta excluída.");
+      navigate("/", { replace: true });
+    } catch (err) {
+      toast.push(err instanceof Error ? err.message : "Não foi possível excluir a conta.", "error");
+    } finally {
+      setDeleteAccountLoading(false);
+      setDeleteAccountOpen(false);
+    }
   };
 
   const sortedHistory = useMemo(() => sortHistorico(history || []), [history]);
@@ -237,22 +298,86 @@ export default function StudentDashboard() {
       );
     }
 
+    const avatarId = (user?.profile_avatar || profileForm.profile_avatar || "green") as AvatarId;
+    const displayName = user?.full_name || "Aluno Mooose";
+    const bio = user?.bio || "Adicione uma descrição curta sobre seus objetivos de estudo.";
+    const completedCount = sortedHistory.filter((item) => !isOcrError(item) && normalizeScore(item?.nota_final) !== null).length;
+    const lastCorrectionDate = latest?.created_at
+      ? new Date(latest.created_at).toLocaleDateString("pt-BR")
+      : "Nenhuma ainda";
+
     return (
       <section className="dashboard-section">
         <div className="dashboard-section-header">
           <h3>Perfil</h3>
         </div>
-        <Card className="dashboard-card">
-          <p className="dashboard-profile">{user?.full_name || "Aluno"}</p>
-          <p className="dashboard-profile-email">{user?.email || ""}</p>
-          <div className="dashboard-profile-actions">
-            <Button variant="secondary" onClick={() => window.location.href = "/paywall"}>Comprar créditos</Button>
-            <Button onClick={() => { logout(); navigate("/"); }}>Sair</Button>
-          </div>
-        </Card>
+        <div className="profile-layout">
+          <Card className="dashboard-card profile-card">
+            <div className="profile-hero">
+              <div className={`profile-avatar profile-avatar-${avatarId}`}>
+                <UserRound size={34} />
+              </div>
+              <div className="profile-identity">
+                <p className="dashboard-profile">{displayName}</p>
+                <p className="dashboard-profile-email"><Mail size={14} /> {user?.email || ""}</p>
+                <p className="profile-bio">{bio}</p>
+              </div>
+            </div>
+
+            <div className="profile-stats-grid">
+              <div>
+                <span>Correções disponíveis</span>
+                <strong>{credits ?? user?.credits ?? 0}</strong>
+              </div>
+              <div>
+                <span>Redações corrigidas</span>
+                <strong>{completedCount}</strong>
+              </div>
+              <div>
+                <span>Média atual</span>
+                <strong>{stats.avg.toFixed(0)}</strong>
+              </div>
+              <div>
+                <span>Última correção</span>
+                <strong>{lastCorrectionDate}</strong>
+              </div>
+            </div>
+
+            <div className="dashboard-profile-actions">
+              <Button variant="secondary" onClick={() => setProfileEditing(true)}>
+                <Pencil size={16} /> Editar perfil
+              </Button>
+              <Button variant="secondary" onClick={() => window.location.href = "/paywall"}>Comprar créditos</Button>
+              <Button onClick={() => { logout(); navigate("/"); }}>Sair</Button>
+            </div>
+          </Card>
+
+          <Card className="dashboard-card profile-card">
+            <h4 className="profile-section-title">Preferências visuais</h4>
+            <div className="profile-avatar-row">
+              {avatarOptions.map((option) => (
+                <div key={option.id} className="profile-avatar-choice">
+                  <div className={`profile-avatar profile-avatar-sm profile-avatar-${option.id}`}>
+                    <UserRound size={20} />
+                  </div>
+                  <span>{option.label}</span>
+                </div>
+              ))}
+            </div>
+            <div className="profile-info-list">
+              <div><span>Nome público</span><strong>{displayName}</strong></div>
+              <div><span>E-mail</span><strong>{user?.email || ""}</strong></div>
+              <div><span>Melhor nota</span><strong>{stats.best.toFixed(0)}</strong></div>
+              <div><span>Status</span><strong>{(credits ?? 0) > 0 ? "Pronto para corrigir" : "Sem créditos"}</strong></div>
+            </div>
+            <button type="button" className="profile-danger-link" onClick={() => setDeleteAccountOpen(true)}>
+              <Trash2 size={16} /> Excluir minha conta
+            </button>
+          </Card>
+        </div>
       </section>
     );
-  }, [activeTab, error, formTab, history, latest, loading, mainSubtitle, mainTitle, lastEssayId, lastReview, logout, result, saveReview, showAuthNudge, stats.avg, stats.best, user]);
+  }, [activeTab, credits, error, formTab, history.length, latest, loading, mainSubtitle, mainTitle, lastEssayId, lastReview, logout, navigate, profileForm.profile_avatar, result, saveReview, showAuthNudge, sortedHistory, stats.avg, stats.best, user]);
 
   return (
     <div className="dashboard-page">
@@ -311,6 +436,71 @@ export default function StudentDashboard() {
             }}
           />
         ) : null}
+      </Modal>
+
+      <Modal open={profileEditing} onClose={() => setProfileEditing(false)} title="Editar perfil" className="profile-edit-modal">
+        <form onSubmit={handleProfileSave} className="profile-edit-form">
+          <label>
+            Nome
+            <input
+              value={profileForm.full_name}
+              onChange={(event) => setProfileForm((current) => ({ ...current, full_name: event.target.value }))}
+              placeholder="Seu nome"
+              maxLength={120}
+            />
+          </label>
+          <label>
+            Descrição
+            <textarea
+              value={profileForm.bio}
+              onChange={(event) => setProfileForm((current) => ({ ...current, bio: event.target.value }))}
+              placeholder="Conte um pouco sobre sua meta de estudo"
+              maxLength={500}
+              rows={4}
+            />
+          </label>
+          <div>
+            <span className="profile-edit-label">Imagem do perfil</span>
+            <div className="profile-avatar-selector">
+              {avatarOptions.map((option) => (
+                <button
+                  key={option.id}
+                  type="button"
+                  className={`profile-avatar-select ${profileForm.profile_avatar === option.id ? "active" : ""}`}
+                  onClick={() => setProfileForm((current) => ({ ...current, profile_avatar: option.id }))}
+                  aria-label={`Selecionar avatar ${option.label}`}
+                >
+                  <span className={`profile-avatar profile-avatar-sm profile-avatar-${option.id}`}>
+                    <UserRound size={20} />
+                  </span>
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="profile-edit-actions">
+            <Button type="button" variant="secondary" onClick={() => setProfileEditing(false)}>
+              <X size={16} /> Cancelar
+            </Button>
+            <Button type="submit" loading={profileSaving}>
+              <Save size={16} /> Salvar
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      <Modal open={deleteAccountOpen} onClose={() => setDeleteAccountOpen(false)} title="Excluir conta">
+        <div className="profile-delete-modal">
+          <p>Essa ação remove sua conta, redações, histórico e avaliações. Ela não pode ser desfeita.</p>
+          <div className="profile-edit-actions">
+            <Button type="button" variant="secondary" onClick={() => setDeleteAccountOpen(false)}>
+              Cancelar
+            </Button>
+            <Button type="button" onClick={handleDeleteAccount} loading={deleteAccountLoading} className="profile-delete-button">
+              <Trash2 size={16} /> Excluir conta
+            </Button>
+          </div>
+        </div>
       </Modal>
 
       <LoadingOverlay visible={loadingOverlay.visible} message={loadingOverlay.message} />

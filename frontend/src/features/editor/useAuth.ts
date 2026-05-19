@@ -1,10 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { setToken, getToken } from "../../lib/auth";
-import { fetchMe } from "./editorApi";
+import { deleteMe, fetchMe, updateMe } from "./editorApi";
 
-interface UserInfo {
+export interface UserInfo {
+  id?: number;
   full_name?: string;
   email?: string;
+  bio?: string | null;
+  profile_avatar?: "green" | "blue" | "gray" | "black" | "pink" | null;
+  credits?: number;
 }
 
 export function useAuth() {
@@ -29,9 +33,27 @@ export function useAuth() {
     setUser(null);
   }, []);
 
+  const updateProfile = useCallback(async (payload: { full_name?: string | null; bio?: string | null; profile_avatar?: string | null }) => {
+    const { res, data } = await updateMe(payload);
+    if (!res.ok) {
+      throw new Error(data?.detail || data?.message || "Não foi possível atualizar o perfil.");
+    }
+    setUser(data?.user || data || null);
+    return data;
+  }, []);
+
+  const deleteAccount = useCallback(async () => {
+    const { res, data } = await deleteMe();
+    if (!res.ok) {
+      throw new Error(data?.detail || data?.message || "Não foi possível excluir a conta.");
+    }
+    logout();
+    return data;
+  }, [logout]);
+
   useEffect(() => {
     loadMe();
   }, [loadMe]);
 
-  return { user, loadMe, logout };
+  return { user, loadMe, logout, updateProfile, deleteAccount };
 }

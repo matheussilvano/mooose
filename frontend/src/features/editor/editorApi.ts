@@ -47,6 +47,25 @@ export async function fetchMe(options: { allowCookie?: boolean } = {}) {
   return { res, data };
 }
 
+export async function updateMe(payload: { full_name?: string | null; bio?: string | null; profile_avatar?: string | null }) {
+  const res = await fetch(`${API_BASE}/auth/me`, {
+    method: "PATCH",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json().catch(() => ({}));
+  return { res, data };
+}
+
+export async function deleteMe() {
+  const res = await fetch(`${API_BASE}/auth/me`, {
+    method: "DELETE",
+    headers: getAuthHeaders()
+  });
+  const data = await res.json().catch(() => ({}));
+  return { res, data };
+}
+
 export async function linkAnonSession(anonId: string) {
   const res = await fetch(`${API_BASE}/auth/link-anon`, {
     method: "POST",
