@@ -35,7 +35,7 @@ export default function LandingHeader({ className }: LandingHeaderProps) {
 
         <div className="landing-actions">
           <a href="/paywall" className="landing-link">Planos</a>
-          <Button size="sm" onClick={() => (window.location.href = "/paywall")}>
+          <Button size="sm" onClick={() => (window.location.href = "/editor?login=1")}>
             Fazer login
           </Button>
         </div>
@@ -92,7 +92,7 @@ export default function LandingHeader({ className }: LandingHeaderProps) {
               </div>
               <div className="landing-drawer-actions">
                 <a href="/paywall" className="landing-link">Planos</a>
-                <Button full onClick={() => (window.location.href = "/paywall")}>
+                <Button full onClick={() => (window.location.href = "/editor?login=1")}>
                   Fazer login
                 </Button>
               </div>
