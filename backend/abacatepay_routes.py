@@ -98,6 +98,8 @@ def _request_abacate(method: str, path: str, payload: Optional[dict] = None, que
         headers={
             "Authorization": f"Bearer {_require_key()}",
             "Content-Type": "application/json",
+            "Accept": "application/json",
+            "User-Agent": "MoooseBackend/1.0",
         },
     )
     try:
@@ -109,7 +111,8 @@ def _request_abacate(method: str, path: str, payload: Optional[dict] = None, que
             parsed = json.loads(body) if body else {}
         except json.JSONDecodeError:
             parsed = {"error": body}
-        if exc.code == 404:
+        error_text = str(parsed.get("error") or body)
+        if exc.code == 404 or "Product not found" in error_text:
             return {"success": False, "error": "not_found", "status_code": 404, **parsed}
         logger.exception("Erro HTTP AbacatePay %s %s", method, path)
         raise HTTPException(status_code=502, detail=parsed.get("error") or body or str(exc))
