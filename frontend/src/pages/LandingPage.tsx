@@ -12,7 +12,7 @@ export default function LandingPage() {
         <title>Mooose · Corrija sua redação no padrão ENEM</title>
         <meta
           name="description"
-          content="Corrija sua redação no padrão ENEM em poucos minutos com nota por competência e feedback claro. Comece grátis com 1 correção e acompanhe sua evolução."
+          content="Corrija sua redação no padrão ENEM em poucos minutos com nota por competência e feedback claro. Crie uma conta, escolha um pacote e acompanhe sua evolução."
         />
       </Helmet>
 

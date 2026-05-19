@@ -6,9 +6,10 @@ interface RecentCorrectionsProps {
   loading?: boolean;
   onOpen: (item: any) => void;
   onViewAll?: () => void;
+  getScoreLabel?: (item: any) => number | string;
 }
 
-export default function RecentCorrections({ items, loading, onOpen, onViewAll }: RecentCorrectionsProps) {
+export default function RecentCorrections({ items, loading, onOpen, onViewAll, getScoreLabel }: RecentCorrectionsProps) {
   return (
     <section className="dashboard-section">
       <div className="dashboard-section-header">
@@ -40,7 +41,7 @@ export default function RecentCorrections({ items, loading, onOpen, onViewAll }:
               key={item.id}
               title={item.tema || "Sem tema"}
               date={item.created_at ? new Date(item.created_at).toLocaleDateString() : "—"}
-              score={item.nota_final ?? "—"}
+              score={getScoreLabel ? getScoreLabel(item) : item.nota_final ?? "—"}
               onOpen={() => onOpen(item)}
             />
           ))}

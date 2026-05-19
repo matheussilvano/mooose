@@ -10,6 +10,7 @@ export type EnemReview = {
 
 export type EnemHistoricoItem = {
   id: number;
+  essay_id?: number;
   tema?: string;
   input_type?: string;
   created_at?: string;
@@ -27,6 +28,17 @@ export type EnemHistoricoItem = {
 
 let cache: { data: EnemHistoricoItem[]; ts: number } | null = null;
 const CACHE_TTL = 1000 * 20;
+const SIGNED_URL_REFRESH_SAFETY_MS = 5000;
+const signedUrlCache = new Map<number, EssayArquivoUrl>();
+
+export type EssayArquivoUrl = {
+  url: string;
+  expires_at: number | null;
+};
+
+function extractMessage(data: any, fallback: string) {
+  return data?.detail || data?.message || data?.error || fallback;
+}
 
 export async function getHistorico() {
   if (cache && Date.now() - cache.ts < CACHE_TTL) return cache.data;
@@ -35,7 +47,7 @@ export async function getHistorico() {
   });
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
-    const msg = data?.detail || data?.message || "Erro ao carregar histórico.";
+    const msg = extractMessage(data, "Erro ao carregar histórico.");
     throw new Error(msg);
   }
   const data = await res.json().catch(() => ({}));
@@ -46,6 +58,7 @@ export async function getHistorico() {
 
 export function clearHistoricoCache() {
   cache = null;
+  signedUrlCache.clear();
 }
 
 export function sortHistorico(items: EnemHistoricoItem[]) {
@@ -75,4 +88,82 @@ export function getScoreTone(score: number) {
   if (score >= 600) return "lime";
   if (score >= 400) return "orange";
   return "red";
+}
+
+export function getEssayId(item: any) {
+  const raw = item?.essay_id ?? item?.id ?? item?.resultado?.essay_id ?? item?.resultado?.id;
+  const value = Number(raw);
+  if (!Number.isFinite(value) || value <= 0) return null;
+  return Math.trunc(value);
+}
+
+function isSignedUrlValid(entry: EssayArquivoUrl | undefined) {
+  if (!entry || !entry.url) return false;
+  if (!entry.expires_at) return false;
+  return entry.expires_at * 1000 > Date.now() + SIGNED_URL_REFRESH_SAFETY_MS;
+}
+
+function normalizeExpiresAt(value: unknown) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed <= 0) return null;
+  return Math.trunc(parsed);
+}
+
+export async function getEssayArquivoUrl(essayId: number, options: { force?: boolean } = {}) {
+  const { force = false } = options;
+  const key = Math.trunc(Number(essayId));
+  if (!Number.isFinite(key) || key <= 0) throw new Error("ID da redação inválido.");
+
+  if (!force) {
+    const cached = signedUrlCache.get(key);
+    if (isSignedUrlValid(cached)) return cached as EssayArquivoUrl;
+  }
+
+  const res = await fetch(`${API_BASE}/app/enem/essays/${key}/arquivo-url`, {
+    headers: getAuthHeaders()
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    if (res.status === 403) throw new Error("Você não tem permissão para visualizar esse arquivo.");
+    if (res.status === 404) throw new Error("Arquivo não encontrado para esta redação.");
+    throw new Error(extractMessage(data, "Erro ao carregar arquivo da redação."));
+  }
+
+  const payload: EssayArquivoUrl = {
+    url: String(data?.url || "").trim(),
+    expires_at: normalizeExpiresAt(data?.expires_at)
+  };
+  if (!payload.url) throw new Error("Arquivo indisponível no momento.");
+  signedUrlCache.set(key, payload);
+  return payload;
+}
+
+export function getResultStatus(item: any) {
+  const status = item?.resultado?.status ?? item?.status ?? "";
+  return String(status || "").toLowerCase();
+}
+
+export function isOcrError(item: any) {
+  return getResultStatus(item) === "erro_ocr";
+}
+
+export function getResultErrorMessage(item: any) {
+  const result = item?.resultado || {};
+  return (
+    result?.error_message ||
+    result?.message ||
+    result?.detail ||
+    item?.error_message ||
+    item?.message ||
+    item?.detail ||
+    "Não foi possível ler a imagem/PDF enviado. Tente reenviar com melhor qualidade."
+  );
+}
+
+export function getSignedUrlKind(url?: string | null): "pdf" | "image" | "unknown" {
+  if (!url) return "unknown";
+  const clean = url.split("?")[0].split("#")[0].toLowerCase();
+  if (clean.endsWith(".pdf")) return "pdf";
+  if (/\.(png|jpe?g|webp|gif|bmp|svg|heic|heif|avif)$/.test(clean)) return "image";
+  return "unknown";
 }

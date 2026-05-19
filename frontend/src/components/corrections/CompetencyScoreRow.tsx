@@ -1,4 +1,5 @@
 import { getScoreTone } from "../../services/enemHistorico";
+import { normalizeScore } from "../../lib/normalize";
 
 interface CompetencyScoreRowProps {
   label: string;
@@ -6,15 +7,16 @@ interface CompetencyScoreRowProps {
 }
 
 export default function CompetencyScoreRow({ label, score }: CompetencyScoreRowProps) {
-  const value = typeof score === "number" ? score : 0;
-  const tone = getScoreTone(value * 5);
-  const percent = Math.min(100, Math.round((value / 200) * 100));
+  const value = normalizeScore(score);
+  const normalized = value ?? 0;
+  const tone = getScoreTone(normalized * 5);
+  const percent = value === null ? 0 : Math.min(100, Math.round((normalized / 200) * 100));
 
   return (
     <div className="competency-row">
       <div className="competency-row-head">
         <span>{label}</span>
-        <strong>{score ?? "—"}</strong>
+        <strong>{value ?? "—"}</strong>
       </div>
       <div className={`competency-bar ${tone}`}>
         <span style={{ width: `${percent}%` }} />

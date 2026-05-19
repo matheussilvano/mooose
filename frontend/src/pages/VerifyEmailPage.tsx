@@ -65,7 +65,7 @@ export default function VerifyEmailPage() {
             </span>
           </div>
           <span className="logo-subtitle">
-            Correção de redações do ENEM com IA <span className="badge-edu">1 correção grátis</span>
+            Correção de redações do ENEM com IA <span className="badge-edu">Pagamento seguro</span>
           </span>
         </div>
 

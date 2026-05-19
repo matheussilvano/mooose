@@ -1,6 +1,7 @@
 import { marked } from "marked";
 import Modal from "../ui/Modal";
 import { extractHistoryEssayText, extractHistoryResult, normalizeScore } from "../../lib/normalize";
+import { getEssayId, getResultErrorMessage, isOcrError } from "../../services/enemHistorico";
 import ReviewWidget from "./ReviewWidget";
 
 interface HistoryModalProps {
@@ -16,13 +17,19 @@ export default function HistoryModal({ open, onClose, item, onSaveReview }: Hist
   const resultado = extractHistoryResult(item);
   const analysis = resultado?.analise_geral || resultado?.feedback_geral || resultado?.feedback || "";
   const score = normalizeScore(item?.nota_final);
+  const hasOcrError = isOcrError(item);
+  const ocrMessage = hasOcrError ? getResultErrorMessage(item) : "";
+  const essayId = getEssayId(item);
 
   return (
     <Modal open={open} onClose={onClose} title={item.tema || "Redação"}>
       <div className="text-xs text-text-muted">Enviada em {item.created_at ? new Date(item.created_at).toLocaleDateString() : "—"}</div>
       <div className="mt-3 text-sm">
-        <strong>Nota:</strong> {score !== null ? Math.round(score) : "—"}
+        <strong>Nota:</strong> {hasOcrError ? "—" : score !== null ? Math.round(score) : "—"}
       </div>
+      {hasOcrError ? (
+        <p className="mt-3 rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700">{ocrMessage}</p>
+      ) : null}
       <div className="mt-4">
         <h4 className="text-sm font-semibold">Texto da redação</h4>
         {essayText ? (
@@ -33,20 +40,24 @@ export default function HistoryModal({ open, onClose, item, onSaveReview }: Hist
           <p className="mt-2 text-xs text-text-muted">Texto completo não disponível neste histórico.</p>
         )}
       </div>
-      <div className="mt-4">
-        <h4 className="text-sm font-semibold">Feedback da correção</h4>
-        {analysis ? (
-          <div className="mt-2 text-xs text-text" dangerouslySetInnerHTML={{ __html: marked.parse(analysis) }} />
-        ) : (
-          <p className="mt-2 text-xs text-text-muted">Feedback completo não disponível neste histórico.</p>
-        )}
-      </div>
-      <ReviewWidget
-        essayId={item.id}
-        initialStars={item?.review?.stars || 0}
-        initialComment={item?.review?.comment || ""}
-        onSave={(stars, comment) => onSaveReview(item.id, stars, comment)}
-      />
+      {!hasOcrError ? (
+        <div className="mt-4">
+          <h4 className="text-sm font-semibold">Feedback da correção</h4>
+          {analysis ? (
+            <div className="mt-2 text-xs text-text" dangerouslySetInnerHTML={{ __html: marked.parse(analysis) }} />
+          ) : (
+            <p className="mt-2 text-xs text-text-muted">Feedback completo não disponível neste histórico.</p>
+          )}
+        </div>
+      ) : null}
+      {!hasOcrError && essayId ? (
+        <ReviewWidget
+          essayId={essayId}
+          initialStars={item?.review?.stars || 0}
+          initialComment={item?.review?.comment || ""}
+          onSave={(stars, comment) => onSaveReview(essayId, stars, comment)}
+        />
+      ) : null}
     </Modal>
   );
 }

@@ -5,7 +5,8 @@ import CorrectionCard from "../components/corrections/CorrectionCard";
 import HistorySearch from "../components/corrections/HistorySearch";
 import HistoryFilters from "../components/corrections/HistoryFilters";
 import { HistoryListSkeleton } from "../components/corrections/Skeletons";
-import { getHistorico, sortHistorico } from "../services/enemHistorico";
+import { normalizeScore } from "../lib/normalize";
+import { getEssayId, getHistorico, isOcrError, sortHistorico } from "../services/enemHistorico";
 
 export default function CorrectionsHistoryPage() {
   const navigate = useNavigate();
@@ -56,7 +57,8 @@ export default function CorrectionsHistoryPage() {
     if (scoreRange !== "all") {
       const [min, max] = scoreRange.split("-").map(Number);
       list = list.filter((item) => {
-        const score = Number(item.nota_final || 0);
+        const score = normalizeScore(item.nota_final);
+        if (score === null) return false;
         return score >= min && score <= max;
       });
     }
@@ -108,8 +110,9 @@ export default function CorrectionsHistoryPage() {
               key={item.id}
               tema={item.tema || "Sem tema"}
               createdAt={item.created_at}
-              score={item.nota_final}
-              imageUrl={item.arquivo_url}
+              score={normalizeScore(item.nota_final)}
+              essayId={getEssayId(item)}
+              isOcrError={isOcrError(item)}
               onOpen={() => navigate(`/historico/${item.id}`)}
             />
           ))}

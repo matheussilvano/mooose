@@ -24,8 +24,8 @@ const steps = [
 
 const faqItems = [
   {
-    title: "É gratuito?",
-    content: "Você começa com 1 correção grátis. Depois, pode comprar correções para continuar."
+    title: "Preciso pagar para usar?",
+    content: "Sim. Você cria uma conta, escolhe um pacote e começa a corrigir depois da confirmação do pagamento."
   },
   {
     title: "Recebo nota no padrão ENEM?",
@@ -80,7 +80,7 @@ export default function LandingSections() {
 
   return (
     <>
-      <Section id="como-funciona" title="Como funciona" subtitle="Três passos simples para treinar redação toda semana.">
+      <Section id="como-funciona" title="Como funciona" subtitle="Crie sua conta, escolha um pacote e treine redação toda semana.">
         <div className="grid gap-6 md:grid-cols-3">
           {steps.map((step, index) => (
             <motion.div

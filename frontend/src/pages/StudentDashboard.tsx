@@ -22,7 +22,8 @@ import { ensureAnonSession } from "../lib/anon";
 import { parseAuthParams } from "../lib/authReturn";
 import { useToast } from "../components/ui/Toast";
 import { getToken } from "../lib/auth";
-import { sortHistorico } from "../services/enemHistorico";
+import { normalizeScore } from "../lib/normalize";
+import { isOcrError, sortHistorico } from "../services/enemHistorico";
 
 export default function StudentDashboard() {
   const location = useLocation();
@@ -110,8 +111,14 @@ export default function StudentDashboard() {
 
   const sortedHistory = useMemo(() => sortHistorico(history || []), [history]);
   const latest = sortedHistory[0];
+  const latestIsOcrError = latest ? isOcrError(latest) : false;
+  const latestScore = normalizeScore(latest?.nota_final);
   const mainTitle = latest?.tema ? latest.tema : "Sua próxima redação";
-  const mainSubtitle = latest?.nota_final ? `Última nota: ${latest.nota_final}` : "Envie uma redação e receba feedback completo.";
+  const mainSubtitle = latestIsOcrError
+    ? "A última tentativa teve falha de OCR. Tente reenviar com imagem/PDF mais nítido."
+    : latestScore !== null
+      ? `Última nota: ${Math.round(latestScore)}`
+      : "Envie uma redação e receba feedback completo.";
 
   const handleTabChange = (tab: DashboardTab) => {
     if (tab === "shop") {
@@ -136,6 +143,7 @@ export default function StudentDashboard() {
             loading={loading && !history.length}
             onOpen={(item) => navigate(`/historico/${item.id}`)}
             onViewAll={() => navigate("/historico")}
+            getScoreLabel={(item) => (isOcrError(item) ? "Erro OCR" : normalizeScore(item?.nota_final) ?? "—")}
           />
           <section className="dashboard-section">
             <div className="dashboard-section-header">
@@ -199,7 +207,7 @@ export default function StudentDashboard() {
               {error && <p className="form-message error">{error}</p>}
               {showAuthNudge && !user && (
                 <div className="dashboard-nudge">
-                  Para continuar corrigindo, crie sua conta gratuita.
+                  Para corrigir, crie sua conta e escolha um pacote.
                   <button onClick={() => setAuthOpen(true)}>Entrar ou criar conta</button>
                 </div>
               )}

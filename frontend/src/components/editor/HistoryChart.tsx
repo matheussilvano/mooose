@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import Chart from "chart.js/auto";
 import { normalizeScore } from "../../lib/normalize";
+import { isOcrError } from "../../services/enemHistorico";
 
 interface HistoryChartProps {
   items: any[];
@@ -12,11 +13,12 @@ export default function HistoryChart({ items }: HistoryChartProps) {
 
   useEffect(() => {
     if (!canvasRef.current) return;
-    const sorted = [...items]
-      .filter((x) => typeof x.nota_final === "number")
-      .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-    const labels = sorted.map((x) => new Date(x.created_at).toLocaleDateString(undefined, { day: "2-digit", month: "2-digit" }));
-    const values = sorted.map((x) => normalizeScore(x.nota_final) || 0);
+    const normalized = [...items]
+      .map((entry) => ({ entry, score: normalizeScore(entry?.nota_final) }))
+      .filter(({ entry, score }) => score !== null && !isOcrError(entry))
+      .sort((a, b) => new Date(a.entry.created_at).getTime() - new Date(b.entry.created_at).getTime());
+    const labels = normalized.map(({ entry }) => new Date(entry.created_at).toLocaleDateString(undefined, { day: "2-digit", month: "2-digit" }));
+    const values = normalized.map(({ score }) => score as number);
 
     if (chartRef.current) {
       chartRef.current.data.labels = labels;

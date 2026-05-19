@@ -5,6 +5,8 @@ export function normalizeCredits(value: unknown) {
 }
 
 export function normalizeScore(value: unknown) {
+  if (value === null || value === undefined) return null;
+  if (typeof value === "string" && value.trim() === "") return null;
   const n = Number(value);
   return Number.isFinite(n) ? n : null;
 }

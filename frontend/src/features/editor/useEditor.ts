@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { extractCredits, extractFreeRemaining, normalizeScore } from "../../lib/normalize";
-import { FREE_REMAINING_KEY } from "../../lib/storage";
 import { sendFileCorrection, sendTextCorrection, fetchHistory, submitReview, fetchMe } from "./editorApi";
 import { getToken } from "../../lib/auth";
-import { PAYWALL_STORAGE_KEY } from "../../lib/storage";
 
 interface Competencia {
   id: number;
@@ -12,11 +10,17 @@ interface Competencia {
 }
 
 export interface CorrectionResult {
-  nota_final: number;
+  status?: string;
+  error_code?: string;
+  error_message?: string;
+  detail?: string;
+  message?: string;
+  nota_final?: number | null;
   analise_geral?: string;
   feedback?: string;
   feedback_geral?: string;
   competencias?: Competencia[];
+  [key: string]: any;
 }
 
 export interface HistoryItem {
@@ -38,7 +42,7 @@ export function useEditor() {
   const [stats, setStats] = useState<{ avg: number; best: number }>({ avg: 0, best: 0 });
   const [requiresAuth, setRequiresAuth] = useState(false);
   const [requiresPayment, setRequiresPayment] = useState(false);
-  const [showAuthNudge, setShowAuthNudge] = useState(false);
+  const [showAuthNudge] = useState(false);
   const [lastEssayId, setLastEssayId] = useState<number | null>(null);
   const [lastReview, setLastReview] = useState<any | null>(null);
 
@@ -46,41 +50,6 @@ export function useEditor() {
     if (value === null || value === undefined) return;
     const safe = Math.max(0, Math.round(Number(value) || 0));
     setFreeRemaining(safe);
-    try {
-      localStorage.setItem(FREE_REMAINING_KEY, String(safe));
-    } catch {
-      // ignore
-    }
-  }, []);
-
-  const loadStoredFreeRemaining = useCallback(() => {
-    try {
-      const stored = localStorage.getItem(FREE_REMAINING_KEY);
-      if (stored === null) return;
-      const value = Number(stored);
-      if (Number.isFinite(value)) setFreeRemaining(Math.max(0, Math.round(value)));
-    } catch {
-      // ignore
-    }
-  }, []);
-
-  const shouldShowPaywallAfterFree = useCallback((prevCredits: number | null, nextCredits: number | null) => {
-    if (nextCredits === null || Number(nextCredits) !== 0) return false;
-    if (prevCredits !== null && Number(prevCredits) <= 0) return false;
-    try {
-      if (localStorage.getItem(PAYWALL_STORAGE_KEY) === "1") return false;
-    } catch {
-      // ignore
-    }
-    return true;
-  }, []);
-
-  const markPaywallShown = useCallback(() => {
-    try {
-      localStorage.setItem(PAYWALL_STORAGE_KEY, "1");
-    } catch {
-      // ignore
-    }
   }, []);
 
   const loadProfile = useCallback(async () => {
@@ -106,21 +75,23 @@ export function useEditor() {
   }, []);
 
   useEffect(() => {
-    loadStoredFreeRemaining();
     if (getToken()) {
       refreshHistory();
       loadProfile();
     }
-  }, [loadProfile, loadStoredFreeRemaining, refreshHistory]);
+  }, [loadProfile, refreshHistory]);
 
   const sendText = useCallback(async (tema: string, texto: string) => {
     setLoading(true);
     setError(null);
     setRequiresAuth(false);
     setRequiresPayment(false);
-    setShowAuthNudge(false);
+    if (!getToken()) {
+      setRequiresPayment(true);
+      setLoading(false);
+      return null;
+    }
     if (getToken() && credits !== null && credits <= 0) {
-      setError("Você ficou sem correções ⚠️");
       setRequiresPayment(true);
       setLoading(false);
       return null;
@@ -148,13 +119,8 @@ export function useEditor() {
       setLoading(false);
       return null;
     }
-    const prevCredits = credits;
     const newCredits = extractCredits(data);
     if (newCredits !== null) setCredits(newCredits);
-    if (shouldShowPaywallAfterFree(prevCredits, newCredits)) {
-      markPaywallShown();
-      setRequiresPayment(true);
-    }
     const essayId = data?.essay_id || data?.id || data?.resultado?.essay_id || data?.resultado?.id || null;
     const review = data?.review || data?.resultado?.review || null;
     setLastEssayId(essayId ? Number(essayId) : null);
@@ -162,22 +128,24 @@ export function useEditor() {
     const resultado = data?.resultado || data;
     setResult(resultado);
     await refreshHistory();
-    const effectiveFree = freeLeft !== null ? Math.max(0, Math.round(Number(freeLeft) || 0)) : freeRemaining;
-    if (!getToken() && effectiveFree === 0) {
-      setShowAuthNudge(true);
-    }
     setLoading(false);
     return resultado as CorrectionResult;
-  }, [credits, freeRemaining, markPaywallShown, refreshHistory, shouldShowPaywallAfterFree, updateFreeRemaining]);
+  }, [credits, refreshHistory, updateFreeRemaining]);
 
   const sendFile = useCallback(async (formData: FormData) => {
     setLoading(true);
     setError(null);
+    setResult(null);
+    setLastEssayId(null);
+    setLastReview(null);
     setRequiresAuth(false);
     setRequiresPayment(false);
-    setShowAuthNudge(false);
+    if (!getToken()) {
+      setRequiresPayment(true);
+      setLoading(false);
+      return null;
+    }
     if (getToken() && credits !== null && credits <= 0) {
-      setError("Você ficou sem correções ⚠️");
       setRequiresPayment(true);
       setLoading(false);
       return null;
@@ -205,13 +173,8 @@ export function useEditor() {
       setLoading(false);
       return null;
     }
-    const prevCredits = credits;
     const newCredits = extractCredits(data);
     if (newCredits !== null) setCredits(newCredits);
-    if (shouldShowPaywallAfterFree(prevCredits, newCredits)) {
-      markPaywallShown();
-      setRequiresPayment(true);
-    }
     const essayId = data?.essay_id || data?.id || data?.resultado?.essay_id || data?.resultado?.id || null;
     const review = data?.review || data?.resultado?.review || null;
     setLastEssayId(essayId ? Number(essayId) : null);
@@ -219,13 +182,9 @@ export function useEditor() {
     const resultado = data?.resultado || data;
     setResult(resultado);
     await refreshHistory();
-    const effectiveFree = freeLeft !== null ? Math.max(0, Math.round(Number(freeLeft) || 0)) : freeRemaining;
-    if (!getToken() && effectiveFree === 0) {
-      setShowAuthNudge(true);
-    }
     setLoading(false);
     return resultado as CorrectionResult;
-  }, [credits, freeRemaining, markPaywallShown, refreshHistory, shouldShowPaywallAfterFree, updateFreeRemaining]);
+  }, [credits, refreshHistory, updateFreeRemaining]);
 
   const saveReview = useCallback(async (essayId: number, stars: number, comment?: string) => {
     const { res, data } = await submitReview(essayId, stars, comment);

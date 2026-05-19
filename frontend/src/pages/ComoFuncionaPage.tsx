@@ -49,8 +49,7 @@ export default function ComoFuncionaPage() {
             <Badge className="bg-green-100 text-green-700">Feedback e sugestões de melhoria</Badge>
           </div>
           <p className="mt-4 text-sm text-text-muted">
-            Cada correção consome 1 correção disponível. Todos os usuários começam com 1 correção grátis e podem
-            comprar pacotes de 10 correções por R$ 9,90 via Mercado Pago.
+            Cada correção consome 1 correção disponível. Para começar, crie sua conta e compre um pacote via Mercado Pago.
           </p>
         </Card>
       </Section>
@@ -60,7 +59,7 @@ export default function ComoFuncionaPage() {
           <Card className="p-6">
             <h2 className="text-lg font-semibold text-text">Passo a passo da correção</h2>
             <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm text-text-muted">
-              <li><strong>Você envia a redação</strong><br />Na página principal da Mooose, basta criar uma conta, ganhar 1 correção grátis e escolher se quer enviar uma foto da redação escrita à mão, um PDF ou colar o texto digitado.</li>
+              <li><strong>Você cria a conta e escolhe um pacote</strong><br />Depois da confirmação do pagamento, escolha se quer enviar uma foto da redação escrita à mão, um PDF ou colar o texto digitado.</li>
               <li><strong>Leitura do texto (OCR, quando necessário)</strong><br />Se for foto ou PDF com imagem, a plataforma usa um sistema de reconhecimento de caracteres (OCR) para transformar a imagem em texto. Quanto mais nítida a foto, melhor a leitura.</li>
               <li><strong>Análise por IA seguindo as competências do ENEM</strong><br />Com o texto em mãos, a Mooose envia o conteúdo para modelos de Inteligência Artificial que foram configurados para olhar para os mesmos pontos avaliados no ENEM: domínio da escrita formal, desenvolvimento do tema, organização do texto, coesão e proposta de intervenção.</li>
               <li><strong>Cálculo das notas aproximadas</strong><br />A redação recebe uma nota aproximada de 0 a 200 em cada competência (1 a 5). A soma dessas notas gera a pontuação final aproximada (0 a 1000).</li>

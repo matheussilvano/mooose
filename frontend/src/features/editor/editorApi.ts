@@ -2,7 +2,7 @@ import { API_BASE } from "../../lib/api";
 import { getAuthHeaders } from "../../lib/auth";
 
 export async function sendTextCorrection(payload: string) {
-  const res = await fetch(`${API_BASE}/corrections`, {
+  const res = await fetch(`${API_BASE}/app/enem/corrigir-texto`, {
     method: "POST",
     headers: getAuthHeaders(),
     body: payload
@@ -12,7 +12,7 @@ export async function sendTextCorrection(payload: string) {
 }
 
 export async function sendFileCorrection(formData: FormData) {
-  const res = await fetch(`${API_BASE}/corrections/file`, {
+  const res = await fetch(`${API_BASE}/app/enem/corrigir-arquivo`, {
     method: "POST",
     headers: getAuthHeaders({}, { skipContentType: true }),
     body: formData

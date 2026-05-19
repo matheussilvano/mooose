@@ -51,11 +51,11 @@ export default function Hero() {
           transition={{ duration: 0.2, delay: 0.12 }}
           className="landing-cta"
         >
-          <Button size="lg" onClick={() => (window.location.href = "/editor")}> 
-            Corrigir grátis
+          <Button size="lg" onClick={() => (window.location.href = "/paywall")}> 
+            Começar com um pacote
             <ArrowUpRight size={18} />
           </Button>
-          <span className="landing-cta-note">1 correção gratuita · sem cartão</span>
+          <span className="landing-cta-note">Crie sua conta e pague com segurança pelo Mercado Pago</span>
         </motion.div>
 
         <motion.div

@@ -73,7 +73,7 @@ export default function SobrePage() {
           <Card className="p-6 bg-slate-900 text-slate-200">
             <h3 className="text-lg font-semibold">Como a Mooose se sustenta</h3>
             <p className="mt-3 text-sm text-slate-300">
-              A ideia é manter a correção de redações <strong>acessível</strong> para estudantes, começando com <strong>1 correção grátis</strong> para todos e pacotes de <strong>10 correções por R$ 9,90</strong>. A sustentabilidade vem por meio de:
+              A ideia é manter a correção de redações <strong>acessível</strong> para estudantes, com pacotes a partir de <strong>1 correção</strong> e plano de <strong>10 correções por R$ 9,90</strong>. A sustentabilidade vem por meio de:
             </p>
             <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-300">
               <li><strong>Anúncios bem filtrados</strong>, evitando conteúdos enganosos, casas de aposta, pornografia ou qualquer coisa que não faça sentido para quem está estudando.</li>
