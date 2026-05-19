@@ -164,9 +164,15 @@ async def send_password_reset_email(email: str, token: str):
 
 
 def _safe_redirect_path(path: Optional[str]) -> str:
-    if path in {"/app/editor", "/app/paywall"}:
+    legacy_paths = {
+        "/app/editor": "/editor",
+        "/app/paywall": "/paywall",
+    }
+    if path in legacy_paths:
+        return legacy_paths[path]
+    if path in {"/editor", "/paywall"}:
         return path
-    return "/app/editor"
+    return "/editor"
 
 
 def _post_login_path(user: models.User) -> str:
@@ -177,8 +183,8 @@ def _post_login_path(user: models.User) -> str:
     finally:
         db.close()
     if has_credits or has_subscription:
-        return "/app/editor"
-    return "/app/paywall"
+        return "/editor"
+    return "/paywall"
 
 
 def _build_frontend_redirect(path: str, token: str) -> str:
