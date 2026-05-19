@@ -140,6 +140,13 @@ class Essay(Base):
     
     # Este campo agora salvará a URL completa (ex: do S3)
     arquivo_path = Column(String, nullable=True)  # caminho/URL do arquivo salvo (imagem/pdf)
+    arquivo_public_id = Column(String, nullable=True)
+    arquivo_resource_type = Column(String, nullable=True)
+    arquivo_type = Column(String, nullable=True)
+
+    status = Column(String, nullable=False, default="pending", server_default="pending")
+    error_code = Column(String, nullable=True)
+    error_message = Column(String, nullable=True)
 
     nota_final = Column(Integer, nullable=True)
     c1_nota = Column(Integer, nullable=True)

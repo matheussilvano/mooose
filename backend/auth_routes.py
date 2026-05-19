@@ -18,7 +18,6 @@ import models
 from database import SessionLocal
 import schemas
 from anon_service import (
-    free_remaining,
     get_or_create_anon_session,
     merge_anon_to_user,
 )
@@ -170,9 +169,8 @@ def _safe_redirect_path(path: Optional[str]) -> str:
 
 
 def _post_login_path(user: models.User) -> str:
-    remaining = free_remaining(user.free_used or 0)
     has_credits = (user.credits or 0) > 0
-    if remaining > 0 or has_credits:
+    if has_credits:
         return "/app/editor"
     return "/app/paywall"
 
@@ -280,7 +278,7 @@ async def register(
         email=user_in.email,
         full_name=user_in.full_name,
         hashed_password=get_password_hash(user_in.password),
-        credits=2,  # créditos iniciais
+        credits=0,
         is_verified=False, # NOVO: começa como não verificado
         referral_code=generate_referral_code(db),
         signup_ip=client_ip,
@@ -420,7 +418,7 @@ def google_callback(
                 email=email,
                 full_name=None,
                 hashed_password=get_password_hash(secrets.token_urlsafe(32)),
-                credits=2,
+                credits=0,
                 is_verified=True,
                 referral_code=generate_referral_code(db),
                 signup_ip=client_ip,

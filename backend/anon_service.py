@@ -14,7 +14,7 @@ def _get_int_env(name: str, default: int) -> int:
         return default
 
 
-FREE_CORRECTIONS_LIMIT = _get_int_env("FREE_CORRECTIONS_LIMIT", 1)
+FREE_CORRECTIONS_LIMIT = _get_int_env("FREE_CORRECTIONS_LIMIT", 0)
 ANON_IP_SOFT_LIMIT = _get_int_env("ANON_IP_SOFT_LIMIT", 5)
 ANON_IP_WINDOW_SECONDS = _get_int_env("ANON_IP_WINDOW_SECONDS", 3600)
 
