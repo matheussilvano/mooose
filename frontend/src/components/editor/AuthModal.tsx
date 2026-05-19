@@ -30,7 +30,8 @@ export default function AuthModal({ open, onClose, onSuccess, returnPath = "/edi
 
   const startGoogleAuth = () => {
     setAuthReturnPath(returnPath);
-    window.location.href = `${API_BASE}/auth/google/start`;
+    const params = new URLSearchParams({ redirect: returnPath });
+    window.location.href = `${API_BASE}/auth/google/start?${params.toString()}`;
   };
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
