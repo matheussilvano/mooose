@@ -33,15 +33,25 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# NOVO: Pega a URL do front do ambiente (Vercel)
-# Em dev local, você pode não definir a variável,
-# ou criar um .env e usar python-dotenv
-FRONTEND_URL_1 = os.environ.get("FRONTEND_URL", "http://127.0.0.1:5500")
-FRONTEND_URL_2 = os.environ.get("FRONTEND_URL_2") 
+def _split_origins(value: str) -> list[str]:
+    return [origin.strip().rstrip("/") for origin in value.split(",") if origin.strip()]
 
-allowed_origins = ["http://localhost:5500"]
 
-for url in (FRONTEND_URL_1, FRONTEND_URL_2):
+allowed_origins = [
+    "http://localhost:5500",
+    "http://127.0.0.1:5500",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://mooose.com.br",
+    "https://www.mooose.com.br",
+]
+
+for url in (
+    os.environ.get("FRONTEND_URL"),
+    os.environ.get("FRONTEND_URL_2"),
+    *_split_origins(os.environ.get("CORS_ORIGINS", "")),
+):
+    url = url.rstrip("/") if url else url
     if url and url not in allowed_origins:
         allowed_origins.append(url)
 
