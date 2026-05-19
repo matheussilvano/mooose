@@ -19,10 +19,18 @@ class UserRead(BaseModel):
     id: int
     email: EmailStr
     full_name: Optional[str]
+    bio: Optional[str] = None
+    profile_avatar: Optional[str] = None
     credits: int
 
     class Config:
         from_attributes = True  # <-- MUDANÇA AQUI
+
+
+class UserUpdate(BaseModel):
+    full_name: Optional[str] = None
+    bio: Optional[str] = None
+    profile_avatar: Optional[Literal["green", "blue", "gray", "black", "pink"]] = None
 
 
 class Token(BaseModel):

@@ -459,6 +459,66 @@ def read_me(current_user: models.User = Depends(get_current_user)):
     return current_user
 
 
+@router.patch("/me", response_model=schemas.UserRead)
+def update_me(
+    payload: schemas.UserUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    user = db.get(models.User, current_user.id)
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado.")
+
+    if payload.full_name is not None:
+        name = payload.full_name.strip()
+        user.full_name = name[:120] if name else None
+    if payload.bio is not None:
+        bio = payload.bio.strip()
+        user.bio = bio[:500] if bio else None
+    if payload.profile_avatar is not None:
+        user.profile_avatar = payload.profile_avatar
+
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+@router.delete("/me")
+def delete_me(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    user = db.get(models.User, current_user.id)
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado.")
+
+    db.query(models.Referral).filter(
+        (models.Referral.referrer_id == user.id)
+        | (models.Referral.referred_id == user.id)
+    ).delete(synchronize_session=False)
+    db.query(models.User).filter(models.User.referred_by == user.id).update(
+        {models.User.referred_by: None},
+        synchronize_session=False,
+    )
+    db.query(models.AnonymousSession).filter(
+        models.AnonymousSession.linked_user_id == user.id
+    ).update(
+        {
+            models.AnonymousSession.linked_user_id: None,
+            models.AnonymousSession.linked_at: None,
+        },
+        synchronize_session=False,
+    )
+    db.query(models.Subscription).filter(models.Subscription.user_id == user.id).delete(
+        synchronize_session=False
+    )
+
+    db.delete(user)
+    db.commit()
+    return {"deleted": True}
+
+
 @router.get("/email/confirm")
 def confirm_email(
     token: str,

@@ -24,6 +24,8 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True, nullable=False)
     full_name = Column(String, nullable=True)
+    bio = Column(Text, nullable=True)
+    profile_avatar = Column(String, nullable=True)
     hashed_password = Column(String, nullable=False)
     google_id = Column(String, unique=True, index=True, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
