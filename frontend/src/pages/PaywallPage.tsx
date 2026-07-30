@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { API_BASE } from "../lib/api";
@@ -105,7 +105,9 @@ export default function PaywallPage() {
   const toast = useToast();
   const loadingOverlay = useLoadingOverlay();
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+  const [pendingPlan, setPendingPlan] = useState<string | null>(null);
   const [authOpen, setAuthOpen] = useState(false);
+  const automaticCheckoutStarted = useRef(false);
   const { user, loadMe } = useAuth();
   const subscription = user?.subscription as SubscriptionInfo | null | undefined;
 
@@ -132,8 +134,10 @@ export default function PaywallPage() {
   };
 
   const handleCheckout = async (plan: string) => {
+    const planSlug = normalizePlanSlug(plan);
     if (!getToken()) {
-      setAuthReturnPath("/paywall");
+      setPendingPlan(planSlug);
+      setAuthReturnPath(`/paywall?checkout=${planSlug}`);
       setAuthOpen(true);
       return;
     }
@@ -141,7 +145,6 @@ export default function PaywallPage() {
     setLoadingPlan(plan);
     loadingOverlay.show("Abrindo checkout...");
     try {
-      const planSlug = normalizePlanSlug(plan);
       const res = await fetch(`${API_BASE}/abacatepay/checkout/${planSlug}`, {
         method: "POST",
         headers: getAuthHeaders()
@@ -151,13 +154,24 @@ export default function PaywallPage() {
         throw new Error(data?.detail || data?.message || "Falha ao iniciar o pagamento.");
       }
       window.location.href = data.checkout_url;
-    } catch {
-      toast.push("Não foi possível iniciar o pagamento. Tente novamente.", "error");
+    } catch (error) {
+      const message = error instanceof Error
+        ? error.message
+        : "Não foi possível iniciar o pagamento. Tente novamente.";
+      toast.push(message, "error");
     } finally {
       setLoadingPlan(null);
       loadingOverlay.hide();
     }
   };
+
+  useEffect(() => {
+    const plan = new URLSearchParams(location.search).get("checkout");
+    if (!plan || !getToken() || automaticCheckoutStarted.current) return;
+    automaticCheckoutStarted.current = true;
+    navigate("/paywall", { replace: true });
+    void handleCheckout(plan);
+  }, [location.search, navigate]);
 
   return (
     <div className="min-h-screen bg-bg text-text">
@@ -248,8 +262,15 @@ export default function PaywallPage() {
       <AuthModal
         open={authOpen}
         onClose={() => setAuthOpen(false)}
-        returnPath="/paywall"
-        onSuccess={async () => { await loadMe(); }}
+        returnPath={pendingPlan ? `/paywall?checkout=${pendingPlan}` : "/paywall"}
+        onSuccess={async () => {
+          await loadMe();
+          if (pendingPlan) {
+            const plan = pendingPlan;
+            setPendingPlan(null);
+            await handleCheckout(plan);
+          }
+        }}
       />
 
       <LoadingOverlay visible={loadingOverlay.visible} message={loadingOverlay.message} />
