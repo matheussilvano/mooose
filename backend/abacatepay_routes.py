@@ -112,6 +112,18 @@ def _request_abacate(method: str, path: str, payload: Optional[dict] = None, que
         except json.JSONDecodeError:
             parsed = {"error": body}
         error_text = str(parsed.get("error") or body)
+        if exc.code == 401:
+            logger.error("AbacatePay recusou a chave configurada (%s %s)", method, path)
+            raise HTTPException(
+                status_code=502,
+                detail="A integração de pagamento está temporariamente indisponível.",
+            )
+        if exc.code == 403:
+            logger.error("Chave AbacatePay sem permissão para %s %s", method, path)
+            raise HTTPException(
+                status_code=502,
+                detail="A integração de pagamento não tem permissão para concluir esta operação.",
+            )
         if exc.code == 404 or "Product not found" in error_text:
             return {"success": False, "error": "not_found", "status_code": 404, **parsed}
         logger.exception("Erro HTTP AbacatePay %s %s", method, path)
