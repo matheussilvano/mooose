@@ -16,6 +16,7 @@ from abacatepay_routes import router as abacatepay_router
 from admin_routes import router as admin_router
 from referrals_routes import router as referrals_router
 from corrections_routes import router as corrections_router
+from mooose_api.router import router as open_router
 
 # Cria tabelas do banco
 models.Base.metadata.create_all(bind=engine)
@@ -137,6 +138,9 @@ app.include_router(abacatepay_router)
 app.include_router(admin_router)
 app.include_router(referrals_router)
 app.include_router(corrections_router)
+
+# Open BYOK grading API (LangGraph pipeline)
+app.include_router(open_router)
 
 # Mantém seu router original de correção ENEM
 app.include_router(
