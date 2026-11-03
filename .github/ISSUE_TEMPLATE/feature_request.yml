@@ -4,5 +4,7 @@ labels: [enhancement]
 body:
   - type: textarea
     id: idea
-    attributes: {label: Qual é a ideia e que problema ela resolve?}
-    validations: {required: true}
+    attributes:
+      label: Qual é a ideia e que problema ela resolve?
+    validations:
+      required: true

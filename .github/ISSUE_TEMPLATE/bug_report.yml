@@ -4,11 +4,19 @@ labels: [bug]
 body:
   - type: textarea
     id: what
-    attributes: {label: O que aconteceu?, description: "Passos para reproduzir e o que você esperava"}
-    validations: {required: true}
+    attributes:
+      label: O que aconteceu?
+      description: Passos para reproduzir e o que você esperava.
+    validations:
+      required: true
   - type: input
     id: provider
-    attributes: {label: Provedor e modelo, placeholder: "openrouter / openrouter/free"}
+    attributes:
+      label: Provedor e modelo
+      placeholder: "openrouter / openrouter/free"
   - type: textarea
     id: logs
-    attributes: {label: Logs ou erro, description: "NUNCA cole sua chave de API", render: shell}
+    attributes:
+      label: Logs ou erro
+      description: NUNCA cole sua chave de API.
+      render: shell

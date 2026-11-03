@@ -10,3 +10,6 @@ venv/
 *.db
 .pytest_cache/
 .DS_Store
+.coverage
+htmlcov/
+coverage/

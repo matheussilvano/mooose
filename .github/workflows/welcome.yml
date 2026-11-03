@@ -1,0 +1,16 @@
+name: Welcome
+on:
+  issues: {types: [opened]}
+  pull_request_target: {types: [opened]}
+permissions: {issues: write, pull-requests: write}
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/first-interaction@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-message: |
+            Obrigado por abrir sua primeira issue no Mooose! 🫎 Se puder, diga o provedor/modelo que usou e cole o erro (sem sua chave de API).
+          pr-message: |
+            Obrigado pelo seu primeiro PR! 🎉 O CI roda os testes automaticamente. Se mudou prompts ou a rubrica, rode `python -m evals.run_evals` e cole os números aqui. Veja o CONTRIBUTING.md.
