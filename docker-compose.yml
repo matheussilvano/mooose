@@ -1,6 +1,7 @@
 # docker compose up --build   ->  app em http://localhost:8080  |  API em http://localhost:8000/docs
-# Corretor 100% local e grátis: docker compose --profile local-llm up --build
-#   depois: docker compose exec ollama ollama pull qwen2.5:14b   (e escolha "Ollama" na tela)
+# Corretor 100% local e grátis (sem chave): docker compose --profile local-llm up --build
+#   Baixa sozinho um modelo de texto (~9 GB) e um de visão para fotos (~6 GB) na 1ª vez; escolha "Ollama" na tela.
+#   Máquina fraca? Troque por modelos menores: MOOOSE_OLLAMA_MODEL=qwen2.5:7b MOOOSE_OLLAMA_VISION_MODEL=qwen2.5vl:3b
 services:
   api:
     build: ./backend
@@ -8,6 +9,8 @@ services:
     environment:
       CORS_ORIGINS: http://localhost:8080,http://localhost:5173
       OLLAMA_BASE_URL: http://ollama:11434/v1
+      MOOOSE_OLLAMA_MODEL: ${MOOOSE_OLLAMA_MODEL:-qwen2.5:14b}
+      MOOOSE_OLLAMA_VISION_MODEL: ${MOOOSE_OLLAMA_VISION_MODEL:-qwen2.5vl:7b}
     env_file:
       - path: .env
         required: false
@@ -23,5 +26,14 @@ services:
     profiles: [local-llm]
     volumes: [ollama:/root/.ollama]
     ports: ["11434:11434"]
+  ollama-setup:
+    image: ollama/ollama
+    profiles: [local-llm]
+    depends_on: [ollama]
+    environment: {OLLAMA_HOST: "http://ollama:11434"}
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - "until ollama list >/dev/null 2>&1; do sleep 2; done; ollama pull ${MOOOSE_OLLAMA_MODEL:-qwen2.5:14b} && ollama pull ${MOOOSE_OLLAMA_VISION_MODEL:-qwen2.5vl:7b}"
+    restart: "no"
 volumes:
   ollama:

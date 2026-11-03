@@ -53,7 +53,7 @@ PROVIDERS: dict[str, ProviderSpec] = {
             "ollama", "Ollama (100% local e grátis)", "openai",
             default_model=os.environ.get("MOOOSE_OLLAMA_MODEL", "qwen2.5:14b"),
             base_url=os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434/v1"),
-            needs_key=False, free_tier=True, vision=False, key_url="https://ollama.com/download",
+            needs_key=False, free_tier=True, vision=True, key_url="https://ollama.com/download",
             notes="Roda no seu computador, sem enviar nada para a nuvem.",
         ),
         ProviderSpec(
@@ -83,6 +83,13 @@ class LLMConfig(BaseModel):
 
     def __repr_args__(self):  # never leak the key in logs
         return [(k, v) for k, v in super().__repr_args__() if k != "api_key"]
+
+
+def default_vision_model(provider: str) -> Optional[str]:
+    """Provider-specific model used for reading photos when the text model can't (local Ollama)."""
+    if provider == "ollama":
+        return os.environ.get("MOOOSE_OLLAMA_VISION_MODEL", "qwen2.5vl:7b")
+    return None
 
 
 class ProviderError(ValueError):

@@ -15,7 +15,7 @@ from pydantic import BaseModel, Field
 
 from mooose_ai import GradingError, LLMConfig, ProviderError, build_chat_model, grade_essay, public_catalog, stream_grade
 from mooose_ai.ocr import IMAGE_TYPES, OCRError, extract_pdf_text, paddle_available, paddle_transcribe, transcribe_image
-from mooose_ai.providers import PROVIDERS, resolve
+from mooose_ai.providers import PROVIDERS, default_vision_model, resolve
 
 logger = logging.getLogger("mooose.api")
 router = APIRouter(prefix="/v1", tags=["open grading (BYOK)"])
@@ -113,7 +113,10 @@ async def ocr(
             raise HTTPException(400, "Tipo de arquivo não suportado. Use jpeg/png ou pdf.")
         if engine == "paddle":
             return {"texto": await paddle_transcribe(data), "engine": "paddle"}
-        llm, _ = _llm(x_llm_provider, x_llm_model, x_llm_api_key, x_llm_base_url)
+        vmodel = x_llm_model or default_vision_model((x_llm_provider or "").lower())
+        if (x_llm_provider or "").lower() == "ollama":
+            vmodel = default_vision_model("ollama")  # text models like qwen2.5 can't read images
+        llm, _ = _llm(x_llm_provider, vmodel, x_llm_api_key, x_llm_base_url)
         return {"texto": await transcribe_image(llm, data, ctype), "engine": "vision"}
     except HTTPException:
         raise
@@ -175,7 +178,8 @@ async def grade_file(
             if ocr_engine == "paddle":
                 text = await paddle_transcribe(data)
             else:
-                vision = llm if not x_llm_vision_model else _llm(x_llm_provider, x_llm_vision_model, x_llm_api_key, x_llm_base_url)[0]
+                vmodel = x_llm_vision_model or default_vision_model((x_llm_provider or "").lower())
+                vision = llm if not vmodel else _llm(x_llm_provider, vmodel, x_llm_api_key, x_llm_base_url)[0]
                 text = await transcribe_image(vision, data, ctype)
         elif ctype == "application/pdf":
             text = extract_pdf_text(data)
