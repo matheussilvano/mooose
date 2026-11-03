@@ -1,0 +1,27 @@
+# docker compose up --build   ->  app em http://localhost:8080  |  API em http://localhost:8000/docs
+# Corretor 100% local e grátis: docker compose --profile local-llm up --build
+#   depois: docker compose exec ollama ollama pull qwen2.5:14b   (e escolha "Ollama" na tela)
+services:
+  api:
+    build: ./backend
+    command: uvicorn mooose_api.app:app --host 0.0.0.0 --port 8000
+    environment:
+      CORS_ORIGINS: http://localhost:8080,http://localhost:5173
+      OLLAMA_BASE_URL: http://ollama:11434/v1
+    env_file:
+      - path: .env
+        required: false
+    ports: ["8000:8000"]
+  web:
+    build:
+      context: ./frontend
+      args: {VITE_OPEN_API_BASE: http://localhost:8000}
+    ports: ["8080:80"]
+    depends_on: [api]
+  ollama:
+    image: ollama/ollama
+    profiles: [local-llm]
+    volumes: [ollama:/root/.ollama]
+    ports: ["11434:11434"]
+volumes:
+  ollama:
