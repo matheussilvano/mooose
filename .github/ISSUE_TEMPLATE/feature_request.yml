@@ -1,0 +1,8 @@
+name: Ideia ou melhoria
+description: Novo provedor, melhoria na rubrica, UX, etc.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes: {label: Qual é a ideia e que problema ela resolve?}
+    validations: {required: true}

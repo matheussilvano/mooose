@@ -1,0 +1,14 @@
+name: Bug
+description: Algo não funciona como esperado
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes: {label: O que aconteceu?, description: "Passos para reproduzir e o que você esperava"}
+    validations: {required: true}
+  - type: input
+    id: provider
+    attributes: {label: Provedor e modelo, placeholder: "openrouter / meta-llama/..."}
+  - type: textarea
+    id: logs
+    attributes: {label: Logs ou erro, description: "NUNCA cole sua chave de API", render: shell}
