@@ -3,7 +3,6 @@ import json
 
 import pytest
 from fastapi.testclient import TestClient
-from langchain_core.language_models.fake_chat_models import GenericFakeChatModel
 from langchain_core.messages import AIMessage
 
 from mooose_ai import calibration as cal
@@ -146,3 +145,65 @@ def test_ocr_engines_endpoint():
 
     r = TestClient(app).get("/v1/ocr/engines")
     assert r.status_code == 200 and r.json()["vision"] is True
+
+
+# ---------- API layer (LLM replaced by a scripted fake) ----------
+
+
+@pytest.fixture()
+def api(monkeypatch):
+    import mooose_api.router as r
+
+    monkeypatch.setattr(r, "_llm", lambda *a, **k: (RouterLLM(), "fake/model"))
+    monkeypatch.setenv("MOOOSE_RATE_LIMIT_PER_MIN", "0")
+    from mooose_api.app import app
+
+    return TestClient(app)
+
+
+def test_api_grade_returns_legacy_compatible_payload(api):
+    res = api.post("/v1/grade", json={"texto": ESSAY, "tema": "T"})
+    assert res.status_code == 200
+    body = res.json()
+    assert body["nota_final"] == 840 and len(body["competencias"]) == 5
+    assert body["meta"]["model"] == "fake/model"
+
+
+def test_api_grade_rejects_empty_theme(api):
+    res = api.post("/v1/grade", json={"texto": ESSAY, "tema": "  "})
+    assert res.status_code == 400
+
+
+def test_api_stream_emits_progress_then_result(api):
+    res = api.post("/v1/grade/stream", json={"texto": ESSAY, "tema": "T"})
+    assert res.status_code == 200
+    assert "event: progress" in res.text and "event: result" in res.text
+    assert res.text.index("event: progress") < res.text.index("event: result")
+
+
+def test_api_rate_limit(api, monkeypatch):
+    monkeypatch.setenv("MOOOSE_RATE_LIMIT_PER_MIN", "2")
+    import mooose_api.router as r
+
+    r._hits.clear()
+    codes = [api.post("/v1/grade", json={"texto": ESSAY, "tema": "T"}).status_code for _ in range(3)]
+    assert codes == [200, 200, 429]
+
+
+def test_api_file_rejects_unknown_type(api):
+    res = api.post("/v1/grade/file", data={"tema": "T"}, files={"arquivo": ("a.txt", b"oi", "text/plain")})
+    assert res.status_code == 400
+
+
+def test_api_error_does_not_leak_secrets(monkeypatch):
+    import mooose_api.router as r
+    from mooose_api.app import app
+
+    class Boom:
+        async def ainvoke(self, *_):
+            raise RuntimeError("sk-secret-123 exploded")
+
+    monkeypatch.setattr(r, "_llm", lambda *a, **k: (Boom(), "x/y"))
+    monkeypatch.setenv("MOOOSE_RATE_LIMIT_PER_MIN", "0")
+    res = TestClient(app).post("/v1/grade", json={"texto": ESSAY, "tema": "T"}, headers={"x-llm-api-key": "sk-secret-123"})
+    assert res.status_code == 502 and "sk-secret-123" not in res.text

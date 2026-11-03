@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from statistics import median_low
-from typing import Optional
 
 from .schemas import InterventionGrade
 
@@ -58,7 +57,7 @@ def word_count(text: str) -> int:
     return len(text.split())
 
 
-def annulment_reason(adequacao: str, dissertativo: bool, text: str) -> Optional[str]:
+def annulment_reason(adequacao: str, dissertativo: bool, text: str) -> str | None:
     if word_count(text) < MIN_WORDS:
         return "Texto insuficiente: poucas linhas para configurar uma redação (nota zero no ENEM)."
     if adequacao == "fuga_total":

@@ -1,7 +1,7 @@
 """Pydantic schemas shared by the grading pipeline."""
 from __future__ import annotations
 
-from typing import Literal, Optional
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -77,4 +77,4 @@ class EssayResult(BaseModel):
     competencias: list[CompetencyResult]
     proximos_passos: list[str] = Field(default_factory=list)
     meta: dict = Field(default_factory=dict)
-    anulada: Optional[str] = None
+    anulada: str | None = None

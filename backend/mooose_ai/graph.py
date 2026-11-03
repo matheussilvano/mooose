@@ -17,14 +17,20 @@ from __future__ import annotations
 import asyncio
 import operator
 import time
-from typing import Annotated, Any, Optional, TypedDict
+from typing import Annotated, Any, TypedDict
 
 from langgraph.graph import END, START, StateGraph
 
 from . import calibration as cal
 from . import rubric
 from .schemas import (
-    Audit, CompetencyGrade, CompetencyResult, EssayResult, InterventionGrade, Synthesis, ThemeAnalysis,
+    Audit,
+    CompetencyGrade,
+    CompetencyResult,
+    EssayResult,
+    InterventionGrade,
+    Synthesis,
+    ThemeAnalysis,
 )
 from .structured import ainvoke_structured
 
@@ -46,7 +52,7 @@ class State(TypedDict, total=False):
     warnings: Annotated[list, operator.add]
     audit: Audit
     scores: dict
-    annulled: Optional[str]
+    annulled: str | None
     result: EssayResult
     synthesis: Synthesis
 

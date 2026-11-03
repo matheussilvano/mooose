@@ -74,7 +74,7 @@ def paddle_transcribe_sync(content: bytes) -> str:
         for res in _paddle_engine().predict(f.name):
             data = res.json["res"] if hasattr(res, "json") else res
             lines.extend(data.get("rec_texts", []))
-    text = "\n".join(l for l in lines if l.strip()).strip()
+    text = "\n".join(line for line in lines if line.strip()).strip()
     if not text:
         raise OCRError("Nenhum texto detectado na imagem.")
     return text

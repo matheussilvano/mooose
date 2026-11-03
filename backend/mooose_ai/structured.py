@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import json
 import re
-from typing import Type, TypeVar
+from typing import TypeVar
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from pydantic import BaseModel, ValidationError
@@ -53,7 +53,7 @@ def _content_to_text(content: object) -> str:
     return str(content)
 
 
-async def ainvoke_structured(llm, system: str, user: str, schema: Type[T], retries: int = 1) -> T:
+async def ainvoke_structured(llm, system: str, user: str, schema: type[T], retries: int = 1) -> T:
     schema_hint = json.dumps(schema.model_json_schema(), ensure_ascii=False)
     messages = [
         SystemMessage(content=f"{system}\n\nResponda SOMENTE com um objeto JSON válido que siga este JSON Schema:\n{schema_hint}"),

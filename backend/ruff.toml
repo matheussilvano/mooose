@@ -1,0 +1,8 @@
+# Lint the new, open-source code. The legacy hosted modules are left alone for now.
+target-version = "py311"
+line-length = 140
+extend-exclude = ["venv", ".venv"]
+
+[lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501", "B008"]

@@ -6,8 +6,7 @@ Most providers speak the OpenAI protocol, so one adapter covers many of them.
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass, field
-from typing import Optional
+from dataclasses import dataclass
 
 from pydantic import BaseModel, Field
 
@@ -18,8 +17,8 @@ class ProviderSpec:
     label: str
     kind: str  # "openai" | "anthropic" | "google"
     default_model: str
-    base_url: Optional[str] = None
-    key_env: Optional[str] = None
+    base_url: str | None = None
+    key_env: str | None = None
     needs_key: bool = True
     free_tier: bool = False
     vision: bool = True
@@ -76,16 +75,16 @@ PROVIDERS: dict[str, ProviderSpec] = {
 
 class LLMConfig(BaseModel):
     provider: str = "openrouter"
-    model: Optional[str] = None
-    api_key: Optional[str] = Field(default=None, repr=False)
-    base_url: Optional[str] = None
+    model: str | None = None
+    api_key: str | None = Field(default=None, repr=False)
+    base_url: str | None = None
     temperature: float = 0.0
 
     def __repr_args__(self):  # never leak the key in logs
         return [(k, v) for k, v in super().__repr_args__() if k != "api_key"]
 
 
-def default_vision_model(provider: str) -> Optional[str]:
+def default_vision_model(provider: str) -> str | None:
     """Provider-specific model used for reading photos when the text model can't (local Ollama)."""
     if provider == "ollama":
         return os.environ.get("MOOOSE_OLLAMA_VISION_MODEL", "qwen2.5vl:7b")
@@ -100,7 +99,7 @@ def _allow_custom_base_url() -> bool:
     return os.environ.get("MOOOSE_ALLOW_CUSTOM_BASE_URL", "").lower() in {"1", "true", "yes"}
 
 
-def resolve(cfg: LLMConfig) -> tuple[ProviderSpec, str, Optional[str], Optional[str]]:
+def resolve(cfg: LLMConfig) -> tuple[ProviderSpec, str, str | None, str | None]:
     """Returns (spec, model, api_key, base_url) applying env fallbacks."""
     spec = PROVIDERS.get(cfg.provider)
     if spec is None:

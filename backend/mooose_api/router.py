@@ -3,10 +3,9 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import time
 from collections import defaultdict, deque
-import os
-from typing import Optional
 
 import httpx
 from fastapi import APIRouter, File, Form, Header, HTTPException, Request, UploadFile
@@ -15,7 +14,7 @@ from pydantic import BaseModel, Field
 
 from mooose_ai import GradingError, LLMConfig, ProviderError, build_chat_model, grade_essay, public_catalog, stream_grade
 from mooose_ai.ocr import IMAGE_TYPES, OCRError, extract_pdf_text, paddle_available, paddle_transcribe, transcribe_image
-from mooose_ai.providers import PROVIDERS, default_vision_model, resolve
+from mooose_ai.providers import default_vision_model, resolve
 
 logger = logging.getLogger("mooose.api")
 router = APIRouter(prefix="/v1", tags=["open grading (BYOK)"])
@@ -50,9 +49,9 @@ def _llm(provider, model, api_key, base_url):
         spec, resolved_model, _, _ = resolve(cfg)
         return build_chat_model(cfg), f"{spec.id}/{resolved_model}"
     except ProviderError as e:
-        raise HTTPException(400, str(e))
+        raise HTTPException(400, str(e)) from e
     except ImportError as e:
-        raise HTTPException(501, f"Dependência do provedor ausente no servidor: {e.name}")
+        raise HTTPException(501, f"Dependência do provedor ausente no servidor: {e.name}") from e
 
 
 def _fail(e: Exception):
@@ -75,7 +74,7 @@ async def openrouter_free_models():
         async with httpx.AsyncClient(timeout=15) as c:
             data = (await c.get("https://openrouter.ai/api/v1/models")).json().get("data", [])
     except Exception:
-        raise HTTPException(502, "Não foi possível consultar o OpenRouter agora.")
+        raise HTTPException(502, "Não foi possível consultar o OpenRouter agora.") from None
     def is_text_model(m: dict) -> bool:
         return (m.get("architecture", {}).get("output_modalities") or ["text"]) == ["text"]
 
@@ -98,8 +97,8 @@ async def ocr_engines():
 @router.post("/ocr")
 async def ocr(
     request: Request, arquivo: UploadFile = File(...), engine: str = Form("vision"),
-    x_llm_provider: Optional[str] = Header(None), x_llm_model: Optional[str] = Header(None),
-    x_llm_api_key: Optional[str] = Header(None), x_llm_base_url: Optional[str] = Header(None),
+    x_llm_provider: str | None = Header(None), x_llm_model: str | None = Header(None),
+    x_llm_api_key: str | None = Header(None), x_llm_base_url: str | None = Header(None),
 ):
     """Transcribe a photo/PDF to text so the student can review it before grading.
     engine=paddle: local PaddleOCR (no key needed). engine=vision: the selected LLM must support images."""
@@ -127,8 +126,8 @@ async def ocr(
 @router.post("/grade")
 async def grade(
     body: GradeRequest, request: Request,
-    x_llm_provider: Optional[str] = Header(None), x_llm_model: Optional[str] = Header(None),
-    x_llm_api_key: Optional[str] = Header(None), x_llm_base_url: Optional[str] = Header(None),
+    x_llm_provider: str | None = Header(None), x_llm_model: str | None = Header(None),
+    x_llm_api_key: str | None = Header(None), x_llm_base_url: str | None = Header(None),
 ):
     _rate_limit(request)
     llm, label = _llm(x_llm_provider, x_llm_model, x_llm_api_key, x_llm_base_url)
@@ -142,8 +141,8 @@ async def grade(
 @router.post("/grade/stream")
 async def grade_stream(
     body: GradeRequest, request: Request,
-    x_llm_provider: Optional[str] = Header(None), x_llm_model: Optional[str] = Header(None),
-    x_llm_api_key: Optional[str] = Header(None), x_llm_base_url: Optional[str] = Header(None),
+    x_llm_provider: str | None = Header(None), x_llm_model: str | None = Header(None),
+    x_llm_api_key: str | None = Header(None), x_llm_base_url: str | None = Header(None),
 ):
     """Server-Sent Events: `progress` per pipeline step, then `result` (or `error`)."""
     _rate_limit(request)
@@ -164,9 +163,9 @@ async def grade_stream(
 @router.post("/grade/file")
 async def grade_file(
     request: Request, arquivo: UploadFile = File(...), tema: str = Form(...), samples: int = Form(1), ocr_engine: str = Form("vision"),
-    x_llm_provider: Optional[str] = Header(None), x_llm_model: Optional[str] = Header(None),
-    x_llm_api_key: Optional[str] = Header(None), x_llm_base_url: Optional[str] = Header(None),
-    x_llm_vision_model: Optional[str] = Header(None),
+    x_llm_provider: str | None = Header(None), x_llm_model: str | None = Header(None),
+    x_llm_api_key: str | None = Header(None), x_llm_base_url: str | None = Header(None),
+    x_llm_vision_model: str | None = Header(None),
 ):
     """Image (jpeg/png) or PDF. Images need a vision-capable model (X-LLM-Vision-Model overrides)."""
     _rate_limit(request)
