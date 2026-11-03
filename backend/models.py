@@ -1,0 +1,251 @@
+# models.py
+from datetime import datetime
+
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    DateTime,
+    Boolean,
+    ForeignKey,
+    Text,
+    UniqueConstraint,
+    JSON,
+)
+from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
+
+from database import Base
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String, unique=True, index=True, nullable=False)
+    full_name = Column(String, nullable=True)
+    bio = Column(Text, nullable=True)
+    profile_avatar = Column(String, nullable=True)
+    hashed_password = Column(String, nullable=False)
+    google_id = Column(String, unique=True, index=True, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+    
+    # NOVO CAMPO PARA VERIFICAÇÃO DE E-MAIL
+    is_verified = Column(Boolean, default=False, nullable=False)
+    free_used = Column(Integer, default=0, nullable=False)
+
+    # referral system
+    referral_code = Column(String(12), unique=True, index=True, nullable=False)
+    referred_by = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
+    referral_rewarded = Column(Boolean, default=False, nullable=False)
+    signup_ip = Column(String, nullable=True)
+    device_fingerprint = Column(String, nullable=True)
+
+    # créditos para correção de redações
+    credits = Column(Integer, default=0)
+
+    # relacionamento com assinaturas (se quiser evoluir)
+    subscriptions = relationship("Subscription", back_populates="user")
+
+    # novo: relacionamento com redações
+    essays = relationship(
+        "Essay",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    essay_reviews = relationship(
+        "EssayReview",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    mp_payments = relationship(
+        "MercadoPagoPayment",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    abacate_events = relationship(
+        "AbacatePayEvent",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+
+
+class Referral(Base):
+    __tablename__ = "referrals"
+    __table_args__ = (
+        UniqueConstraint("referred_id", name="uq_referrals_referred_id"),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+    referrer_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    referred_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    status = Column(String, nullable=False, default="pending")  # pending | confirmed | rejected
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+    confirmed_at = Column(DateTime(timezone=True), nullable=True)
+    metadata_json = Column("metadata", JSON, nullable=True)
+
+
+class AnonymousSession(Base):
+    __tablename__ = "anonymous_sessions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    anon_id = Column(String, unique=True, index=True, nullable=False)
+    free_used = Column(Integer, default=0, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    last_ip = Column(String, nullable=True)
+    device_id = Column(String, nullable=True)
+    linked_user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
+    linked_at = Column(DateTime(timezone=True), nullable=True)
+
+
+class Plan(Base):
+    __tablename__ = "plans"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, unique=True, nullable=False)
+    credits = Column(Integer, nullable=False, default=0)
+    price_cents = Column(Integer, nullable=False, default=0)
+
+
+class Subscription(Base):
+    __tablename__ = "subscriptions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    plan_id = Column(Integer, ForeignKey("plans.id"), nullable=True)
+    plan_code = Column(String, nullable=True, index=True)
+    provider = Column(String, nullable=False, default="manual", server_default="manual")
+    provider_subscription_id = Column(String, unique=True, nullable=True, index=True)
+    provider_checkout_id = Column(String, nullable=True, index=True)
+    status = Column(String, nullable=False, default="active", server_default="active", index=True)
+    active = Column(Boolean, default=True)
+    started_at = Column(DateTime(timezone=True), server_default=func.now())
+    current_period_start = Column(DateTime(timezone=True), nullable=True)
+    current_period_end = Column(DateTime(timezone=True), nullable=True, index=True)
+    monthly_correction_limit = Column(Integer, nullable=True)
+    monthly_corrections_used = Column(Integer, nullable=False, default=0, server_default="0")
+    usage_month_start = Column(DateTime(timezone=True), nullable=True)
+    daily_corrections_used = Column(Integer, nullable=False, default=0, server_default="0")
+    usage_day = Column(String, nullable=True)
+    raw_json = Column(Text, nullable=True)
+
+    user = relationship("User", back_populates="subscriptions")
+
+
+class Essay(Base):
+    """
+    Redação corrigida do aluno.
+    Guarda:
+    - tema
+    - tipo de entrada (texto ou arquivo)
+    - texto (original ou extraído)
+    - caminho do arquivo (quando for foto/PDF)
+    - notas por competência + nota final
+    - JSON bruto retornado pela IA
+    """
+
+    __tablename__ = "essays"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
+    anon_id = Column(String, nullable=True, index=True)
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+
+    tema = Column(String, nullable=False)
+    input_type = Column(String, nullable=False)  # "texto" ou "arquivo"
+
+    texto = Column(Text, nullable=True)         # texto da redação (digitado ou extraído)
+    
+    # Este campo agora salvará a URL completa (ex: do S3)
+    arquivo_path = Column(String, nullable=True)  # caminho/URL do arquivo salvo (imagem/pdf)
+    arquivo_public_id = Column(String, nullable=True)
+    arquivo_resource_type = Column(String, nullable=True)
+    arquivo_type = Column(String, nullable=True)
+
+    status = Column(String, nullable=False, default="pending", server_default="pending")
+    error_code = Column(String, nullable=True)
+    error_message = Column(String, nullable=True)
+
+    nota_final = Column(Integer, nullable=True)
+    c1_nota = Column(Integer, nullable=True)
+    c2_nota = Column(Integer, nullable=True)
+    c3_nota = Column(Integer, nullable=True)
+    c4_nota = Column(Integer, nullable=True)
+    c5_nota = Column(Integer, nullable=True)
+
+    # JSON bruto retornado pela IA (para reaproveitar no front)
+    resultado_json = Column(Text, nullable=False)
+
+    user = relationship("User", back_populates="essays")
+    reviews = relationship(
+        "EssayReview",
+        back_populates="essay",
+        cascade="all, delete-orphan",
+    )
+
+
+class EssayReview(Base):
+    __tablename__ = "essay_reviews"
+    __table_args__ = (
+        UniqueConstraint("user_id", "essay_id", name="uq_essay_reviews_user_essay"),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+    essay_id = Column(Integer, ForeignKey("essays.id"), nullable=False, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+
+    stars = Column(Integer, nullable=False)
+    comment = Column(Text, nullable=True)
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    user = relationship("User", back_populates="essay_reviews")
+    essay = relationship("Essay", back_populates="reviews")
+
+
+class MercadoPagoPayment(Base):
+    __tablename__ = "mercadopago_payments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    payment_id = Column(String, unique=True, index=True, nullable=False)
+    preference_id = Column(String, nullable=True)
+
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
+    credits = Column(Integer, nullable=False, default=0)
+    status = Column(String, nullable=True)
+    status_detail = Column(String, nullable=True)
+    credited = Column(Boolean, nullable=False, default=False)
+
+    raw_json = Column(Text, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    user = relationship("User", back_populates="mp_payments")
+
+
+class AbacatePayEvent(Base):
+    __tablename__ = "abacatepay_events"
+
+    id = Column(Integer, primary_key=True, index=True)
+    event_id = Column(String, unique=True, nullable=False, index=True)
+    event_type = Column(String, nullable=False, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
+    plan_code = Column(String, nullable=True)
+    provider_checkout_id = Column(String, nullable=True, index=True)
+    provider_subscription_id = Column(String, nullable=True, index=True)
+    processed = Column(Boolean, nullable=False, default=False, server_default="false")
+    raw_json = Column(Text, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+
+    user = relationship("User", back_populates="abacate_events")
+
+class DemoKeyUsage(Base):
+    __tablename__ = "demo_key_usage"
+
+    id = Column(Integer, primary_key=True, index=True)
+    key = Column(String, unique=True, index=True, nullable=False)
+    used = Column(Integer, nullable=False, default=0)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())

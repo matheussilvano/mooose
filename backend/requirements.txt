@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+python-jose[cryptography]
+passlib[bcrypt]
+fastapi-mail
+openai
+PyPDF2
+cloudinary
+python-multipart
+pydantic[email]
+mercadopago
+pytest
