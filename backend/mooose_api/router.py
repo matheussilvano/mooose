@@ -14,7 +14,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from mooose_ai import GradingError, LLMConfig, ProviderError, build_chat_model, grade_essay, public_catalog, stream_grade
-from mooose_ai.ocr import IMAGE_TYPES, OCRError, extract_pdf_text, transcribe_image
+from mooose_ai.ocr import IMAGE_TYPES, OCRError, extract_pdf_text, paddle_available, paddle_transcribe, transcribe_image
 from mooose_ai.providers import PROVIDERS, resolve
 
 logger = logging.getLogger("mooose.api")
@@ -76,12 +76,49 @@ async def openrouter_free_models():
             data = (await c.get("https://openrouter.ai/api/v1/models")).json().get("data", [])
     except Exception:
         raise HTTPException(502, "Não foi possível consultar o OpenRouter agora.")
+    def is_text_model(m: dict) -> bool:
+        return (m.get("architecture", {}).get("output_modalities") or ["text"]) == ["text"]
+
     free = [
         {"id": m["id"], "name": m.get("name", m["id"]), "context_length": m.get("context_length"),
          "vision": "image" in (m.get("architecture", {}).get("input_modalities") or [])}
-        for m in data if str(m.get("pricing", {}).get("prompt", "1")) in {"0", "0.0"} and str(m.get("pricing", {}).get("completion", "1")) in {"0", "0.0"}
+        for m in data
+        if is_text_model(m)
+        and str(m.get("pricing", {}).get("prompt", "1")) in {"0", "0.0"}
+        and str(m.get("pricing", {}).get("completion", "1")) in {"0", "0.0"}
     ]
     return sorted(free, key=lambda m: -(m["context_length"] or 0))
+
+
+@router.get("/ocr/engines")
+async def ocr_engines():
+    return {"paddle": paddle_available(), "vision": True}
+
+
+@router.post("/ocr")
+async def ocr(
+    request: Request, arquivo: UploadFile = File(...), engine: str = Form("vision"),
+    x_llm_provider: Optional[str] = Header(None), x_llm_model: Optional[str] = Header(None),
+    x_llm_api_key: Optional[str] = Header(None), x_llm_base_url: Optional[str] = Header(None),
+):
+    """Transcribe a photo/PDF to text so the student can review it before grading.
+    engine=paddle: local PaddleOCR (no key needed). engine=vision: the selected LLM must support images."""
+    _rate_limit(request)
+    ctype = (arquivo.content_type or "").lower()
+    try:
+        data = await arquivo.read()
+        if ctype == "application/pdf":
+            return {"texto": extract_pdf_text(data), "engine": "pdf"}
+        if ctype not in IMAGE_TYPES:
+            raise HTTPException(400, "Tipo de arquivo não suportado. Use jpeg/png ou pdf.")
+        if engine == "paddle":
+            return {"texto": await paddle_transcribe(data), "engine": "paddle"}
+        llm, _ = _llm(x_llm_provider, x_llm_model, x_llm_api_key, x_llm_base_url)
+        return {"texto": await transcribe_image(llm, data, ctype), "engine": "vision"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        _fail(e)
 
 
 @router.post("/grade")
@@ -123,7 +160,7 @@ async def grade_stream(
 
 @router.post("/grade/file")
 async def grade_file(
-    request: Request, arquivo: UploadFile = File(...), tema: str = Form(...), samples: int = Form(1),
+    request: Request, arquivo: UploadFile = File(...), tema: str = Form(...), samples: int = Form(1), ocr_engine: str = Form("vision"),
     x_llm_provider: Optional[str] = Header(None), x_llm_model: Optional[str] = Header(None),
     x_llm_api_key: Optional[str] = Header(None), x_llm_base_url: Optional[str] = Header(None),
     x_llm_vision_model: Optional[str] = Header(None),
@@ -135,8 +172,11 @@ async def grade_file(
     try:
         data = await arquivo.read()
         if ctype in IMAGE_TYPES:
-            vision = llm if not x_llm_vision_model else _llm(x_llm_provider, x_llm_vision_model, x_llm_api_key, x_llm_base_url)[0]
-            text = await transcribe_image(vision, data, ctype)
+            if ocr_engine == "paddle":
+                text = await paddle_transcribe(data)
+            else:
+                vision = llm if not x_llm_vision_model else _llm(x_llm_provider, x_llm_vision_model, x_llm_api_key, x_llm_base_url)[0]
+                text = await transcribe_image(vision, data, ctype)
         elif ctype == "application/pdf":
             text = extract_pdf_text(data)
         else:

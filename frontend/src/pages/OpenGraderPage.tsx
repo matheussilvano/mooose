@@ -9,10 +9,11 @@ import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import Textarea from "../components/ui/Textarea";
 import {
-  ByokSettings, FreeModel, ProviderInfo, STEP_LABELS, fetchFreeModels, fetchProviders, gradeStream,
+  ByokSettings, FreeModel, ProviderInfo, STEP_LABELS, fetchFreeModels, fetchOcrEngines, fetchProviders, gradeStream, transcribeFile,
   loadSettings, saveSettings
 } from "../lib/byok";
 
+const MD = "[&_ul]:my-1 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:my-1";
 const md = (s: string) => ({ __html: DOMPurify.sanitize(marked.parse(s || "") as string) });
 
 export default function OpenGraderPage() {
@@ -25,6 +26,10 @@ export default function OpenGraderPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<any>(null);
+  const [ocrEngines, setOcrEngines] = useState({ paddle: false, vision: true });
+  const [ocrEngine, setOcrEngine] = useState<"paddle" | "vision">("vision");
+  const [reading, setReading] = useState(false);
+  const [fileName, setFileName] = useState("");
 
   const update = (patch: Partial<ByokSettings>) => {
     const next = { ...settings, ...patch };
@@ -40,6 +45,27 @@ export default function OpenGraderPage() {
     if (settings.provider !== "openrouter") return setFreeModels([]);
     fetchFreeModels(settings.apiBase).then(setFreeModels).catch(() => setFreeModels([]));
   }, [settings.provider, settings.apiBase]);
+
+  useEffect(() => {
+    fetchOcrEngines(settings.apiBase).then((e) => {
+      setOcrEngines(e);
+      if (e.paddle) setOcrEngine("paddle");
+    });
+  }, [settings.apiBase]);
+
+  async function onFile(file?: File) {
+    if (!file) return;
+    setFileName(file.name);
+    setReading(true);
+    setError("");
+    try {
+      setTexto(await transcribeFile(settings, file, ocrEngine));
+    } catch (e: any) {
+      setError(e?.message || "Erro ao ler o arquivo.");
+    } finally {
+      setReading(false);
+    }
+  }
 
   const current = useMemo(() => providers.find((p) => p.id === settings.provider), [providers, settings.provider]);
   const needsKey = current ? current.needs_key && !current.server_key_configured : true;
@@ -141,6 +167,17 @@ export default function OpenGraderPage() {
             <Card className="space-y-4 p-6">
               <h3 className="text-base font-semibold">2. Sua redação</h3>
               <Input placeholder="Tema da redação (ex.: Desafios para ...)" value={tema} onChange={(e) => setTema(e.target.value)} />
+              <div className="flex flex-wrap items-center gap-3 rounded-xl border border-dashed border-border p-3 text-xs">
+                <label className="cursor-pointer rounded-lg bg-brand/10 px-3 py-2 font-semibold text-brand">
+                  📷 Enviar foto ou PDF
+                  <input type="file" accept="image/png,image/jpeg,application/pdf" className="hidden" onChange={(e) => onFile(e.target.files?.[0])} />
+                </label>
+                <select className="h-9 rounded-lg border border-border bg-white px-2" value={ocrEngine} onChange={(e) => setOcrEngine(e.target.value as any)} aria-label="Leitor de imagem">
+                  {ocrEngines.paddle && <option value="paddle">Leitor local (PaddleOCR, sem chave)</option>}
+                  <option value="vision">Modelo de visão da sua IA</option>
+                </select>
+                <span className="text-text-muted">{reading ? "Lendo a imagem..." : fileName ? `${fileName} — revise o texto abaixo antes de corrigir.` : "O texto lido aparece abaixo para você revisar."}</span>
+              </div>
               <Textarea className="min-h-[280px]" placeholder="Cole aqui o texto da sua redação..." value={texto} onChange={(e) => setTexto(e.target.value)} />
               <Button full loading={loading} disabled={!canSubmit} onClick={submit}>
                 Corrigir redação
@@ -162,7 +199,7 @@ export default function OpenGraderPage() {
                   <div className="mt-2 inline-flex rounded-full bg-brand/10 px-4 py-2 text-3xl font-bold text-brand">{result.nota_final}</div>
                   {result.anulada && <p className="mt-2 text-sm text-rose-700">{result.anulada}</p>}
                 </div>
-                <div className="mt-4 text-sm" dangerouslySetInnerHTML={md(result.analise_geral)} />
+                <div className={`mt-4 text-sm ${MD}`} dangerouslySetInnerHTML={md(result.analise_geral)} />
                 <div className="mt-4 space-y-3">
                   {result.competencias.map((c: any) => (
                     <div key={c.id} className="rounded-xl border border-border bg-slate-50 p-3">
@@ -170,7 +207,7 @@ export default function OpenGraderPage() {
                         <span>Competência {c.id}</span>
                         <span className="rounded-full bg-brand/10 px-2 py-1 text-brand">{c.nota} / 200</span>
                       </div>
-                      <div className="mt-2 text-xs" dangerouslySetInnerHTML={md(c.feedback)} />
+                      <div className={`mt-2 text-xs ${MD}`} dangerouslySetInnerHTML={md(c.feedback)} />
                     </div>
                   ))}
                 </div>

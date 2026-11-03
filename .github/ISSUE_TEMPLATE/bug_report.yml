@@ -8,7 +8,7 @@ body:
     validations: {required: true}
   - type: input
     id: provider
-    attributes: {label: Provedor e modelo, placeholder: "openrouter / meta-llama/..."}
+    attributes: {label: Provedor e modelo, placeholder: "openrouter / openrouter/free"}
   - type: textarea
     id: logs
     attributes: {label: Logs ou erro, description: "NUNCA cole sua chave de API", render: shell}

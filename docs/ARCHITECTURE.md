@@ -36,5 +36,5 @@ flowchart LR
 
 ## Limites conhecidos
 - É uma interpretação não-oficial da matriz do INEP; modelos pequenos erram mais em C1 (norma culta) e C3.
-- A transcrição de fotos depende de modelo com visão; manuscritos ruins degradam a nota.
+- Fotos: modelos de visão leem manuscrito bem (testado: um modelo de visão gratuito do OpenRouter transcreveu uma folha de redação quase sem erros), enquanto o PaddleOCR local erra muito em letra cursiva e serve melhor para texto digitado/impresso. Manuscritos ruins degradam a nota; por isso a transcrição é revisada pelo aluno antes de corrigir.
 - O texto "insuficiente" usa um limite de palavras (aproximação das 7 linhas do ENEM).

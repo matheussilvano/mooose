@@ -121,3 +121,23 @@ export async function gradeStream(
   }
   throw new Error("A correção terminou sem resultado.");
 }
+
+export async function fetchOcrEngines(apiBase: string): Promise<{ paddle: boolean; vision: boolean }> {
+  try {
+    const res = await fetch(`${apiBase}/v1/ocr/engines`);
+    return res.ok ? res.json() : { paddle: false, vision: true };
+  } catch {
+    return { paddle: false, vision: true };
+  }
+}
+
+// Photo/PDF -> text, so the student can review the transcription before grading.
+export async function transcribeFile(s: ByokSettings, file: File, engine: "paddle" | "vision"): Promise<string> {
+  const form = new FormData();
+  form.append("arquivo", file);
+  form.append("engine", engine);
+  const res = await fetch(`${s.apiBase}/v1/ocr`, { method: "POST", headers: llmHeaders(s), body: form });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.detail || "Não foi possível ler o arquivo.");
+  return data.texto as string;
+}

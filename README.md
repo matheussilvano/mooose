@@ -21,7 +21,7 @@
 - 🔑 **Traga sua IA (BYOK)**: OpenRouter (modelos grátis), Google Gemini (chave grátis), Groq (grátis), **Ollama (local, sem internet)**, OpenAI, Claude ou qualquer API compatível com OpenAI. [Guia dos provedores →](docs/PROVIDERS.md)
 - 🎯 **Fiel às regras do ENEM**: notas só em `0/40/80/120/160/200`, fuga total ao tema/texto curto/não dissertativo zeram, tangenciamento limita C2/C3, C5 pontuada por checklist (agente, ação, meio, finalidade, detalhamento).
 - 📊 **Mais estável**: opção de amostrar N vezes cada competência e usar a mediana (*self-consistency*).
-- 📷 Aceita **texto, foto (OCR por modelo de visão) e PDF**.
+- 📷 Aceita **texto, foto e PDF**. Foto: modelo de visão da sua IA (melhor para letra manuscrita; há modelos de visão grátis) ou **PaddleOCR local** (sem chave, bom para texto digitado). Você revisa a transcrição antes de corrigir.
 - 🧪 **Avaliável**: testes sem rede (LLM falso) e [harness de evals](backend/evals) para medir a qualidade contra redações corrigidas por humanos.
 - 🔒 **Privacidade**: sua chave fica só no seu navegador e vai por request; o servidor não guarda chave nem redação.
 
@@ -40,6 +40,7 @@ Quer tudo **local e grátis** (sem chave nenhuma)? `docker compose --profile loc
 # API (Python 3.11+)
 cd backend && python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
+pip install -r requirements-ocr.txt   # opcional: PaddleOCR local (baixa ~1 GB)
 uvicorn mooose_api.app:app --reload          # http://localhost:8000/docs
 
 # App (outro terminal, Node 20+)

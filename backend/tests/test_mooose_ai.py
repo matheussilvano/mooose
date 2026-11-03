@@ -139,3 +139,10 @@ def test_api_requires_key_and_lists_providers():
     assert "openrouter" in ids and "ollama" in ids
     r = c.post("/v1/grade", json={"texto": ESSAY, "tema": "T"}, headers={"x-llm-provider": "openai"})
     assert r.status_code == 400
+
+
+def test_ocr_engines_endpoint():
+    from mooose_api.app import app
+
+    r = TestClient(app).get("/v1/ocr/engines")
+    assert r.status_code == 200 and r.json()["vision"] is True

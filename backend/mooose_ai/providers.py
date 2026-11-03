@@ -32,7 +32,7 @@ PROVIDERS: dict[str, ProviderSpec] = {
     for p in [
         ProviderSpec(
             "openrouter", "OpenRouter (modelos gratuitos disponíveis)", "openai",
-            default_model=os.environ.get("MOOOSE_OPENROUTER_MODEL", "meta-llama/llama-3.3-70b-instruct:free"),
+            default_model=os.environ.get("MOOOSE_OPENROUTER_MODEL", "openrouter/free"),
             base_url="https://openrouter.ai/api/v1", key_env="OPENROUTER_API_KEY",
             free_tier=True, vision=False, key_url="https://openrouter.ai/keys",
             notes="Crie uma conta grátis e use modelos com sufixo ':free'. Transcrição de imagem exige modelo com visão.",
