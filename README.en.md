@@ -1,6 +1,8 @@
 
 # 🫎 Mooose — the open-source ENEM essay grader
 
+<p align="center"><b><a href="https://mooose.matheussilvano.workers.dev">Project page</a></b> · <a href="CONTRIBUTING.md">Contribute</a> · <a href="https://github.com/sponsors/matheussilvano">Sponsor</a></p>
+
 **Mooose** grades essays for **ENEM** (Brazil's national high-school exam) across its 5 official competencies (0–200 each) and tells students *how to improve*. It is fully open source: **bring your own LLM** (OpenRouter free models, Gemini free tier, Groq, local Ollama, OpenAI, Claude, any OpenAI-compatible API) and grade for free.
 
 > Independent project, **not affiliated with INEP/MEC**. Scores are AI estimates for practice.

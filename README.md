@@ -10,12 +10,14 @@
 
 # 🫎 Mooose — corretor de redação do ENEM, open-source
 
+<p align="center"><b><a href="https://mooose.matheussilvano.workers.dev">Página do projeto</a></b> · <a href="#-rodando-em-2-minutos">Rodar</a> · <a href="CONTRIBUTING.md">Contribuir</a> · <a href="https://github.com/sponsors/matheussilvano">Apoiar</a></p>
+
 **Mooose** corrige redações no padrão do **ENEM** (as 5 competências, notas de 0 a 200 cada) e explica *como melhorar*. Agora é **100% open-source**: você roda o código, **traz a sua própria IA** e não paga mensalidade para ninguém — dá para corrigir **de graça**.
 
 > ⚠️ Projeto independente, **sem vínculo com o INEP/MEC**. A nota é uma *estimativa* de IA para estudo, não uma nota oficial.
 
 <p align="center">
-  <img src="docs/assets/landing.jpg" alt="Landing page do Mooose" width="880">
+  <img src="docs/assets/landing.jpg" alt="Landing page do Mooose" width="900">
 </p>
 <table>
   <tr>
@@ -84,7 +86,8 @@ curl -X POST localhost:8000/v1/grade \
 ```
 backend/    API FastAPI + motor de IA (mooose_ai/) + API aberta BYOK (mooose_api/) + evals
 frontend/   React + Vite + Tailwind  (página /corrigir = corretor open-source)
-docs/       arquitetura, provedores, roadmap
+promo/      página estática de divulgação (Cloudflare)
+docs/       arquitetura, provedores, roadmap, divulgação
 legacy/     primeira landing page (arquivada)
 ```
 O backend também contém o módulo *hosted* original (contas, créditos, pagamentos, admin) que alimenta o [mooose.com.br](https://mooose.com.br). Para self-host você só precisa de `mooose_api` + `mooose_ai`.
@@ -98,7 +101,9 @@ Toda ajuda é bem-vinda — de estudante a engenheiro de IA. Veja o [CONTRIBUTIN
 - 🎨 UX da página `/corrigir`, acessibilidade, modo escuro
 - 🌍 Revisão da rubrica por professores de redação
 
-Procure as issues com `good first issue`.
+Procure as issues com [`good first issue`](https://github.com/matheussilvano/mooose/issues?q=is%3Aopen+label%3A%22good+first+issue%22). Quem já contribuiu:
+
+<a href="https://github.com/matheussilvano/mooose/graphs/contributors"><img src="https://contrib.rocks/image?repo=matheussilvano/mooose" alt="Contribuidores"></a>
 
 ## ❤️ Apoie o projeto
 
