@@ -21,7 +21,7 @@
 
 **Mooose** helps students prepare for the ENEM by grading their essays with a score per competency and clear feedback.
 
-This repository contains the application's **frontend** (open source). The backend, which holds the grading intelligence, is private.
+This is the **frontend** of the [Mooose monorepo](../README.md). The open-source grader lives at `/aberto` (bring your own LLM key); see `../backend` for the API and the LangGraph grading engine.
 
 ### 📈 By the numbers
 - **1,000+** essays graded

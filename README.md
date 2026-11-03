@@ -1,0 +1,98 @@
+<p align="center"><img src="docs/assets/banner.svg" alt="Mooose — corretor de redação do ENEM open-source" /></p>
+
+<p align="center">
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-blue"></a>
+  <a href="https://github.com/matheussilvano/mooose/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/matheussilvano/mooose/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="Python" src="https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white">
+  <img alt="LangGraph" src="https://img.shields.io/badge/LangGraph-pipeline-1C3C3C">
+  <img alt="PRs welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen">
+  <a href="README.en.md"><img alt="English" src="https://img.shields.io/badge/README-English-lightgrey"></a>
+</p>
+
+# 🫎 Mooose — corretor de redação do ENEM, open-source
+
+**Mooose** corrige redações no padrão do **ENEM** (as 5 competências, notas de 0 a 200 cada) e explica *como melhorar*. Agora é **100% open-source**: você roda o código, **traz a sua própria IA** e não paga mensalidade para ninguém — dá para corrigir **de graça**.
+
+> ⚠️ Projeto independente, **sem vínculo com o INEP/MEC**. A nota é uma *estimativa* de IA para estudo, não uma nota oficial.
+
+## ✨ O que tem aqui
+
+- 🧠 **Pipeline de IA com LangGraph**: 5 corretores especialistas (um por competência) rodando em paralelo, revisor de segundo parecer, calibração determinística e síntese do feedback. [Entenda a arquitetura →](docs/ARCHITECTURE.md)
+- 🔑 **Traga sua IA (BYOK)**: OpenRouter (modelos grátis), Google Gemini (chave grátis), Groq (grátis), **Ollama (local, sem internet)**, OpenAI, Claude ou qualquer API compatível com OpenAI. [Guia dos provedores →](docs/PROVIDERS.md)
+- 🎯 **Fiel às regras do ENEM**: notas só em `0/40/80/120/160/200`, fuga total ao tema/texto curto/não dissertativo zeram, tangenciamento limita C2/C3, C5 pontuada por checklist (agente, ação, meio, finalidade, detalhamento).
+- 📊 **Mais estável**: opção de amostrar N vezes cada competência e usar a mediana (*self-consistency*).
+- 📷 Aceita **texto, foto (OCR por modelo de visão) e PDF**.
+- 🧪 **Avaliável**: testes sem rede (LLM falso) e [harness de evals](backend/evals) para medir a qualidade contra redações corrigidas por humanos.
+- 🔒 **Privacidade**: sua chave fica só no seu navegador e vai por request; o servidor não guarda chave nem redação.
+
+## 🚀 Rodando em 2 minutos
+
+### Opção A — Docker
+```bash
+git clone https://github.com/matheussilvano/mooose && cd mooose
+docker compose up --build
+# app: http://localhost:8080/aberto   ·   API: http://localhost:8000/docs
+```
+Quer tudo **local e grátis** (sem chave nenhuma)? `docker compose --profile local-llm up --build` e depois `docker compose exec ollama ollama pull qwen2.5:14b`.
+
+### Opção B — direto na máquina
+```bash
+# API (Python 3.11+)
+cd backend && python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn mooose_api.app:app --reload          # http://localhost:8000/docs
+
+# App (outro terminal, Node 20+)
+cd frontend && cp .env.example .env.local && npm install && npm run dev
+# abra http://localhost:5173/aberto
+```
+Na tela, escolha o provedor, cole sua chave e corrija. Sem interface? Use a API:
+```bash
+curl -X POST localhost:8000/v1/grade \
+  -H "X-LLM-Provider: openrouter" -H "X-LLM-Api-Key: $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"tema":"Desafios para valorizar comunidades tradicionais no Brasil","texto":"...sua redação...","samples":3}'
+```
+
+## 💸 Sem pagar tokens?
+
+| Opção | Custo | Observação |
+|---|---|---|
+| **OpenRouter** `:free` | grátis | a lista de modelos gratuitos é carregada ao vivo na tela |
+| **Google Gemini** (AI Studio) | grátis (com limites) | chave em segundos |
+| **Groq** | grátis (com limites) | muito rápido |
+| **Ollama** | grátis | roda no seu PC, nada sai da sua máquina |
+
+**E assinatura (ChatGPT Plus, Claude Pro)?** Infelizmente elas **não** dão acesso à API, e usar o login dessas contas em apps de terceiros viola os termos dos provedores — por isso o Mooose não faz isso. Use uma das opções grátis acima. [Detalhes →](docs/PROVIDERS.md#e-minha-assinatura-chatgpt-plus--claude-pro)
+
+## 🗂️ Estrutura
+
+```
+backend/    API FastAPI + motor de IA (mooose_ai/) + API aberta BYOK (mooose_api/) + evals
+frontend/   React + Vite + Tailwind  (página /aberto = corretor open-source)
+docs/       arquitetura, provedores, roadmap
+legacy/     primeira landing page (arquivada)
+```
+O backend também contém o módulo *hosted* original (contas, créditos, pagamentos, admin) que alimenta o [mooose.com.br](https://mooose.com.br). Para self-host você só precisa de `mooose_api` + `mooose_ai`.
+
+## 🤝 Como contribuir
+
+Toda ajuda é bem-vinda — de estudante a engenheiro de IA. Veja o [CONTRIBUTING.md](CONTRIBUTING.md). Ideias de alto impacto:
+
+- 📝 **Dataset de redações corrigidas** (com consentimento!) para medir e melhorar a precisão → [`backend/evals`](backend/evals)
+- 🧩 Novos provedores / modelos testados em português
+- 🎨 UX da página `/aberto`, acessibilidade, modo escuro
+- 🌍 Revisão da rubrica por professores de redação
+
+Procure as issues com `good first issue`.
+
+## ❤️ Apoie o projeto
+
+O Mooose nasceu para ajudar estudantes. Se ele te ajudou, você pode:
+- ⭐ dar uma **estrela** e compartilhar com quem vai fazer o ENEM;
+- 💖 apoiar pelo botão **Sponsor** do repositório (GitHub Sponsors);
+- 🐛 abrir issues e PRs.
+
+## 📄 Licença
+
+[Apache-2.0](LICENSE). O nome/logo **Mooose** não estão licenciados — veja [NOTICE](NOTICE).

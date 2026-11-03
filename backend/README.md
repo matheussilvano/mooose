@@ -1,5 +1,16 @@
 # Mooose Backend
 
+- `mooose_ai/` — LangGraph grading engine ([architecture](../docs/ARCHITECTURE.md))
+- `mooose_api/` — stateless BYOK API, no database: `uvicorn mooose_api.app:app --reload` (docs at `/docs`)
+- `main.py` + `*_routes.py` — hosted app (accounts, credits, payments, admin) used by mooose.com.br; also mounts `/v1`
+- `evals/` — `python -m evals.run_evals --help`
+
+Copy `../.env.example` and `.env.example` as needed. Tests: `pytest -q` (no network or keys).
+
+---
+
+# Mooose Backend
+
 ## Referral system (Convide 1 amigo → ganhe 2 créditos)
 
 ### Fluxo
