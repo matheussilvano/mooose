@@ -16,6 +16,7 @@ describe("essay helpers", () => {
     expect(friendlyError("Falha (OpenAIRateLimitError)")).toMatch(/limite/i);
     expect(friendlyError("Falha (OpenAIModelNotFoundError)")).toMatch(/modelo/i);
     expect(friendlyError("Falha (AuthenticationError)")).toMatch(/chave/i);
+    expect(friendlyError("Falha (StructuredOutputError)")).toMatch(/formato/i);
     expect(friendlyError("outra coisa")).toBe("outra coisa");
   });
   it("exports a correction as markdown", () => {

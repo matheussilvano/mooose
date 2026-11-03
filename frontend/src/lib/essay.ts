@@ -24,6 +24,7 @@ export function lineStatus(text: string): LineStatus {
 export function friendlyError(message: string): string {
   if (/RateLimit/i.test(message)) return "O limite desse modelo foi atingido. Espere um minuto ou escolha outro modelo gratuito na lista.";
   if (/NotFound/i.test(message)) return "Esse modelo não existe mais no provedor. Apague o campo Modelo para usar o padrão ou escolha outro da lista.";
+  if (/StructuredOutput/i.test(message)) return "O modelo escolhido não conseguiu seguir o formato da correção. Tente de novo, escolha outro modelo na lista ou use a estabilidade Equilibrada.";
   if (/Authentication|PermissionDenied|401|403/i.test(message)) return "O provedor recusou sua chave. Confira se ela foi copiada inteira e se está ativa.";
   return message;
 }

@@ -53,7 +53,7 @@ def _content_to_text(content: object) -> str:
     return str(content)
 
 
-async def ainvoke_structured(llm, system: str, user: str, schema: type[T], retries: int = 1) -> T:
+async def ainvoke_structured(llm, system: str, user: str, schema: type[T], retries: int = 2) -> T:
     schema_hint = json.dumps(schema.model_json_schema(), ensure_ascii=False)
     messages = [
         SystemMessage(content=f"{system}\n\nResponda SOMENTE com um objeto JSON válido que siga este JSON Schema:\n{schema_hint}"),
