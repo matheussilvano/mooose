@@ -1,4 +1,5 @@
 import { marked } from "marked";
+import DOMPurify from "dompurify";
 import Modal from "../ui/Modal";
 import { extractHistoryEssayText, extractHistoryResult, normalizeScore } from "../../lib/normalize";
 import { getEssayId, getResultErrorMessage, isOcrError } from "../../services/enemHistorico";
@@ -44,7 +45,7 @@ export default function HistoryModal({ open, onClose, item, onSaveReview }: Hist
         <div className="mt-4">
           <h4 className="text-sm font-semibold">Feedback da correção</h4>
           {analysis ? (
-            <div className="mt-2 text-xs text-text" dangerouslySetInnerHTML={{ __html: marked.parse(analysis) }} />
+            <div className="mt-2 text-xs text-text" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(marked.parse(analysis) as string) }} />
           ) : (
             <p className="mt-2 text-xs text-text-muted">Feedback completo não disponível neste histórico.</p>
           )}

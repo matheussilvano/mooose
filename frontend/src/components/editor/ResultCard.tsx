@@ -1,4 +1,5 @@
 import { marked } from "marked";
+import DOMPurify from "dompurify";
 import Card from "../ui/Card";
 import ReviewWidget from "./ReviewWidget";
 import { CorrectionResult } from "../../features/editor/useEditor";
@@ -45,7 +46,7 @@ export default function ResultCard({ result, essayId, initialReview, onSaveRevie
           {result.nota_final ?? "—"}
         </div>
       </div>
-      <div className="mt-4 text-sm text-text" dangerouslySetInnerHTML={{ __html: marked.parse(result.analise_geral || result.feedback_geral || result.feedback || "") }} />
+      <div className="mt-4 text-sm text-text" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(marked.parse(result.analise_geral || result.feedback_geral || result.feedback || "") as string) }} />
       <h4 className="mt-4 text-sm font-semibold">Detalhamento por competência</h4>
       <div className="mt-3 space-y-3">
         {(result.competencias || []).map((c) => (
@@ -55,7 +56,7 @@ export default function ResultCard({ result, essayId, initialReview, onSaveRevie
               <span className="rounded-full bg-brand/10 px-2 py-1 text-brand">{c.nota} / 200</span>
             </div>
             {c.feedback && (
-              <div className="mt-2 text-xs text-text" dangerouslySetInnerHTML={{ __html: marked.parse(c.feedback) }} />
+              <div className="mt-2 text-xs text-text" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(marked.parse(c.feedback) as string) }} />
             )}
           </div>
         ))}
