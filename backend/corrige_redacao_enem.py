@@ -16,7 +16,7 @@ from fastapi import (
     Form,
 )
 from pydantic import BaseModel
-from PyPDF2 import PdfReader  # pip install PyPDF2
+from pypdf import PdfReader
 
 # ============================
 # Logger
@@ -32,15 +32,15 @@ router = APIRouter()
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 if not OPENAI_API_KEY:
-    raise Exception(
-        "ERRO: Verifique se a variável de ambiente OPENAI_API_KEY está configurada.\n"
-        "Exemplo: export OPENAI_API_KEY='sua_chave_aqui'"
+    logger.warning(
+        "OPENAI_API_KEY não configurada: os endpoints legados (/api/enem, /app, /demo) vão falhar. "
+        "Use os endpoints /v1 (BYOK) ou configure a variável."
     )
 
 # Modelo default – pode sobrescrever com OPENAI_MODEL no ambiente
 OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-4.1-mini")
 
-client = OpenAI(api_key=OPENAI_API_KEY)
+client = OpenAI(api_key=OPENAI_API_KEY or "missing-key")
 
 # ============================
 # Configuração de segurança
@@ -527,7 +527,7 @@ async def extrair_texto_imagem(arquivo: UploadFile) -> str:
 
 async def extrair_texto_pdf(arquivo: UploadFile) -> str:
     """
-    Extrai texto de um PDF usando PyPDF2 (local, sem Google).
+    Extrai texto de um PDF usando pypdf (local, sem Google).
     """
     try:
         content = await arquivo.read()

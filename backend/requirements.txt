@@ -6,9 +6,16 @@ python-jose[cryptography]
 passlib[bcrypt]
 fastapi-mail
 openai
-PyPDF2
+pypdf
 cloudinary
 python-multipart
 pydantic[email]
 mercadopago
 pytest
+httpx
+langchain-core
+langchain-openai
+langchain-anthropic
+langchain-google-genai
+langgraph
+pytest-asyncio
