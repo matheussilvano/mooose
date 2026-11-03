@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mooose · corretor de redação do ENEM open-source</title>
+  <meta name="description" content="Corretor de redação do ENEM de código aberto. Traga sua própria IA (há opções grátis), receba nota por competência e ajude a melhorar o projeto no GitHub.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mooose.matheussilvano.workers.dev/">
+  <link rel="canonical" href="https://mooose.matheussilvano.workers.dev/">
+  <meta property="og:title" content="Mooose · corretor de redação do ENEM open-source">
+  <meta property="og:description" content="Corrija sua redação de graça com a IA que você escolher. Código aberto, Apache-2.0. Dê uma estrela e contribua.">
+  <meta property="og:image" content="https://mooose.matheussilvano.workers.dev/assets/og.png">
+  <meta name="twitter:image" content="https://mooose.matheussilvano.workers.dev/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#2347C5">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Caveat:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="mz">
+  <header class="mz-nav">
+    <div class="mz-wrap mz-nav__row">
+      <a class="mz-logo" href="#" aria-label="Mooose">M<b>OOO</b>SE</a>
+      <nav class="mz-nav__links" aria-label="Principal">
+        <a href="#por-que">Por que</a><a href="#rodar">Rodar</a><a href="#contribuir">Contribuir</a>
+      </nav>
+      <div class="mz-nav__right">
+        <a class="mz-btn mz-btn--sm mz-btn--primary" href="https://github.com/matheussilvano/mooose" target="_blank" rel="noopener">★ <span data-stars>Star</span> no GitHub</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="mz-hero">
+      <div class="mz-wrap mz-hero__grid">
+        <div>
+          <h1>O corretor de redação do ENEM que qualquer pessoa pode melhorar.</h1>
+          <p class="mz-hero__lead">Mooose é código aberto. Você traz a IA (tem opção grátis, até rodando no seu computador), cola o texto ou manda uma foto e recebe nota por competência. Se ele te ajudar, uma estrela leva o projeto a mais estudantes.</p>
+          <div class="mz-hero__cta">
+            <a class="mz-btn mz-btn--primary" href="https://github.com/matheussilvano/mooose" target="_blank" rel="noopener">★ Dar uma estrela <span data-stars></span></a>
+            <a class="mz-btn" href="#rodar">Rodar em 2 minutos</a>
+          </div>
+          <p class="mz-hero__note">Apache-2.0 · Python + LangGraph + React · feito no Brasil</p>
+        </div>
+        <figure class="mz-folha" aria-label="Exemplo de redação corrigida">
+          <span class="mz-folha__tag">exemplo</span>
+          <div class="mz-folha__head"><span>FOLHA DE REDAÇÃO</span><span>correção por competência</span></div>
+          <div class="mz-folha__body">
+            <ol>
+              <li><span>1</span><span>A Constituição assegura a todos</span></li>
+              <li><span>2</span><span>o direito à cultura, <span class="mz-hl">no entanto,</span></span></li>
+              <li><span>3</span><span>povos tradicionais ainda enfrentam o</span></li>
+              <li><span>4</span><span><span class="mz-under">preconceito</span> e o apagamento cultural.</span></li>
+              <li><span>5</span><span>Nesse cenário, a escola é decisiva:</span></li>
+              <li><span>6</span><span>é nela que a diversidade se conhece.</span></li>
+              <li><span>7</span><span><span class="mz-hl">Dessarte,</span> cabe ao Ministério da</span></li>
+              <li><span>8</span><span>Educação criar campanhas escolares,</span></li>
+              <li><span>9</span><span>por meio de aulas e palestras, a fim</span></li>
+              <li><span>10</span><span>de combater o estigma.</span></li>
+            </ol>
+            <div class="mz-folha__notes" aria-hidden="true">
+              <div class="mz-note" style="top:0;animation-delay:.5s">repertório ✓ (C2)</div>
+              <div class="mz-note" style="top:62px;animation-delay:.85s">troque o conectivo (C4)</div>
+              <div class="mz-note" style="top:130px;animation-delay:1.2s">tese clara ✓ (C3)</div>
+              <div class="mz-note" style="top:226px;animation-delay:1.55s">detalhe meio e finalidade (C5)</div>
+            </div>
+          </div>
+          <div class="mz-folha__score">
+            <div>C1<b>160</b></div><div>C2<b>160</b></div><div>C3<b>120</b></div><div>C4<b>120</b></div><div>C5<b>160</b></div>
+            <div class="mz-total">nota<b>720</b></div>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <section class="mz-sec mz-sec--band" id="por-que">
+      <div class="mz-wrap">
+        <div class="mz-sec__head">
+          <h2>Correção de redação não deveria depender de quem pode pagar</h2>
+          <p>Todo ano milhões de estudantes treinam redação sem ninguém para corrigir. O Mooose junta IA e regras do ENEM em um projeto aberto, para qualquer pessoa usar, auditar e melhorar.</p>
+        </div>
+        <div class="mz-shots">
+          <figure><img src="assets/corretor.jpg" alt="Tela do corretor: escolha da IA, foto ou texto" loading="lazy"><figcaption>Escolha a IA (grátis ou não), envie foto ou texto.</figcaption></figure>
+          <div class="col">
+            <figure><img src="assets/resultado.jpg" alt="Resultado com nota e feedback por competência" loading="lazy"><figcaption>Nota por competência e o que mudar na próxima.</figcaption></figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mz-sec">
+      <div class="mz-wrap">
+        <div class="mz-sec__head">
+          <h2>O que tem por dentro</h2>
+          <p>Para quem gosta de ler código: um pipeline de IA de verdade, com testes, não um prompt gigante.</p>
+        </div>
+        <table class="mz-table">
+          <thead><tr><th scope="col">Peça</th><th scope="col">Como funciona</th></tr></thead>
+          <tbody>
+            <tr><td>5 corretores</td><td data-label="Como funciona">Um especialista por competência, em paralelo (LangGraph), mais um revisor que só ajusta uma nota por vez e só com incoerência clara.</td></tr>
+            <tr><td>Regras em código</td><td data-label="Como funciona">Anulação, limites por tangenciamento e a nota da C5 (checklist de agente, ação, meio e finalidade) são Python testado, não palpite do modelo.</td></tr>
+            <tr><td>Traga sua IA</td><td data-label="Como funciona">OpenRouter, Gemini, Groq, Ollama, OpenAI ou Claude. A chave fica no navegador e não é guardada.</td></tr>
+            <tr><td>Estabilidade</td><td data-label="Como funciona">Opção de repetir cada competência e usar a mediana, para a nota variar menos em modelos gratuitos.</td></tr>
+            <tr><td>Medição</td><td data-label="Como funciona">Testes sem rede e um script de avaliação contra redações corrigidas por humanos. Falta dataset: é aí que você pode ajudar.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mz-sec mz-sec--band" id="rodar">
+      <div class="mz-wrap" style="max-width:860px">
+        <div class="mz-sec__head">
+          <h2>Rode em 2 minutos</h2>
+          <p>Precisa de Docker. Sem chave? Use o perfil local e o Ollama baixa os modelos sozinho.</p>
+        </div>
+        <div class="mz-code" id="cmd">
+          <button class="mz-btn mz-btn--sm" data-copy="#cmd">Copiar</button>
+<span class="c"># clone e suba</span>
+git clone https://github.com/matheussilvano/mooose && cd mooose
+docker compose up --build
+<span class="c"># abra http://localhost:8080/corrigir</span>
+
+<span class="c"># 100% local e grátis (baixa os modelos na 1ª vez)</span>
+docker compose --profile local-llm up --build</div>
+      </div>
+    </section>
+
+    <section class="mz-sec" id="contribuir">
+      <div class="mz-wrap mz-oss">
+        <div>
+          <div class="mz-sec__head" style="margin-bottom:0">
+            <h2>Dá para contribuir mesmo sem ser programador</h2>
+            <p>Professores de redação, estudantes e desenvolvedores têm trabalho aqui. Abaixo, issues reais marcadas para quem está começando.</p>
+          </div>
+          <div class="mz-stats">
+            <div class="mz-stat"><b data-stars>—</b><span>estrelas</span></div>
+            <div class="mz-stat"><b data-forks>—</b><span>forks</span></div>
+            <div class="mz-stat"><b data-issues>—</b><span>issues abertas</span></div>
+          </div>
+          <div class="mz-people" id="people" aria-label="Quem já contribuiu"></div>
+        </div>
+        <div class="mz-ways">
+          <a class="mz-way" href="https://github.com/matheussilvano/mooose" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg><div><b>1. Dê uma estrela</b><span>Leva 5 segundos e faz o projeto aparecer para mais gente.</span></div></a>
+          <a class="mz-way" href="https://github.com/matheussilvano/mooose/issues?q=is%3Aopen+label%3A%22good+first+issue%22" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><div><b>2. Resolva uma issue</b><span>Testar modelos, melhorar a interface, escrever testes.</span></div></a>
+          <a class="mz-way" href="https://github.com/matheussilvano/mooose/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 5h16v14H4zM8 9h8M8 13h5"/></svg><div><b>3. Envie redações corrigidas</b><span>Com consentimento, para medir a qualidade da IA.</span></div></a>
+          <a class="mz-way" href="https://github.com/sponsors/matheussilvano" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/></svg><div><b>4. Apoie o projeto</b><span>Ajuda a manter o Mooose gratuito para estudantes.</span></div></a>
+        </div>
+      </div>
+      <div class="mz-wrap" style="margin-top:40px">
+        <h3 style="font-size:24px;margin-bottom:14px">Issues para começar agora</h3>
+        <ul class="mz-issues" id="issues"><li><a href="https://github.com/matheussilvano/mooose/issues" target="_blank" rel="noopener"><small>↗</small><b>Ver todas as issues no GitHub</b><small></small></a></li></ul>
+      </div>
+    </section>
+
+    <section class="mz-big-cta">
+      <div class="mz-wrap">
+        <h2>Se o Mooose pode ajudar alguém que você conhece, mande para essa pessoa.</h2>
+        <p>Uma estrela e um compartilhamento já ajudam mais do que parece.</p>
+        <div class="mz-share" style="justify-content:center">
+          <a class="mz-btn" href="https://github.com/matheussilvano/mooose" target="_blank" rel="noopener">★ Dar uma estrela</a>
+          <a class="mz-btn" id="share-x" target="_blank" rel="noopener" href="#">Compartilhar no X</a>
+          <a class="mz-btn" id="share-li" target="_blank" rel="noopener" href="#">Compartilhar no LinkedIn</a>
+          <a class="mz-btn" id="share-wa" target="_blank" rel="noopener" href="#">WhatsApp</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mz-foot">
+    <div class="mz-wrap">
+      <div class="mz-foot__grid">
+        <div><a class="mz-logo" href="#">M<b>OOO</b>SE</a><p style="margin-top:12px;max-width:42ch">Corretor de redação do ENEM de código aberto.</p></div>
+        <div><h4>Projeto</h4><a href="https://github.com/matheussilvano/mooose">GitHub</a><a href="https://github.com/matheussilvano/mooose/blob/main/CONTRIBUTING.md">Como contribuir</a><a href="https://github.com/matheussilvano/mooose/discussions">Discussões</a></div>
+        <div><h4>Feito por</h4><a href="https://github.com/matheussilvano">Matheus Silvano</a></div>
+      </div>
+      <small>Projeto independente, sem vínculo com o INEP ou o MEC. A nota é uma estimativa de IA para treino. Licença Apache-2.0; o nome e o logo Mooose são marcas do autor.</small>
+    </div>
+  </footer>
+  <script src="app.js" defer></script>
+</body>
+</html>
