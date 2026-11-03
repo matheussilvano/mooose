@@ -1,10 +1,23 @@
-<p align="center"><img src="docs/assets/banner.svg" alt="Mooose — open-source ENEM essay grader" /></p>
 
 # 🫎 Mooose — the open-source ENEM essay grader
 
 **Mooose** grades essays for **ENEM** (Brazil's national high-school exam) across its 5 official competencies (0–200 each) and tells students *how to improve*. It is fully open source: **bring your own LLM** (OpenRouter free models, Gemini free tier, Groq, local Ollama, OpenAI, Claude, any OpenAI-compatible API) and grade for free.
 
 > Independent project, **not affiliated with INEP/MEC**. Scores are AI estimates for practice.
+
+<p align="center">
+  <img src="docs/assets/landing.jpg" alt="Landing page do Mooose" width="880">
+</p>
+<table>
+  <tr>
+    <td><img src="docs/assets/corretor.jpg" alt="Corretor open-source: escolha sua IA, envie foto ou texto"></td>
+    <td><img src="docs/assets/resultado.jpg" alt="Resultado: nota final, feedback por competência"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Escolha sua IA (grátis ou não), envie foto ou texto</sub></td>
+    <td align="center"><sub>Nota por competência com feedback acionável</sub></td>
+  </tr>
+</table>
 
 ## Why it's interesting for AI engineers
 - **LangGraph pipeline**: theme analysis → 5 parallel specialist graders → senior-reviewer audit → deterministic calibration → synthesis ([architecture](docs/ARCHITECTURE.md)).

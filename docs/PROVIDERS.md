@@ -7,7 +7,7 @@ Você escolhe o provedor na tela (`/aberto`) ou via headers da API: `X-LLM-Provi
 | OpenRouter | `openrouter` | modelos `:free` | https://openrouter.ai/keys | só modelos com visão |
 | Google Gemini | `google` | camada gratuita do AI Studio | https://aistudio.google.com/apikey | sim |
 | Groq | `groq` | camada gratuita | https://console.groq.com/keys | não |
-| Ollama | `ollama` | 100% local | não precisa | depende do modelo |
+| Ollama | `ollama` | 100% local | não precisa | sim (`MOOOSE_OLLAMA_VISION_MODEL`, padrão `qwen2.5vl:7b`) |
 | OpenAI | `openai` | pago | https://platform.openai.com/api-keys | sim |
 | Anthropic | `anthropic` | pago | https://console.anthropic.com | sim |
 | Outro (OpenAI-compatível) | `custom` | — | — | — |

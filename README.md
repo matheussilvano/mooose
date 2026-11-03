@@ -1,4 +1,3 @@
-<p align="center"><img src="docs/assets/banner.svg" alt="Mooose — corretor de redação do ENEM open-source" /></p>
 
 <p align="center">
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-blue"></a>
@@ -14,6 +13,20 @@
 **Mooose** corrige redações no padrão do **ENEM** (as 5 competências, notas de 0 a 200 cada) e explica *como melhorar*. Agora é **100% open-source**: você roda o código, **traz a sua própria IA** e não paga mensalidade para ninguém — dá para corrigir **de graça**.
 
 > ⚠️ Projeto independente, **sem vínculo com o INEP/MEC**. A nota é uma *estimativa* de IA para estudo, não uma nota oficial.
+
+<p align="center">
+  <img src="docs/assets/landing.jpg" alt="Landing page do Mooose" width="880">
+</p>
+<table>
+  <tr>
+    <td><img src="docs/assets/corretor.jpg" alt="Corretor open-source: escolha sua IA, envie foto ou texto"></td>
+    <td><img src="docs/assets/resultado.jpg" alt="Resultado: nota final, feedback por competência"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Escolha sua IA (grátis ou não), envie foto ou texto</sub></td>
+    <td align="center"><sub>Nota por competência com feedback acionável</sub></td>
+  </tr>
+</table>
 
 ## ✨ O que tem aqui
 
@@ -33,7 +46,7 @@ git clone https://github.com/matheussilvano/mooose && cd mooose
 docker compose up --build
 # app: http://localhost:8080/aberto   ·   API: http://localhost:8000/docs
 ```
-Quer tudo **local e grátis** (sem chave nenhuma)? `docker compose --profile local-llm up --build` e depois `docker compose exec ollama ollama pull qwen2.5:14b`.
+Quer tudo **local e grátis** (sem chave nenhuma, **inclusive leitura de foto**)? `docker compose --profile local-llm up --build` — na primeira vez ele baixa sozinho um modelo de texto e um de visão via Ollama (~15 GB; use `MOOOSE_OLLAMA_MODEL`/`MOOOSE_OLLAMA_VISION_MODEL` para modelos menores). Os pesos não ficam no repositório: são baixados na hora.
 
 ### Opção B — direto na máquina
 ```bash
