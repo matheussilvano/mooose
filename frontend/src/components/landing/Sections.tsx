@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from "framer-motion";
-import { Check, Sparkles, TrendingUp } from "lucide-react";
+import { Check, Github, Heart, Sparkles, TrendingUp } from "lucide-react";
 import Section from "../ui/Section";
 import Card from "../ui/Card";
 import Badge from "../ui/Badge";
@@ -25,7 +25,7 @@ const steps = [
 const faqItems = [
   {
     title: "Preciso pagar para usar?",
-    content: "Sim. Você cria uma conta, escolhe um pacote e começa a corrigir depois da confirmação do pagamento."
+    content: "Não. O Mooose é open-source: use a página /aberto com a sua própria chave de IA (há opções gratuitas como OpenRouter, Gemini, Groq e Ollama local). Os pacotes pagos existem só para quem prefere a versão hospedada, sem configurar nada."
   },
   {
     title: "Recebo nota no padrão ENEM?",
@@ -80,6 +80,34 @@ export default function LandingSections() {
 
   return (
     <>
+      <Section
+        id="open-source"
+        title="Open-source de verdade"
+        subtitle="Todo o código do Mooose é público (Apache-2.0): o front, a API e o pipeline de IA que corrige a redação."
+      >
+        <div className="grid gap-4 md:grid-cols-3">
+          {[
+            ["Traga sua IA", "OpenRouter (modelos grátis), Gemini, Groq, Ollama local, OpenAI ou Claude. Sua chave não é guardada."],
+            ["IA auditável", "5 corretores por competência (LangGraph), revisor, regras do ENEM em código e testes. Dá para ler, medir e melhorar."],
+            ["Foto, PDF ou texto", "Mande a foto da redação: o OCR roda localmente (PaddleOCR) ou por modelo de visão."]
+          ].map(([title, text]) => (
+            <Card key={title} className="p-6">
+              <h3 className="text-base font-semibold">{title}</h3>
+              <p className="mt-2 text-sm text-text-muted">{text}</p>
+            </Card>
+          ))}
+        </div>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Button onClick={() => (window.location.href = "/aberto")}>Corrigir grátis agora</Button>
+          <Button variant="secondary" onClick={() => window.open("https://github.com/matheussilvano/mooose", "_blank", "noopener")}>
+            <Github size={16} className="mr-2" /> Código no GitHub
+          </Button>
+          <Button variant="ghost" onClick={() => window.open("https://github.com/sponsors/matheussilvano", "_blank", "noopener")}>
+            <Heart size={16} className="mr-2" /> Apoiar o projeto
+          </Button>
+        </div>
+      </Section>
+
       <Section id="como-funciona" title="Como funciona" subtitle="Crie sua conta, escolha um pacote e treine redação toda semana.">
         <div className="grid gap-6 md:grid-cols-3">
           {steps.map((step, index) => (

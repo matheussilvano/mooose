@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Github } from "lucide-react";
 import Button from "../ui/Button";
 import BenefitsChips from "./BenefitsChips";
 
@@ -21,7 +21,7 @@ export default function Hero() {
             <img className="landing-avatar" src="/avatars/avatar-2.jpg" alt="" loading="lazy" />
             <img className="landing-avatar" src="/avatars/avatar-3.jpg" alt="" loading="lazy" />
           </div>
-          <span>+350 alunos · +1.000 correções</span>
+          <span>100% open-source · Apache-2.0 · +1.000 correções</span>
         </motion.div>
 
         <motion.h1
@@ -41,7 +41,7 @@ export default function Hero() {
           transition={{ duration: 0.2, delay: 0.08 }}
           className="landing-subtitle"
         >
-          Receba nota por competência, comentários objetivos e acompanhe sua evolução em minutos.
+          Receba nota por competência e comentários objetivos em minutos. Código aberto: use sua própria IA — dá para corrigir de graça com OpenRouter, Gemini, Groq ou Ollama local.
         </motion.p>
 
         <motion.div
@@ -51,11 +51,17 @@ export default function Hero() {
           transition={{ duration: 0.2, delay: 0.12 }}
           className="landing-cta"
         >
-          <Button size="lg" onClick={() => (window.location.href = "/paywall")}> 
-            Começar com um pacote
+          <Button size="lg" onClick={() => (window.location.href = "/aberto")}>
+            Corrigir grátis com minha IA
             <ArrowUpRight size={18} />
           </Button>
-          <span className="landing-cta-note">Crie sua conta e pague com segurança pelo Mercado Pago</span>
+          <Button size="lg" variant="secondary" onClick={() => window.open("https://github.com/matheussilvano/mooose", "_blank", "noopener")}>
+            <Github size={18} className="mr-2" />
+            Ver no GitHub
+          </Button>
+          <span className="landing-cta-note">
+            Sem mensalidade: a chave é sua e fica no seu navegador. Prefere não configurar nada? <a href="/paywall" className="underline">Use a versão hospedada</a>.
+          </span>
         </motion.div>
 
         <motion.div

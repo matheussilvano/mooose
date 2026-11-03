@@ -7,6 +7,7 @@ import Button from "../ui/Button";
 import { cn } from "../../lib/cn";
 
 const navLinks = [
+  { label: "Open-source", href: "#open-source" },
   { label: "Como funciona", href: "#como-funciona" },
   { label: "Planos", href: "#planos" },
   { label: "FAQ", href: "#faq" }
@@ -60,7 +61,7 @@ export default function LandingHeader({ className }: LandingHeaderProps) {
               ))}
             </div>
             <div className="landing-drawer-actions">
-              <a href="/paywall" className="landing-link">Planos</a>
+              <a href="https://github.com/matheussilvano/mooose" target="_blank" rel="noreferrer" className="landing-link">GitHub ★</a>
               <Button full onClick={() => (window.location.href = "/editor?login=1")}>
                 Fazer login
               </Button>
@@ -88,7 +89,7 @@ export default function LandingHeader({ className }: LandingHeaderProps) {
           </nav>
 
           <div className="landing-actions">
-            <a href="/paywall" className="landing-link">Planos</a>
+            <a href="https://github.com/matheussilvano/mooose" target="_blank" rel="noreferrer" className="landing-link">GitHub ★</a>
             <Button size="sm" onClick={() => (window.location.href = "/editor?login=1")}>
               Fazer login
             </Button>
