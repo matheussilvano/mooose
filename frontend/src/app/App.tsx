@@ -1,9 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import LandingPage from "../pages/LandingPage";
 import EditorPage from "../pages/EditorPage";
-import OpenGraderPage from "../pages/OpenGraderPage";
-import PaywallPage from "../pages/PaywallPage";
-import PaywallSuccessPage from "../pages/PaywallSuccessPage";
+import GraderPage from "../pages/GraderPage";
 import ConfirmPage from "../pages/ConfirmPage";
 import SobrePage from "../pages/SobrePage";
 import ComoFuncionaPage from "../pages/ComoFuncionaPage";
@@ -26,12 +24,10 @@ export default function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/editor" element={<EditorPage />} />
-        <Route path="/aberto" element={<OpenGraderPage />} />
-        <Route path="/paywall" element={<PaywallPage />} />
+        <Route path="/corrigir" element={<GraderPage />} />
+        <Route path="/aberto" element={<Navigate to="/corrigir" replace />} />
+        <Route path="/paywall" element={<Navigate to="/corrigir" replace />} />
         <Route path="/auth/confirmed" element={<ConfirmPage />} />
-
-        <Route path="/paywall/sucesso" element={<PaywallSuccessPage />} />
-        <Route path="/paywall/sucesso.html" element={<PaywallSuccessPage />} />
 
         <Route path="/sobre" element={<SobrePage />} />
         <Route path="/sobre.html" element={<SobrePage />} />

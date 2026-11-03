@@ -44,7 +44,7 @@
 ```bash
 git clone https://github.com/matheussilvano/mooose && cd mooose
 docker compose up --build
-# app: http://localhost:8080/aberto   ·   API: http://localhost:8000/docs
+# app: http://localhost:8080/corrigir   ·   API: http://localhost:8000/docs
 ```
 Quer tudo **local e grátis** (sem chave nenhuma, **inclusive leitura de foto**)? `docker compose --profile local-llm up --build` — na primeira vez ele baixa sozinho um modelo de texto e um de visão via Ollama (~15 GB; use `MOOOSE_OLLAMA_MODEL`/`MOOOSE_OLLAMA_VISION_MODEL` para modelos menores). Os pesos não ficam no repositório: são baixados na hora.
 
@@ -58,7 +58,7 @@ uvicorn mooose_api.app:app --reload          # http://localhost:8000/docs
 
 # App (outro terminal, Node 20+)
 cd frontend && cp .env.example .env.local && npm install && npm run dev
-# abra http://localhost:5173/aberto
+# abra http://localhost:5173/corrigir
 ```
 Na tela, escolha o provedor, cole sua chave e corrija. Sem interface? Use a API:
 ```bash
@@ -83,7 +83,7 @@ curl -X POST localhost:8000/v1/grade \
 
 ```
 backend/    API FastAPI + motor de IA (mooose_ai/) + API aberta BYOK (mooose_api/) + evals
-frontend/   React + Vite + Tailwind  (página /aberto = corretor open-source)
+frontend/   React + Vite + Tailwind  (página /corrigir = corretor open-source)
 docs/       arquitetura, provedores, roadmap
 legacy/     primeira landing page (arquivada)
 ```
@@ -95,7 +95,7 @@ Toda ajuda é bem-vinda — de estudante a engenheiro de IA. Veja o [CONTRIBUTIN
 
 - 📝 **Dataset de redações corrigidas** (com consentimento!) para medir e melhorar a precisão → [`backend/evals`](backend/evals)
 - 🧩 Novos provedores / modelos testados em português
-- 🎨 UX da página `/aberto`, acessibilidade, modo escuro
+- 🎨 UX da página `/corrigir`, acessibilidade, modo escuro
 - 🌍 Revisão da rubrica por professores de redação
 
 Procure as issues com `good first issue`.

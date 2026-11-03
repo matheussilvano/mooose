@@ -1,26 +1,13 @@
 import { ReactNode } from "react";
-import Header from "./Header";
-import Footer from "./Footer";
+import SiteNav from "./site/SiteNav";
+import SiteFooter from "./site/SiteFooter";
 
-interface PageShellProps {
-  children: ReactNode;
-}
-
-export default function PageShell({ children }: PageShellProps) {
+export default function PageShell({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-bg text-text">
-      <Header
-        links={[
-          { label: "Open-source", href: "/aberto" },
-          { label: "Blog", href: "/blog" },
-          { label: "Como funciona", href: "/como-funciona" },
-          { label: "Sobre", href: "/sobre" }
-        ]}
-        ctaLabel="Corrigir redação"
-        ctaHref="/editor"
-      />
-      <main>{children}</main>
-      <Footer />
+    <div className="mz">
+      <SiteNav />
+      <main className="mz-wrap mz-prose-wrap">{children}</main>
+      <SiteFooter />
     </div>
   );
 }

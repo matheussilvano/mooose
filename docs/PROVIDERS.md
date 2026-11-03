@@ -1,6 +1,6 @@
 # Provedores de IA
 
-Você escolhe o provedor na tela (`/aberto`) ou via headers da API: `X-LLM-Provider`, `X-LLM-Model`, `X-LLM-Api-Key`.
+Você escolhe o provedor na tela (`/corrigir`) ou via headers da API: `X-LLM-Provider`, `X-LLM-Model`, `X-LLM-Api-Key`.
 
 | Provedor | id | Grátis? | Chave | Visão (foto) |
 |---|---|---|---|---|

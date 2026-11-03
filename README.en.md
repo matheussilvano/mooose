@@ -31,7 +31,7 @@
 ## Quick start
 ```bash
 git clone https://github.com/matheussilvano/mooose && cd mooose
-docker compose up --build        # UI http://localhost:8080/aberto · API http://localhost:8000/docs
+docker compose up --build        # UI http://localhost:8080/corrigir · API http://localhost:8000/docs
 ```
 or run `uvicorn mooose_api.app:app` in `backend/` and `npm run dev` in `frontend/`.
 

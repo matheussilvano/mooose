@@ -49,7 +49,7 @@ export default function ComoFuncionaPage() {
             <Badge className="bg-green-100 text-green-700">Feedback e sugestões de melhoria</Badge>
           </div>
           <p className="mt-4 text-sm text-text-muted">
-            Cada correção consome 1 correção disponível. Para começar, crie sua conta e compre um pacote via Mercado Pago.
+            A correção é gratuita: você usa a sua própria chave de IA (há opções sem custo) e nada do que você escreve é salvo no servidor.
           </p>
         </Card>
       </Section>
@@ -59,12 +59,12 @@ export default function ComoFuncionaPage() {
           <Card className="p-6">
             <h2 className="text-lg font-semibold text-text">Passo a passo da correção</h2>
             <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm text-text-muted">
-              <li><strong>Você cria a conta e escolhe um pacote</strong><br />Depois da confirmação do pagamento, escolha se quer enviar uma foto da redação escrita à mão, um PDF ou colar o texto digitado.</li>
-              <li><strong>Leitura do texto (OCR, quando necessário)</strong><br />Se for foto ou PDF com imagem, a plataforma usa um sistema de reconhecimento de caracteres (OCR) para transformar a imagem em texto. Quanto mais nítida a foto, melhor a leitura.</li>
-              <li><strong>Análise por IA seguindo as competências do ENEM</strong><br />Com o texto em mãos, a Mooose envia o conteúdo para modelos de Inteligência Artificial que foram configurados para olhar para os mesmos pontos avaliados no ENEM: domínio da escrita formal, desenvolvimento do tema, organização do texto, coesão e proposta de intervenção.</li>
+              <li><strong>Você escolhe a IA</strong><br />Cole uma chave gratuita (OpenRouter, Gemini ou Groq) ou use o Ollama no seu computador. Depois, escolha se quer enviar uma foto da redação escrita à mão, um PDF ou colar o texto digitado.</li>
+              <li><strong>Leitura do texto (OCR, quando necessário)</strong><br />Se for foto, um modelo de visão (ou o PaddleOCR local) transforma a imagem em texto, e você revisa a transcrição antes de corrigir. Para letra de mão, modelos de visão leem bem melhor.</li>
+              <li><strong>Análise por IA seguindo as competências do ENEM</strong><br />Cada competência tem seu próprio corretor, e as regras do ENEM (zerar por fuga ao tema, limites por tangenciamento) são código testado. Os corretores olham para os mesmos pontos avaliados no ENEM: domínio da escrita formal, desenvolvimento do tema, organização do texto, coesão e proposta de intervenção.</li>
               <li><strong>Cálculo das notas aproximadas</strong><br />A redação recebe uma nota aproximada de 0 a 200 em cada competência (1 a 5). A soma dessas notas gera a pontuação final aproximada (0 a 1000).</li>
               <li><strong>Geração do feedback didático</strong><br />A IA produz uma devolutiva em linguagem simples, explicando por que a nota ficou naquele valor e sugerindo ajustes práticos em cada parte do texto: introdução, desenvolvimento, conclusão, repertório, coesão etc.</li>
-              <li><strong>Histórico para acompanhar a evolução</strong><br />Todas as redações que você enviar ficam salvas no seu histórico, para que você acompanhe sua evolução ao longo do tempo e compare notas e comentários.</li>
+              <li><strong>Revisão e resultado</strong><br />Um segundo corretor confere se as notas combinam com os comentários. Você pode copiar a correção ou salvar em PDF para acompanhar sua evolução.</li>
             </ol>
           </Card>
 

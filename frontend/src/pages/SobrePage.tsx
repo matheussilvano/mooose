@@ -20,7 +20,7 @@ export default function SobrePage() {
             Todo ano, milhões de estudantes encaram o ENEM com a mesma dúvida: <strong>“Será que minha redação está realmente boa?”</strong>. Correção humana é cara, demorada e, muitas vezes, inacessível para quem mais precisa – especialmente estudantes de escolas públicas, projetos sociais e quem estuda por conta própria.
           </p>
           <p className="mt-3 text-sm text-text-muted">
-            A Mooose nasceu desse incômodo e de uma pergunta simples: <strong>“E se existisse um lugar em que qualquer pessoa pudesse treinar redação, quantas vezes quisesse, com devolutiva quase imediata, pagando um valor acessível por correção?”</strong>
+            A Mooose nasceu desse incômodo e de uma pergunta simples: <strong>“E se existisse um lugar em que qualquer pessoa pudesse treinar redação, quantas vezes quisesse, com devolutiva quase imediata, de graça ou quase?”</strong>
           </p>
           <p className="mt-3 text-sm text-text-muted">
             A partir daí, o projeto foi sendo construído passo a passo: primeiro como um experimento pessoal com IA, depois como uma plataforma de verdade, com fluxo de cadastro, envio, histórico de redações e um cuidado especial com a experiência de quem está do outro lado da tela.
@@ -73,14 +73,14 @@ export default function SobrePage() {
           <Card className="p-6 bg-slate-900 text-slate-200">
             <h3 className="text-lg font-semibold">Como a Mooose se sustenta</h3>
             <p className="mt-3 text-sm text-slate-300">
-              A ideia é manter a correção de redações <strong>acessível</strong> para estudantes, com pacotes a partir de <strong>1 correção</strong> e plano de <strong>10 correções por R$ 9,90</strong>. A sustentabilidade vem por meio de:
+              O Mooose é <strong>gratuito e de código aberto</strong> (Apache-2.0). Você usa a sua própria chave de IA, então ninguém paga mensalidade ao projeto. Ele continua de pé com:
             </p>
             <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-300">
-              <li><strong>Anúncios bem filtrados</strong>, evitando conteúdos enganosos, casas de aposta, pornografia ou qualquer coisa que não faça sentido para quem está estudando.</li>
-              <li><strong>Pacotes de correções</strong> com mais correções, relatórios avançados e recursos extras para quem quiser investir ainda mais na preparação.</li>
+              <li><strong>Contribuições da comunidade</strong>: código, testes de modelos e redações corrigidas por professores para medir a qualidade.</li>
+              <li><strong>Apoio voluntário</strong> pelo GitHub Sponsors, para quem quiser ajudar a manter o projeto.</li>
             </ul>
             <p className="mt-3 text-sm text-slate-300">
-              Tudo isso é construído com cuidado: antes de qualquer monetização, vem a responsabilidade com quem está usando a Mooose para tentar mudar a própria vida.
+              Tudo no repositório: <a className="underline" href="https://github.com/matheussilvano/mooose" target="_blank" rel="noreferrer">github.com/matheussilvano/mooose</a>.
             </p>
           </Card>
         </div>

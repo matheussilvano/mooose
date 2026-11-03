@@ -105,7 +105,7 @@ export default function StudentDashboard() {
   }, [requiresAuth]);
 
   useEffect(() => {
-    if (requiresPayment) window.location.href = "/paywall";
+    if (requiresPayment) window.location.href = "/corrigir";
   }, [requiresPayment]);
 
   useEffect(() => {
@@ -190,7 +190,7 @@ export default function StudentDashboard() {
 
   const handleTabChange = (tab: DashboardTab) => {
     if (tab === "shop") {
-      window.location.href = "/paywall";
+      window.location.href = "/corrigir";
       return;
     }
     setActiveTab(tab);
@@ -370,7 +370,7 @@ export default function StudentDashboard() {
               <Button variant="secondary" onClick={() => setProfileEditing(true)}>
                 <Pencil size={16} /> Editar perfil
               </Button>
-              <Button variant="secondary" onClick={() => window.location.href = "/paywall"}>Gerenciar plano</Button>
+              <Button variant="secondary" onClick={() => window.location.href = "/corrigir"}>Gerenciar plano</Button>
               <Button onClick={() => { logout(); navigate("/"); }}>Sair</Button>
             </div>
           </Card>
@@ -416,7 +416,7 @@ export default function StudentDashboard() {
       <DashboardHeader
         credits={credits}
         streak={0}
-        onCredits={() => (window.location.href = "/paywall")}
+        onCredits={() => (window.location.href = "/corrigir")}
         onStreak={() => toast.push("Ofensiva em breve!")}
         onBonus={() => toast.push("Bônus em breve!")}
         onRanking={() => toast.push("Ranking em breve!")}
