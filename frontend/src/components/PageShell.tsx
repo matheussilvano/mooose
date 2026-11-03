@@ -11,6 +11,7 @@ export default function PageShell({ children }: PageShellProps) {
     <div className="min-h-screen bg-bg text-text">
       <Header
         links={[
+          { label: "Open-source", href: "/aberto" },
           { label: "Blog", href: "/blog" },
           { label: "Como funciona", href: "/como-funciona" },
           { label: "Sobre", href: "/sobre" }

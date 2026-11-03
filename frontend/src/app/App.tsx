@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import LandingPage from "../pages/LandingPage";
 import EditorPage from "../pages/EditorPage";
+import OpenGraderPage from "../pages/OpenGraderPage";
 import PaywallPage from "../pages/PaywallPage";
 import PaywallSuccessPage from "../pages/PaywallSuccessPage";
 import ConfirmPage from "../pages/ConfirmPage";
@@ -25,6 +26,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/editor" element={<EditorPage />} />
+        <Route path="/aberto" element={<OpenGraderPage />} />
         <Route path="/paywall" element={<PaywallPage />} />
         <Route path="/auth/confirmed" element={<ConfirmPage />} />
 
