@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Github, Menu, Star, X } from "lucide-react";
+import { Menu, Star, X } from "lucide-react";
+import GithubMark from "./GithubMark";
 import { REPO_URL, useRepoStats } from "../../lib/github";
 
 export function Logo() {
@@ -37,7 +38,7 @@ export default function SiteNav() {
         </nav>
         <div className="mz-nav__right">
           <a className="mz-btn mz-btn--sm mz-btn--ghost" href={REPO_URL} target="_blank" rel="noreferrer">
-            <Github aria-hidden />
+            <GithubMark />
             <span className="mz-stars">
               <Star size={15} fill="currentColor" aria-hidden />
               {stats ? stats.stars.toLocaleString("pt-BR") : "Star"}

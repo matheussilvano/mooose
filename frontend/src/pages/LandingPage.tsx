@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Bug, Camera, Check, Github, Heart, ShieldCheck, Star } from "lucide-react";
+import { Bug, Camera, Check, Heart, ShieldCheck, Star } from "lucide-react";
+import GithubMark from "../components/site/GithubMark";
 import SiteNav from "../components/site/SiteNav";
 import SiteFooter from "../components/site/SiteFooter";
 import Folha from "../components/site/Folha";
@@ -53,7 +54,7 @@ export default function LandingPage() {
                   Corrigir minha redação
                 </Link>
                 <a className="mz-btn" href={REPO_URL} target="_blank" rel="noreferrer">
-                  <Github aria-hidden /> Ver no GitHub
+                  <GithubMark /> Ver no GitHub
                   {stats && (
                     <span className="mz-stars">
                       <Star size={15} fill="currentColor" aria-hidden /> {stats.stars.toLocaleString("pt-BR")}
