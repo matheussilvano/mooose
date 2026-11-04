@@ -9,8 +9,8 @@ jobs:
     steps:
       - uses: actions/first-interaction@v3
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          issue-message: |
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          issue_message: |
             Obrigado por abrir sua primeira issue no Mooose! 🫎 Se puder, diga o provedor/modelo que usou e cole o erro (sem sua chave de API).
-          pr-message: |
+          pr_message: |
             Obrigado pelo seu primeiro PR! 🎉 O CI roda os testes automaticamente. Se mudou prompts ou a rubrica, rode `python -m evals.run_evals` e cole os números aqui. Veja o CONTRIBUTING.md.
